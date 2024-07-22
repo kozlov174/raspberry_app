@@ -2,7 +2,6 @@ import datetime
 import sys
 import pandas as pd
 import numpy as np
-import xlrd
 from PyQt5 import QtCore, QtWidgets, uic
 import easygui
 import openpyxl
@@ -61,6 +60,21 @@ class MainWindow(QtWidgets.QMainWindow):
         unit_index = Razmernost[Razmernost['Unit'] == unit].index
         value = Razmernost.loc[unit_index[0], 'Value']
         C_test = float(Cap[:n - 3]) * value
+
+        self.time = self.findChild(QtWidgets.QSpinBox, 'time')
+        time = int(self.time.value())
+        Tizm = []
+        Uizm = []
+        R_meas = []
+        for i in range(time/5 + 1):
+            Tizm[i] = int(sheet['R' + str(i + 2)].value)
+            Uizm[i] = int(sheet['S' + str(i + 2)].value)
+            R_meas[i] = int(sheet['T' + str(i + 2)].value) * 10**6
+            I_t = Uizm/R_meas
+        p = np.polyfit(time, R_meas, 4)
+        R_apr = np.polyval(p, time)
+        I_apr = np.polyval(np.polyfit(Tizm[21:], I_t[21:], 4), Tizm)
+
 
         print(I_test, C_test)
 
