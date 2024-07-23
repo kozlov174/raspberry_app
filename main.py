@@ -5,6 +5,7 @@ import numpy as np
 from PyQt5 import QtCore, QtWidgets, uic
 import easygui
 import openpyxl
+import matplotlib.pyplot as plt
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -62,21 +63,32 @@ class MainWindow(QtWidgets.QMainWindow):
         C_test = float(Cap[:n - 3]) * value
 
         self.time = self.findChild(QtWidgets.QSpinBox, 'time')
-        time = int(self.time.value())
+        time = 600
         Tizm = []
         Uizm = []
         R_meas = []
-        for i in range(time/5 + 1):
-            Tizm[i] = int(sheet['R' + str(i + 2)].value)
-            Uizm[i] = int(sheet['S' + str(i + 2)].value)
-            R_meas[i] = int(sheet['T' + str(i + 2)].value) * 10**6
-            I_t = Uizm/R_meas
-        p = np.polyfit(time, R_meas, 4)
-        R_apr = np.polyval(p, time)
+
+        for i in range(time // 5 + 1):
+            Tizm.append(int(sheet['R' + str(i + 2)].value))
+            Uizm.append(int(sheet['S' + str(i + 2)].value))
+            R_meas.append(int(sheet['T' + str(i + 2)].value) * 10 ** 6)
+            print(R_meas[i])
+
+        I_t = np.array(Uizm) / np.array(R_meas)
+
+        p = np.polyfit(Tizm, R_meas, 4)
+        R_apr = np.polyval(p, Tizm)
         I_apr = np.polyval(np.polyfit(Tizm[21:], I_t[21:], 4), Tizm)
 
+        graph_1 = plt.plot(Tizm, R_meas, label='R_meas', linewidth=3)
+        plt.plot(Tizm, R_apr, label='R_apr', linewidth=3)
 
-        print(I_test, C_test)
+        plt.show()
+
+        graph = self.findChild(QtWidgets.QGraphicsView, 'graph')
+        self.scene = QtWidgets.QGraphicsScene()
+        self.scene.addWidget(graph_1)
+        graph.setScene(graph_1)
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
