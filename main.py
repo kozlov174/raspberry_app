@@ -1,4 +1,5 @@
 import datetime
+import math
 import sys
 import pandas as pd
 import numpy as np
@@ -86,9 +87,33 @@ class MainWindow(QtWidgets.QMainWindow):
         plt.show()
 
         graph = self.findChild(QtWidgets.QGraphicsView, 'graph')
-        self.scene = QtWidgets.QGraphicsScene()
-        self.scene.addWidget(graph_1)
-        graph.setScene(graph_1)
+        #тут надо отобразить график
+
+        DAR=R_apr[12]/R_apr[6]
+
+        if (time // 5 + 1 < 121):
+            PI = 0
+            DD = 0
+        else:
+            PI = R_apr[120]/R_apr[12]
+            DD = 1000 * (R_apr[120] - R_apr[10]) / (R_apr[12]*R_apr[120]*C_test)
+
+        if PI == 0:
+            W = 0
+            TPI = 0
+            Res = 0
+        else:
+            W = 3.275 - 4.819*math.log10(PI)
+            TPI = 59.029*PI-56.391
+            Res = (70 - Tg) * ((TPI / 3) ^ 0.251 - 1)
+
+        Kabs = R_apr(12)/R_apr(3)
+        DP = 200 * TPI ** 0.251
+        R15 = R_apr[3] / 10**9
+        R60 = R_apr(12) / 10 ** 9
+
+        I_ut = min(I_apr)
+        I_spectr = (I_apr - I_ut) * time #особое внимание этой строчке
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
