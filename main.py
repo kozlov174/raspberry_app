@@ -7,6 +7,7 @@ from PyQt5 import QtCore, QtWidgets, uic
 import easygui
 import openpyxl
 import matplotlib.pyplot as plt
+import pyqtgraph as pg
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -18,12 +19,25 @@ class MainWindow(QtWidgets.QMainWindow):
         self.calculate_button = self.findChild(QtWidgets.QPushButton, 'save_button')
         self.file_name_display = self.findChild(QtWidgets.QTextBrowser, 'file_name')
 
+        self.graph = QtWidgets.QGridLayout(self.centralwidget)
+        self.graphWidget.setBackground('w')
+
         self.date.setText(str(datetime.date.today()))
         self.show()
 
         self.open_button.clicked.connect(self.showDialog)
         self.calculate_button.clicked.connect(self.doCalculation)
         self.input_file = None  # Инициализация переменной для пути к файлу
+
+        self.R15 = self.findChild(QtWidgets.QTextBrowser, 'R15')
+        self.R60 = self.findChild(QtWidgets.QTextBrowser, 'R60')
+        self.Kabs = self.findChild(QtWidgets.QTextBrowser, 'Kabs')
+        self.PI = self.findChild(QtWidgets.QTextBrowser, 'PI')
+        self.DAR = self.findChild(QtWidgets.QTextBrowser, 'DAR')
+        self.DD = self.findChild(QtWidgets.QTextBrowser, 'DD')
+        self.W = self.findChild(QtWidgets.QTextBrowser, 'W')
+        self.DP = self.findChild(QtWidgets.QTextBrowser, 'DP')
+        self.Res = self.findChild(QtWidgets.QTextBrowser, 'Res')
 
     def showDialog(self):
         self.input_file = easygui.fileopenbox()
@@ -64,7 +78,7 @@ class MainWindow(QtWidgets.QMainWindow):
         C_test = float(Cap[:n - 3]) * value
 
         self.time = self.findChild(QtWidgets.QSpinBox, 'time')
-        time = 600
+        time = int(self.time.value())
         Tizm = []
         Uizm = []
         R_meas = []
@@ -79,15 +93,14 @@ class MainWindow(QtWidgets.QMainWindow):
 
         p = np.polyfit(Tizm, R_meas, 4)
         R_apr = np.polyval(p, Tizm)
-        I_apr = np.polyval(np.polyfit(Tizm[21:], I_t[21:], 4), Tizm)
+        if time > 100:
+            I_apr = np.polyval(np.polyfit(Tizm[21:], I_t[21:], 4), Tizm)
 
-        graph_1 = plt.plot(Tizm, R_meas, label='R_meas', linewidth=3)
-        plt.plot(Tizm, R_apr, label='R_apr', linewidth=3)
 
-        plt.show()
-
-        graph = self.findChild(QtWidgets.QGraphicsView, 'graph')
-        #тут надо отобразить график
+        self.graph.addWidget(self.graphWidget, 0, 0)
+        self.graphWidget.clear()
+        self.graphWidget.plot(Tizm, R_meas, pen = pg.mkPen(color='b', width=3), label='R_meas')
+        self.graphWidget.plot(Tizm, R_apr, pen = pg.mkPen(color='k', width=3), label='R_apr', linewidth=3)
 
         DAR=R_apr[12]/R_apr[6]
 
@@ -98,6 +111,9 @@ class MainWindow(QtWidgets.QMainWindow):
             PI = R_apr[120]/R_apr[12]
             DD = 1000 * (R_apr[120] - R_apr[10]) / (R_apr[12]*R_apr[120]*C_test)
 
+        self.PI.setText(PI)
+        self.DD = DD
+
         if PI == 0:
             W = 0
             TPI = 0
@@ -105,15 +121,17 @@ class MainWindow(QtWidgets.QMainWindow):
         else:
             W = 3.275 - 4.819*math.log10(PI)
             TPI = 59.029*PI-56.391
-            Res = (70 - Tg) * ((TPI / 3) ^ 0.251 - 1)
+            Res = (70 - Tg) * ((TPI / 3) ** 0.251 - 1)
 
-        Kabs = R_apr(12)/R_apr(3)
+        Kabs = R_apr[12]/R_apr[3]
         DP = 200 * TPI ** 0.251
         R15 = R_apr[3] / 10**9
-        R60 = R_apr(12) / 10 ** 9
+        R60 = R_apr[12] / 10 ** 9
+        if time > 100:
+            I_ut = min(I_apr)
+            I_spectr = (I_apr - I_ut) * time #особое внимание этой строчке
 
-        I_ut = min(I_apr)
-        I_spectr = (I_apr - I_ut) * time #особое внимание этой строчке
+
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)

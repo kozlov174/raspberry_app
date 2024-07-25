@@ -30,16 +30,6 @@
      </rect>
     </property>
    </widget>
-   <widget class="QGraphicsView" name="graph">
-    <property name="geometry">
-     <rect>
-      <x>21</x>
-      <y>200</y>
-      <width>709</width>
-      <height>510</height>
-     </rect>
-    </property>
-   </widget>
    <widget class="QTextBrowser" name="DP">
     <property name="geometry">
      <rect>
@@ -544,10 +534,44 @@ p, li { white-space: pre-wrap; }
     <property name="maximum">
      <number>600</number>
     </property>
+    <property name="singleStep">
+     <number>5</number>
+    </property>
+   </widget>
+   <widget class="PlotWidget" name="graphWidget" native="true">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>200</y>
+      <width>701</width>
+      <height>541</height>
+     </rect>
+    </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(255, 255, 255);
+alternate-background-color: rgb(85, 0, 255);</string>
+    </property>
    </widget>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>PlotWidget</class>
+   <extends>QWidget</extends>
+   <header>pyqtgraph</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
