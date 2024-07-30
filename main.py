@@ -6,7 +6,6 @@ import numpy as np
 from PyQt5 import QtCore, QtWidgets, uic
 import easygui
 import openpyxl
-import matplotlib.pyplot as plt
 import pyqtgraph as pg
 
 
