@@ -12,7 +12,7 @@ import pyqtgraph as pg
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
-        uic.loadUi('Main.ui', self)
+        uic.loadUi('main.ui', self)
         self.date = self.findChild(QtWidgets.QTextBrowser, 'date')
         self.open_button = self.findChild(QtWidgets.QPushButton, 'open_button')
         self.calculate_button = self.findChild(QtWidgets.QPushButton, 'save_button')
@@ -99,7 +99,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.graph.addWidget(self.graphWidget, 0, 0)
         self.graphWidget.clear()
         self.graphWidget.plot(Tizm, R_meas, pen = pg.mkPen(color='b', width=3), label='R_meas')
-        self.graphWidget.plot(Tizm, R_apr, pen = pg.mkPen(color='k', width=3), label='R_apr', linewidth=3)
+        self.graphWidget.plot(Tizm, R_apr, pen = pg.mkPen(color='k', width=3), label='R_apr')
 
         DAR=R_apr[12]/R_apr[6]
         self.DAR.setText(str(round(DAR, 3)))
