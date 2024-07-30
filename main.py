@@ -103,7 +103,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.graphWidget.plot(Tizm, R_apr, pen = pg.mkPen(color='k', width=3), label='R_apr', linewidth=3)
 
         DAR=R_apr[12]/R_apr[6]
-
+        self.DAR.setText(str(round(DAR, 3)))
         if (time // 5 + 1 < 121):
             PI = 0
             DD = 0
@@ -111,8 +111,8 @@ class MainWindow(QtWidgets.QMainWindow):
             PI = R_apr[120]/R_apr[12]
             DD = 1000 * (R_apr[120] - R_apr[10]) / (R_apr[12]*R_apr[120]*C_test)
 
-        self.PI.setText(PI)
-        self.DD = DD
+        self.PI.setText(str(round(PI, 3)))
+        self.DD.setText(str(round(DD, 3)))
 
         if PI == 0:
             W = 0
@@ -123,10 +123,18 @@ class MainWindow(QtWidgets.QMainWindow):
             TPI = 59.029*PI-56.391
             Res = (70 - Tg) * ((TPI / 3) ** 0.251 - 1)
 
+        self.W.setText(str(round(W, 3)))
+        #self.TPI.setText(str(TPI))
+        self.Res.setText(str(round(Res, 3)))
+
         Kabs = R_apr[12]/R_apr[3]
+        self.Kabs.setText(str(round(Kabs, 3)))
         DP = 200 * TPI ** 0.251
+        self.DP.setText(str(round(DP, 3)))
         R15 = R_apr[3] / 10**9
+        self.R15.setText(str(round(R15, 3)))
         R60 = R_apr[12] / 10 ** 9
+        self.R60.setText(str(round(R60, 3)))
         if time > 100:
             I_ut = min(I_apr)
             I_spectr = (I_apr - I_ut) * time #особое внимание этой строчке
