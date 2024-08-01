@@ -20,6 +20,15 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.graph = QtWidgets.QGridLayout(self.centralwidget)
         self.graphWidget.setBackground('w')
+        self.graphWidget.setLabel('left', 'Сопротивление, Ом', **{'font-size': '20pt'})
+        self.graphWidget.setLabel('bottom', 'Время, сек', **{'font-size': '20pt'})
+        self.graphWidget.showGrid(x=True, y=True)
+        self.graphWidget.getAxis('left').setPen(pg.mkPen(color='k'))
+        self.graphWidget.getAxis('bottom').setPen(pg.mkPen(color='k'))
+        self.graphWidget.getAxis('left').setTextPen('k')
+        self.graphWidget.getAxis('bottom').setTextPen('k')
+        legend = self.graphWidget.addLegend(offset=(400, 300))
+        legend.labelTextColor = pg.mkColor('k')
 
         self.date.setText(str(datetime.date.today()))
         self.show()
@@ -86,7 +95,6 @@ class MainWindow(QtWidgets.QMainWindow):
             Tizm.append(int(sheet['R' + str(i + 2)].value))
             Uizm.append(int(sheet['S' + str(i + 2)].value))
             R_meas.append(int(sheet['T' + str(i + 2)].value) * 10 ** 6)
-            print(R_meas[i])
 
         I_t = np.array(Uizm) / np.array(R_meas)
 
@@ -98,8 +106,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.graph.addWidget(self.graphWidget, 0, 0)
         self.graphWidget.clear()
-        self.graphWidget.plot(Tizm, R_meas, pen = pg.mkPen(color='b', width=3), label='R_meas')
-        self.graphWidget.plot(Tizm, R_apr, pen = pg.mkPen(color='k', width=3), label='R_apr')
+        self.graphWidget.plot(Tizm, R_meas, pen = pg.mkPen(color='b', width=3), name='R измеренное ')
+        self.graphWidget.plot(Tizm, R_apr, pen = pg.mkPen(color='k', width=3), name='R апроксимированное')
 
         DAR=R_apr[12]/R_apr[6]
         self.DAR.setText(str(round(DAR, 3)))
@@ -124,12 +132,12 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.W.setText(str(round(W, 3)))
         #self.TPI.setText(str(TPI))
-        self.Res.setText(str(round(Res, 3)))
+        self.Res.setText(str(math.trunc(Res)))
 
         Kabs = R_apr[12]/R_apr[3]
         self.Kabs.setText(str(round(Kabs, 3)))
         DP = 200 * TPI ** 0.251
-        self.DP.setText(str(round(DP, 3)))
+        self.DP.setText(str(math.trunc(DP)))
         R15 = R_apr[3] / 10**9
         self.R15.setText(str(round(R15, 3)))
         R60 = R_apr[12] / 10 ** 9
