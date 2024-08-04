@@ -24,7 +24,7 @@
     <property name="geometry">
      <rect>
       <x>550</x>
-      <y>1090</y>
+      <y>1120</y>
       <width>180</width>
       <height>59</height>
      </rect>
@@ -41,7 +41,7 @@
     <property name="geometry">
      <rect>
       <x>310</x>
-      <y>1090</y>
+      <y>1120</y>
       <width>180</width>
       <height>59</height>
      </rect>
@@ -58,7 +58,7 @@
     <property name="geometry">
      <rect>
       <x>70</x>
-      <y>1090</y>
+      <y>1120</y>
       <width>180</width>
       <height>59</height>
      </rect>
@@ -75,7 +75,7 @@
     <property name="geometry">
      <rect>
       <x>310</x>
-      <y>890</y>
+      <y>920</y>
       <width>180</width>
       <height>59</height>
      </rect>
@@ -92,7 +92,7 @@
     <property name="geometry">
      <rect>
       <x>550</x>
-      <y>890</y>
+      <y>920</y>
       <width>180</width>
       <height>59</height>
      </rect>
@@ -109,7 +109,7 @@
     <property name="geometry">
      <rect>
       <x>70</x>
-      <y>890</y>
+      <y>920</y>
       <width>180</width>
       <height>59</height>
      </rect>
@@ -133,7 +133,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>310</x>
-      <y>990</y>
+      <y>1020</y>
       <width>180</width>
       <height>59</height>
      </rect>
@@ -150,7 +150,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>550</x>
-      <y>990</y>
+      <y>1020</y>
       <width>180</width>
       <height>59</height>
      </rect>
@@ -167,7 +167,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>70</x>
-      <y>990</y>
+      <y>1020</y>
       <width>180</width>
       <height>59</height>
      </rect>
@@ -345,7 +345,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>70</x>
-      <y>960</y>
+      <y>990</y>
       <width>181</width>
       <height>21</height>
      </rect>
@@ -372,7 +372,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>310</x>
-      <y>960</y>
+      <y>990</y>
       <width>181</width>
       <height>21</height>
      </rect>
@@ -399,7 +399,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>550</x>
-      <y>960</y>
+      <y>990</y>
       <width>181</width>
       <height>21</height>
      </rect>
@@ -426,7 +426,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>70</x>
-      <y>860</y>
+      <y>890</y>
       <width>181</width>
       <height>21</height>
      </rect>
@@ -453,7 +453,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>310</x>
-      <y>860</y>
+      <y>890</y>
       <width>181</width>
       <height>21</height>
      </rect>
@@ -483,7 +483,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>550</x>
-      <y>860</y>
+      <y>890</y>
       <width>181</width>
       <height>21</height>
      </rect>
@@ -510,7 +510,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>70</x>
-      <y>1060</y>
+      <y>1090</y>
       <width>181</width>
       <height>21</height>
      </rect>
@@ -537,7 +537,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>310</x>
-      <y>1060</y>
+      <y>1090</y>
       <width>181</width>
       <height>21</height>
      </rect>
@@ -564,7 +564,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>550</x>
-      <y>1060</y>
+      <y>1090</y>
       <width>181</width>
       <height>21</height>
      </rect>
@@ -618,7 +618,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>280</y>
+      <y>250</y>
       <width>760</width>
       <height>550</height>
      </rect>
@@ -649,16 +649,6 @@ p, li { white-space: pre-wrap; }
 alternate-background-color: rgb(85, 0, 255);</string>
     </property>
    </widget>
-   <widget class="QTextBrowser" name="textBrowser">
-    <property name="geometry">
-     <rect>
-      <x>60</x>
-      <y>190</y>
-      <width>440</width>
-      <height>50</height>
-     </rect>
-    </property>
-   </widget>
    <widget class="QPushButton" name="save_button_2">
     <property name="geometry">
      <rect>
@@ -687,6 +677,40 @@ alternate-background-color: rgb(85, 0, 255);</string>
     </property>
     <property name="text">
      <string>Сохранить</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="keyboard_button">
+    <property name="geometry">
+     <rect>
+      <x>510</x>
+      <y>190</y>
+      <width>50</width>
+      <height>50</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-image: url(&quot;keyboard.png&quot;);
+background-size: contain; /* Уменьшает изображение, чтобы оно полностью вписалось в контейнер */
+background-position: center; /* Центрирует изображение */
+background-repeat: no-repeat; /* Отключает повторение изображения */</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QTextEdit" name="textEdit">
+    <property name="geometry">
+     <rect>
+      <x>60</x>
+      <y>190</y>
+      <width>440</width>
+      <height>50</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>20</pointsize>
+     </font>
     </property>
    </widget>
   </widget>

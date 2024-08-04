@@ -7,6 +7,7 @@ from PyQt5 import QtCore, QtWidgets, uic
 import easygui
 import openpyxl
 import pyqtgraph as pg
+import subprocess
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -17,6 +18,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.open_button = self.findChild(QtWidgets.QPushButton, 'open_button')
         self.calculate_button = self.findChild(QtWidgets.QPushButton, 'save_button')
         self.file_name_display = self.findChild(QtWidgets.QTextBrowser, 'file_name')
+        self.keyboard = self.findChild(QtWidgets.QPushButton, 'keyboard_button')
 
         self.graph = QtWidgets.QGridLayout(self.centralwidget)
         self.graphWidget.setBackground('w')
@@ -35,6 +37,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.open_button.clicked.connect(self.showDialog)
         self.calculate_button.clicked.connect(self.doCalculation)
+        self.keyboard.clicked.connect(self.showKeyboard)
+
         self.input_file = None  # Инициализация переменной для пути к файлу
 
         self.R15 = self.findChild(QtWidgets.QTextBrowser, 'R15')
@@ -53,6 +57,10 @@ class MainWindow(QtWidgets.QMainWindow):
             self.file_name_display.setPlainText(self.input_file)
         else:
             self.file_name_display.setPlainText("No file selected")
+
+    def showKeyboard(self):
+        print("click button")
+        subprocess.run(['florence'])
 
     def doCalculation(self):
         book = openpyxl.load_workbook(filename=self.input_file)
