@@ -19,6 +19,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.calculate_button = self.findChild(QtWidgets.QPushButton, 'save_button')
         self.file_name_display = self.findChild(QtWidgets.QTextBrowser, 'file_name')
         self.keyboard = self.findChild(QtWidgets.QPushButton, 'keyboard_button')
+        self.sheetName = self.findChild(QtWidgets.QPlainTextEdit, 'sheet_name')
+        self.saveSheetButton = self.findChild(QtWidgets.QPushButton, 'save_button_2')
 
         self.graph = QtWidgets.QGridLayout(self.centralwidget)
         self.graphWidget.setBackground('w')
@@ -38,6 +40,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.open_button.clicked.connect(self.showDialog)
         self.calculate_button.clicked.connect(self.doCalculation)
         self.keyboard.clicked.connect(self.showKeyboard)
+        self.saveSheetButton.clicked.connect(self.saveSheet)
 
         self.input_file = None  # Инициализация переменной для пути к файлу
 
@@ -154,6 +157,49 @@ class MainWindow(QtWidgets.QMainWindow):
             I_ut = min(I_apr)
             I_spectr = (I_apr - I_ut) * time #особое внимание этой строчке
 
+    def saveSheet(self):
+        print(self.sheetName.toPlainText())
+        sheet = openpyxl.Workbook()
+        book = sheet['Sheet']
+
+        #присваивание статических значений первой строки
+
+        book['A1'].value = "Obj:Tst"
+        book['B1'].value = "Description"
+        book['C1'].value = "Location"
+        book['D1'].value = "Date"
+        book['E1'].value = "Time"
+        book['F1'].value = "Function"
+        book['G1'].value = "R"
+        book['H1'].value = "Unit"
+        book['I1'].value = "R (T° corrected)"
+        book['J1'].value = "U (Volt)"
+        book['K1'].value = "DAR"
+        book['L1'].value = "PI"
+        book['M1'].value = "C"
+        book['N1'].value = "I"
+        book['O1'].value = "DD"
+        book['P1'].value = "Comments"
+        book['Q1'].value = "Next Test"
+        book['R1'].value = "Time"
+        book['S1'].value = "U (Volt)"
+        book['T1'].value = "R (MOhm)"
+        book['U1'].value = "R (MOhm)T° corrected:40C"
+
+
+        #присваивание динамических значений второй и последующих строк
+        time = self.time.value()
+        book['D2'].value = datetime.datetime.now().strftime('%d-%m-%Y')
+        book['E2'].value = datetime.datetime.now().strftime('%H:%M:%S')
+        for i in range(2, time // 5 + 3):
+            column = "R" + str(i)
+            book[column].value = 5 * (i-2)
+
+        if (self.sheetName.toPlainText() == ""):
+            sheet.save(("new_sheet.xlsx"))
+        else:
+            sheet.save((self.sheetName.toPlainText() + ".xlsx"))
+        sheet.close()
 
 
 if __name__ == "__main__":

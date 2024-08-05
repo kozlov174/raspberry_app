@@ -698,18 +698,18 @@ background-repeat: no-repeat; /* Отключает повторение изо�
      <string/>
     </property>
    </widget>
-   <widget class="QTextEdit" name="textEdit">
+   <widget class="QPlainTextEdit" name="sheet_name">
     <property name="geometry">
      <rect>
       <x>60</x>
       <y>190</y>
-      <width>440</width>
-      <height>50</height>
+      <width>441</width>
+      <height>51</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <pointsize>20</pointsize>
+      <pointsize>28</pointsize>
      </font>
     </property>
    </widget>
