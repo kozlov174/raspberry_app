@@ -194,6 +194,10 @@ class MainWindow(QtWidgets.QMainWindow):
         for i in range(2, time // 5 + 3):
             column = "R" + str(i)
             book[column].value = 5 * (i-2)
+            #column = "S" + str(i)
+            #book[column].value = тут должно быть напряжение
+            #column = "T" + str(i)
+            #book[column].value = тут должно быть сопротивление
 
         if (self.sheetName.toPlainText() == ""):
             sheet.save(("new_sheet.xlsx"))
