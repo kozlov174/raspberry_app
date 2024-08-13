@@ -8,6 +8,7 @@ import easygui
 import openpyxl
 import pyqtgraph as pg
 import subprocess
+from collections import deque
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -142,7 +143,6 @@ class MainWindow(QtWidgets.QMainWindow):
             Res = (70 - Tg) * ((TPI / 3) ** 0.251 - 1)
 
         self.W.setText(str(round(W, 3)))
-        #self.TPI.setText(str(TPI))
         self.Res.setText(str(math.trunc(Res)))
 
         Kabs = R_apr[12]/R_apr[3]
@@ -161,9 +161,10 @@ class MainWindow(QtWidgets.QMainWindow):
         print(self.sheetName.toPlainText())
         sheet = openpyxl.Workbook()
         book = sheet['Sheet']
+        report = openpyxl.load_workbook(filename=self.input_file)
+        report_sheet = report['Лист1']
 
         #присваивание статических значений первой строки
-
         book['A1'].value = "Obj:Tst"
         book['B1'].value = "Description"
         book['C1'].value = "Location"
@@ -191,13 +192,19 @@ class MainWindow(QtWidgets.QMainWindow):
         time = self.time.value()
         book['D2'].value = datetime.datetime.now().strftime('%d-%m-%Y')
         book['E2'].value = datetime.datetime.now().strftime('%H:%M:%S')
+
+        #заполнение ячеек со значениями
         for i in range(2, time // 5 + 3):
             column = "R" + str(i)
             book[column].value = 5 * (i-2)
-            #column = "S" + str(i)
-            #book[column].value = тут должно быть напряжение
-            #column = "T" + str(i)
-            #book[column].value = тут должно быть сопротивление
+            column = "S" + str(i)
+            book[column].value = report_sheet[column].value
+            column = "T" + str(i)
+            book[column].value = report_sheet[column].value
+            column = "U" + str(i)
+            book[column].value = int(report_sheet["T" + str(i)].value) / 4
+
+
 
         if (self.sheetName.toPlainText() == ""):
             sheet.save(("new_sheet.xlsx"))
@@ -205,6 +212,30 @@ class MainWindow(QtWidgets.QMainWindow):
             sheet.save((self.sheetName.toPlainText() + ".xlsx"))
         sheet.close()
 
+    def measure_real_numbers(self):
+        time = int(self.time.value())
+        self.time_array = deque(time // 5 + 1)
+        self.U_array = deque(time // 5 + 1)
+        self.R_array = deque(time // 5 + 1)
+        self.R_corr_array = deque(time // 5 + 1)
+
+        for i in range(time // 5 + 1):
+            #добавление значений в массив данных с прибора
+            self.time_array.append(i * 5)
+            self.U_array.append()
+            self.R_array.append()
+            self.R_corr_array.append()
+
+            #live построение графика на основе данных
+            self.graphWidget.clear()
+            self.graphWidget.plot(self.time_array, self.R_array, pen=pg.mkPen(color='b', width=3), name='R измеренное ')
+            p = np.polyfit(Tizm, R_meas, 4)
+            R_apr = np.polyval(p, self.time_array)
+            self.graphWidget.plot(self.time_array, R_apr, pen=pg.mkPen(color='b', width=3), name='R измеренное ')
+
+            #рассчёт показателей PI и DAR на основе измерений
+            PI = R_apr[120]/R_apr[12]
+            DAR = R_apr[12]/R_apr[6]
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
