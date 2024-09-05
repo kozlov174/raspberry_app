@@ -9,6 +9,7 @@ import openpyxl
 import pyqtgraph as pg
 import subprocess
 from collections import deque
+import gpio
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -236,6 +237,21 @@ class MainWindow(QtWidgets.QMainWindow):
             #рассчёт показателей PI и DAR на основе измерений
             PI = R_apr[120]/R_apr[12]
             DAR = R_apr[12]/R_apr[6]
+
+    def start_measurement(self):
+
+        self.serial_port.write(bytes.fromhex("40526E0D0A"))
+        self.serial_port.write(bytes.fromhex("4055660D0A"))
+        self.serial_port.write(bytes.fromhex("4054720D0A"))
+        self.serial_port.write(bytes.fromhex("40547332342E30382E31342031323A35330D0A"))
+        self.serial_port.write(bytes.fromhex("404045723030300D0A"))
+        self.serial_port.write(bytes.fromhex("457730303030453033334233433033314530303343303235383032353830303041303030410D0A"))
+        if(gpio.input(17) == 1): #500В
+            self.serial_port.write(bytes.fromhex("467332310D0A"))
+        elif(gpio.input(27) == 1): #500В
+            self.serial_port.write(bytes.fromhex("467332320D0A"))
+        else: #500В
+            self.serial_port.write(bytes.fromhex("467332330D0A"))
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
