@@ -1,15 +1,16 @@
 import datetime
 import math
 import sys
+import gpiozero as gpio
+from gpiozero import Button
 import pandas as pd
 import numpy as np
-from PyQt5 import QtCore, QtWidgets, uic
+from PyQt5 import QtCore, QtWidgets, uic, QtSerialPort
 import easygui
 import openpyxl
 import pyqtgraph as pg
 import subprocess
 from collections import deque
-import gpio
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -24,6 +25,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.sheetName = self.findChild(QtWidgets.QPlainTextEdit, 'sheet_name')
         self.saveSheetButton = self.findChild(QtWidgets.QPushButton, 'save_button_2')
 
+        self.serial_port = QtSerialPort.QSerialPort("COM4")
+        self.serial_port.setBaudRate(9600)
+        self.serial_port.open(QtCore.QIODevice.ReadWrite)
+
         self.graph = QtWidgets.QGridLayout(self.centralwidget)
         self.graphWidget.setBackground('w')
         self.graphWidget.setLabel('left', 'Сопротивление, Ом', **{'font-size': '20pt'})
@@ -36,9 +41,13 @@ class MainWindow(QtWidgets.QMainWindow):
         legend = self.graphWidget.addLegend(offset=(400, 300))
         legend.labelTextColor = pg.mkColor('k')
 
+        #start_button = Button(указать пин гпио)
+
         self.date.setText(str(datetime.date.today()))
         self.show()
 
+        if (start_button.is_pressed):
+            self.start_measurement()
         self.open_button.clicked.connect(self.showDialog)
         self.calculate_button.clicked.connect(self.doCalculation)
         self.keyboard.clicked.connect(self.showKeyboard)
@@ -55,6 +64,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.W = self.findChild(QtWidgets.QTextBrowser, 'W')
         self.DP = self.findChild(QtWidgets.QTextBrowser, 'DP')
         self.Res = self.findChild(QtWidgets.QTextBrowser, 'Res')
+
 
     def showDialog(self):
         self.input_file = easygui.fileopenbox()
@@ -240,18 +250,25 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def start_measurement(self):
 
+        position500 = Button(17)
+        position1000 = Button(27)
+
         self.serial_port.write(bytes.fromhex("40526E0D0A"))
         self.serial_port.write(bytes.fromhex("4055660D0A"))
         self.serial_port.write(bytes.fromhex("4054720D0A"))
         self.serial_port.write(bytes.fromhex("40547332342E30382E31342031323A35330D0A"))
         self.serial_port.write(bytes.fromhex("404045723030300D0A"))
         self.serial_port.write(bytes.fromhex("457730303030453033334233433033314530303343303235383032353830303041303030410D0A"))
-        if(gpio.input(17) == 1): #500В
+        if position500.is_pressed: #1000В
             self.serial_port.write(bytes.fromhex("467332310D0A"))
-        elif(gpio.input(27) == 1): #500В
+        elif position1000.is_active: #2000В
             self.serial_port.write(bytes.fromhex("467332320D0A"))
-        else: #500В
+        else: #2500В
             self.serial_port.write(bytes.fromhex("467332330D0A"))
+        for i in range(0, 600, 5):
+            #отрисовка графика в моменте
+            print("write plot")
+
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
