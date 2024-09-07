@@ -1,7 +1,10 @@
 import datetime
 import math
 import sys
+import time
+
 import gpiozero as gpio
+from PyQt5.QtCore import QIODevice
 from gpiozero import Button
 import pandas as pd
 import numpy as np
@@ -24,6 +27,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.keyboard = self.findChild(QtWidgets.QPushButton, 'keyboard_button')
         self.sheetName = self.findChild(QtWidgets.QPlainTextEdit, 'sheet_name')
         self.saveSheetButton = self.findChild(QtWidgets.QPushButton, 'save_button_2')
+        self.sendCOM = self.findChild(QtWidgets.QPushButton, 'send_COM')
 
         self.serial_port = QtSerialPort.QSerialPort("COM4")
         self.serial_port.setBaudRate(9600)
@@ -46,12 +50,14 @@ class MainWindow(QtWidgets.QMainWindow):
         self.date.setText(str(datetime.date.today()))
         self.show()
 
-        if (start_button.is_pressed):
-            self.start_measurement()
+        #if (start_button.is_pressed):
+            #self.start_measurement()
         self.open_button.clicked.connect(self.showDialog)
         self.calculate_button.clicked.connect(self.doCalculation)
         self.keyboard.clicked.connect(self.showKeyboard)
         self.saveSheetButton.clicked.connect(self.saveSheet)
+        self.sendCOM.clicked.connect(self.start_com)
+        self.serial_port.readyRead.connect(self.readData)
 
         self.input_file = None  # Инициализация переменной для пути к файлу
 
@@ -248,26 +254,55 @@ class MainWindow(QtWidgets.QMainWindow):
             PI = R_apr[120]/R_apr[12]
             DAR = R_apr[12]/R_apr[6]
 
-    def start_measurement(self):
+    # def start_measurement(self):
+    #
+    #     position500 = Button(17)
+    #     position1000 = Button(27)
+    #
+    #     self.serial_port.write(bytes.fromhex("40 52 6E 0D 0A"))
+    #     self.serial_port.write(bytes.fromhex("40 55 66 0D 0A"))
+    #     self.serial_port.write(bytes.fromhex("49 64 0D 0A"))
+    #     self.serial_port.write(bytes.fromhex("40 54 72 0D 0A"))
+    #     self.serial_port.write(bytes.fromhex("45 72 30 30 30 0D 0A"))
+    #     self.serial_port.write(bytes.fromhex("457730303030453033334233433033314530303343303235383032353830303041303030410D0A"))
+    #     if position500.is_pressed: #1000В
+    #         self.serial_port.write(bytes.fromhex("467332310D0A"))
+    #     elif position1000.is_active: #2000В
+    #         self.serial_port.write(bytes.fromhex("467332320D0A"))
+    #     else: #2500В
+    #         self.serial_port.write(bytes.fromhex("467332330D0A"))
+    #     for i in range(0, 600, 5):
+    #         #отрисовка графика в моменте
+    #         print("write plot")
 
-        position500 = Button(17)
-        position1000 = Button(27)
 
-        self.serial_port.write(bytes.fromhex("40526E0D0A"))
-        self.serial_port.write(bytes.fromhex("4055660D0A"))
-        self.serial_port.write(bytes.fromhex("4054720D0A"))
-        self.serial_port.write(bytes.fromhex("40547332342E30382E31342031323A35330D0A"))
-        self.serial_port.write(bytes.fromhex("404045723030300D0A"))
-        self.serial_port.write(bytes.fromhex("457730303030453033334233433033314530303343303235383032353830303041303030410D0A"))
-        if position500.is_pressed: #1000В
+    def start_com(self):
+        if self.serial_port.isOpen():
+            time.sleep(1)
+            print("serial port open")
+            self.serial_port.write(bytes.fromhex("40526E0D0A"))
+            self.serial_port.write(bytes.fromhex("4055660D0A"))
+            self.serial_port.write(bytes.fromhex("49640D0A"))
+            self.serial_port.write(bytes.fromhex("4054720D0A"))
+            self.serial_port.write(bytes.fromhex("45723030300D0A"))
+            self.serial_port.write(bytes.fromhex("45723030310D0A"))
+            self.serial_port.write(bytes.fromhex("45723030320D0A"))
+            self.serial_port.write(bytes.fromhex("40547332342E30382E31342031323A35330D0A"))
+            self.serial_port.write(bytes.fromhex("54720D0A"))
+            self.serial_port.write(bytes.fromhex("404045723030300D0A"))
+            self.serial_port.write(
+                bytes.fromhex("457730303030453033334233433033314530303343303235383030336330303035303030410D0A"))
+            self.serial_port.write(bytes.fromhex("4466666666660D0A"))
             self.serial_port.write(bytes.fromhex("467332310D0A"))
-        elif position1000.is_active: #2000В
-            self.serial_port.write(bytes.fromhex("467332320D0A"))
-        else: #2500В
-            self.serial_port.write(bytes.fromhex("467332330D0A"))
-        for i in range(0, 600, 5):
-            #отрисовка графика в моменте
-            print("write plot")
+
+
+
+
+            print("serial port CLOSE")
+
+    def readData(self):
+        output = self.serial_port.readLine()
+        print(output)
 
 
 if __name__ == "__main__":

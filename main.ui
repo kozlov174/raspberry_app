@@ -713,6 +713,25 @@ background-repeat: no-repeat; /* Отключает повторение изо�
      </font>
     </property>
    </widget>
+   <widget class="QPushButton" name="send_COM">
+    <property name="geometry">
+     <rect>
+      <x>510</x>
+      <y>130</y>
+      <width>50</width>
+      <height>50</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-image: url(&quot;keyboard.png&quot;);
+background-size: contain; /* Уменьшает изображение, чтобы оно полностью вписалось в контейнер */
+background-position: center; /* Центрирует изображение */
+background-repeat: no-repeat; /* Отключает повторение изображения */</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
