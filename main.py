@@ -275,35 +275,53 @@ class MainWindow(QtWidgets.QMainWindow):
     #         #отрисовка графика в моменте
     #         print("write plot")
 
-
     def start_com(self):
         if self.serial_port.isOpen():
             time.sleep(1)
             print("serial port open")
-            self.serial_port.write(bytes.fromhex("40526E0D0A"))
-            self.serial_port.write(bytes.fromhex("4055660D0A"))
-            self.serial_port.write(bytes.fromhex("49640D0A"))
-            self.serial_port.write(bytes.fromhex("4054720D0A"))
-            self.serial_port.write(bytes.fromhex("45723030300D0A"))
-            self.serial_port.write(bytes.fromhex("45723030310D0A"))
-            self.serial_port.write(bytes.fromhex("45723030320D0A"))
-            self.serial_port.write(bytes.fromhex("40547332342E30382E31342031323A35330D0A"))
-            self.serial_port.write(bytes.fromhex("54720D0A"))
-            self.serial_port.write(bytes.fromhex("404045723030300D0A"))
-            self.serial_port.write(
-                bytes.fromhex("457730303030453033334233433033314530303343303235383030336330303035303030410D0A"))
-            self.serial_port.write(bytes.fromhex("4466666666660D0A"))
-            self.serial_port.write(bytes.fromhex("467332310D0A"))
 
+            # Обновленный список команд
+            commands = [
+                "40526E0D0A",
+                "4055660D0A",
+                "49640D0A",
+                "4054720D0A",
+                "45723030300D0A",
+                "45723030310D0A",
+                "45723030320D0A",
+                "40547332342E30382E31342031323A35330D0A",
+                "54720D0A",
+                "404045723030300D0A",
+                "457730303030453033334233433033314530303343303235383032353830303041303030410D0A",
+                "404045723030300D0A",
+                "457730303030453033334233433033314530303343303235383032353830303035303030410D0A",
+                "404045723030300D0A",
+                "457730303030453033334233433033314530303343303235383030336330303035303030410D0A",
+                "4466666666660D0A",
+                "467332310D0A"
+            ]
 
-
+            for cmd in commands:
+                self.serial_port.write(bytes.fromhex(cmd))
+                self.serial_port.flush()  # Ensure data is written to the port
+                time.sleep(1)  # Adjust as necessary
 
             print("serial port CLOSE")
 
     def readData(self):
-        output = self.serial_port.readLine()
-        print(output)
+        output = []
 
+        time.sleep(1)  # Give some time for data to be available
+        while self.serial_port.bytesAvailable() > 0:
+            data = self.serial_port.readAll().data().decode()  # Read all available data
+            if data:
+                output.append(data)
+            time.sleep(1)  # Adjust as necessary
+
+        if output:
+            print("Received data:\n" + "\n".join(output))
+        else:
+            print("No data received.")
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
