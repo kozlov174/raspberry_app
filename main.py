@@ -1,10 +1,11 @@
 import datetime
 import math
 import sys
+import threading
 import time
 import serial
 import gpiozero as gpio
-from PyQt5.QtCore import QIODevice
+from PyQt5.QtCore import QIODevice, QThread, pyqtSignal
 from gpiozero import Button
 
 import testconn
@@ -31,6 +32,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.saveSheetButton = self.findChild(QtWidgets.QPushButton, 'save_button_2')
         self.sendCOM = self.findChild(QtWidgets.QPushButton, 'send_COM')
 
+        self.flag = 0
+
         self.serial_port = QtSerialPort.QSerialPort("COM4")
         self.serial_port.setBaudRate(9600)
         self.serial_port.open(QtCore.QIODevice.ReadWrite)
@@ -52,14 +55,18 @@ class MainWindow(QtWidgets.QMainWindow):
         self.date.setText(str(datetime.date.today()))
         self.show()
 
+        self.read_thread = threading.Thread(target=self.read_data)
+        self.write_thread = threading.Thread(target=self.write_data)
+
         #if (start_button.is_pressed):
             #self.start_measurement()
         self.open_button.clicked.connect(self.showDialog)
         self.calculate_button.clicked.connect(self.doCalculation)
         self.keyboard.clicked.connect(self.showKeyboard)
         self.saveSheetButton.clicked.connect(self.saveSheet)
-        self.sendCOM.clicked.connect(self.start_com)
-        self.serial_port.readyRead.connect(self.read_from_serial)
+        self.sendCOM.clicked.connect(self.start_thread)
+        #self.serial_port.readyRead.connect(self.read_from_serial_1)
+
 
         self.input_file = None  # Инициализация переменной для пути к файлу
 
@@ -73,6 +80,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.DP = self.findChild(QtWidgets.QTextBrowser, 'DP')
         self.Res = self.findChild(QtWidgets.QTextBrowser, 'Res')
 
+    def start_thread(self):
+        self.write_thread.start()
 
     def showDialog(self):
         self.input_file = easygui.fileopenbox()
@@ -277,7 +286,8 @@ class MainWindow(QtWidgets.QMainWindow):
     #         #отрисовка графика в моменте
     #         print("write plot")
 
-    def start_com(self):
+
+    def write_data(self):
         try:
             # Открытие последовательного порта
                 time.sleep(1)  # Подождите, пока порт откроется
@@ -317,19 +327,23 @@ class MainWindow(QtWidgets.QMainWindow):
                 # Чтение данных после отправки команд
                 print("Reading data from serial port...")
                 time.sleep(2)  # Дайте время устройству для отправки данных
-
+                self.flag = 1
                 print("Serial port closed")
+                self.read_thread.start()
+
 
         except serial.SerialException as e:
             print(f"Error: {e}")
 
-    def read_from_serial(self):
-        time.sleep(1)
-        self.serial_port.write(bytes.fromhex("44670D0A"))
-        output = self.serial_port.read(1024)
-        upd_output = output.decode("utf-8")
-        print(output.decode("utf-8"))
-        print(len(upd_output)) #default от 38
+
+    def read_data(self):
+        while True:
+         print("start reading")
+         time.sleep(1)
+         self.serial_port.write(bytes.fromhex("44670D0A"))
+         output = self.serial_port.readLine()
+         if len(output) > 2:
+             print(output)
 
 
 
