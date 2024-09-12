@@ -321,11 +321,17 @@ class MainWindow(QtWidgets.QMainWindow):
                 for i in range(62):
                     ser.write(bytes.fromhex("44670D0A"))
                     output = ser.readline()
+
+                    time_array = []
+                    R_array = []
                     if len(output) > 30:
                         time.sleep(1)
                         new_str = output.decode("utf-8")
                         new_array = new_str.split(";")
-                        print(new_array[4])
+                        self.graphWidget.clear()
+                        time_array.append(new_array[4])
+                        R_array.append(new_array[10])
+                        self.graphWidget.plot(time_array, R_array, pen=pg.mkPen(color='b', width=3))
                 ser.close()
                 print("Serial port closed")
 
@@ -333,7 +339,6 @@ class MainWindow(QtWidgets.QMainWindow):
             print(f"Error: {e}")
 
     def read_from_serial(self, ser):
-        output = []
         while True:
             data = ser.read_all()  # Чтение до 1024 байт за раз
             if not data:
