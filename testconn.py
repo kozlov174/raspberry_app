@@ -35,7 +35,9 @@ def start_com(port_name, baudrate=9600):
                 hex_cmd = bytes.fromhex(cmd)
                 print(f"Sending command: {cmd}")
                 ser.write(hex_cmd)
-                ser.flush()  # Убедитесь, что данные записаны в порт
+                ser.flush()# Убедитесь, что данные записаны в порт
+                output = ser.read_all()
+                print(f"Received output: {output}")
                 time.sleep(3)  # Пауза между командами (если необходимо)
 
             print("All commands sent")
@@ -50,13 +52,16 @@ def start_com(port_name, baudrate=9600):
             else:
                 print("No data received.")
 
+            ser.close()
             print("Serial port closed")
+            read_from_serial("COM4")
 
     except serial.SerialException as e:
         print(f"Error: {e}")
 
 
-def read_from_serial(ser):
+def read_from_serial(portname):
+    ser = serial.Serial(portname, baudrate = 9600, timeout=1)
     output = []
     while True:
         data = ser.read_all() # Чтение до 1024 байт за раз

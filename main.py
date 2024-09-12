@@ -1,14 +1,10 @@
 import datetime
 import math
 import sys
-import threading
-import time
 import serial
 import gpiozero as gpio
 from PyQt5.QtCore import QIODevice, QThread, pyqtSignal
 from gpiozero import Button
-
-import testconn
 import pandas as pd
 import numpy as np
 from PyQt5 import QtCore, QtWidgets, uic, QtSerialPort
@@ -17,6 +13,8 @@ import openpyxl
 import pyqtgraph as pg
 import subprocess
 from collections import deque
+import time
+import testconn
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -32,11 +30,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.saveSheetButton = self.findChild(QtWidgets.QPushButton, 'save_button_2')
         self.sendCOM = self.findChild(QtWidgets.QPushButton, 'send_COM')
 
-        self.flag = 0
 
-        self.serial_port = QtSerialPort.QSerialPort("COM4")
-        self.serial_port.setBaudRate(9600)
-        self.serial_port.open(QtCore.QIODevice.ReadWrite)
+        # self.serial_port = QtSerialPort.QSerialPort("COM4")
+        # self.serial_port.setBaudRate(9600)
+
 
         self.graph = QtWidgets.QGridLayout(self.centralwidget)
         self.graphWidget.setBackground('w')
@@ -52,20 +49,19 @@ class MainWindow(QtWidgets.QMainWindow):
 
         #start_button = Button(указать пин гпио)
 
+        self.basic_flag = 0
+
         self.date.setText(str(datetime.date.today()))
         self.show()
-
-        self.read_thread = threading.Thread(target=self.read_data)
-        self.write_thread = threading.Thread(target=self.write_data)
 
         #if (start_button.is_pressed):
             #self.start_measurement()
         self.open_button.clicked.connect(self.showDialog)
         self.calculate_button.clicked.connect(self.doCalculation)
         self.keyboard.clicked.connect(self.showKeyboard)
-        self.saveSheetButton.clicked.connect(self.saveSheet)
-        self.sendCOM.clicked.connect(self.start_thread)
-        #self.serial_port.readyRead.connect(self.read_from_serial_1)
+        self.saveSheetButton.clicked.connect(self.start_com)
+        self.sendCOM.clicked.connect(self.start_com)
+
 
 
         self.input_file = None  # Инициализация переменной для пути к файлу
@@ -265,35 +261,15 @@ class MainWindow(QtWidgets.QMainWindow):
             PI = R_apr[120]/R_apr[12]
             DAR = R_apr[12]/R_apr[6]
 
-    # def start_measurement(self):
-    #
-    #     position500 = Button(17)
-    #     position1000 = Button(27)
-    #
-    #     self.serial_port.write(bytes.fromhex("40 52 6E 0D 0A"))
-    #     self.serial_port.write(bytes.fromhex("40 55 66 0D 0A"))
-    #     self.serial_port.write(bytes.fromhex("49 64 0D 0A"))
-    #     self.serial_port.write(bytes.fromhex("40 54 72 0D 0A"))
-    #     self.serial_port.write(bytes.fromhex("45 72 30 30 30 0D 0A"))
-    #     self.serial_port.write(bytes.fromhex("457730303030453033334233433033314530303343303235383032353830303041303030410D0A"))
-    #     if position500.is_pressed: #1000В
-    #         self.serial_port.write(bytes.fromhex("467332310D0A"))
-    #     elif position1000.is_active: #2000В
-    #         self.serial_port.write(bytes.fromhex("467332320D0A"))
-    #     else: #2500В
-    #         self.serial_port.write(bytes.fromhex("467332330D0A"))
-    #     for i in range(0, 600, 5):
-    #         #отрисовка графика в моменте
-    #         print("write plot")
-
-
-    def write_data(self):
+    def start_com(self):
         try:
+            port_name = "COM4"
             # Открытие последовательного порта
+            with serial.Serial("COM4", baudrate = 9600, timeout=1) as ser:
                 time.sleep(1)  # Подождите, пока порт откроется
-                print(f"Serial port open")
+                print(f"Serial port {port_name} open")
 
-                commands = [
+                start_commands = [
                     "40526E0D0A",
                     "4055660D0A",
                     "49640D0A",
@@ -302,7 +278,19 @@ class MainWindow(QtWidgets.QMainWindow):
                     "45723030310D0A",
                     "45723030320D0A",
                     "40547332342E30382E31342031323A35330D0A",
-                    "54720D0A",
+                    "54720D0A"
+                ]
+                if self.basic_flag == 0:
+                    for cmd in start_commands:
+                        hex_cmd = bytes.fromhex(cmd)
+                        print(f"Sending command: {cmd}")
+                        ser.write(hex_cmd)
+                        ser.flush()  # Убедитесь, что данные записаны в порт
+                        output = ser.readline()
+                        print(f"Received output: {output}")
+                        time.sleep(1)  # Пауза между командами (если необходимо)
+                    self.basic_flag = 1
+                commands = [
                     "404045723030300D0A",
                     "457730303030453033334233433033314530303343303235383032353830303041303030410D0A",
                     "404045723030300D0A",
@@ -318,8 +306,10 @@ class MainWindow(QtWidgets.QMainWindow):
                 for cmd in commands:
                     hex_cmd = bytes.fromhex(cmd)
                     print(f"Sending command: {cmd}")
-                    self.serial_port.write(hex_cmd)
-                    self.serial_port.flush()  # Убедитесь, что данные записаны в порт
+                    ser.write(hex_cmd)
+                    ser.flush()  # Убедитесь, что данные записаны в порт
+                    output = ser.readline()
+                    print(f"Received output: {output}")
                     time.sleep(3)  # Пауза между командами (если необходимо)
 
                 print("All commands sent")
@@ -327,23 +317,30 @@ class MainWindow(QtWidgets.QMainWindow):
                 # Чтение данных после отправки команд
                 print("Reading data from serial port...")
                 time.sleep(2)  # Дайте время устройству для отправки данных
-                self.flag = 1
-                print("Serial port closed")
-                self.read_thread.start()
 
+                for i in range(62):
+                    ser.write(bytes.fromhex("44670D0A"))
+                    output = ser.readline()
+                    if len(output) > 30:
+                        time.sleep(1)
+                        new_str = output.decode("utf-8")
+                        new_array = new_str.split(";")
+                        print(new_array[4])
+                ser.close()
+                print("Serial port closed")
 
         except serial.SerialException as e:
             print(f"Error: {e}")
 
-
-    def read_data(self):
+    def read_from_serial(self, ser):
+        output = []
         while True:
-         print("start reading")
-         time.sleep(1)
-         self.serial_port.write(bytes.fromhex("44670D0A"))
-         output = self.serial_port.readLine()
-         if len(output) > 2:
-             print(output)
+            data = ser.read_all()  # Чтение до 1024 байт за раз
+            if not data:
+                break
+            output.append(data.decode(errors='ignore'))  # Игнорирование ошибок декодирования
+        return ''.join(output)
+
 
 
 
