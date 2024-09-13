@@ -29,6 +29,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.sheetName = self.findChild(QtWidgets.QPlainTextEdit, 'sheet_name')
         self.saveSheetButton = self.findChild(QtWidgets.QPushButton, 'save_button_2')
         self.sendCOM = self.findChild(QtWidgets.QPushButton, 'send_COM')
+        self.time_izm = self.findChild(QtWidgets.QComboBox, 'time_izm')
 
 
         # self.serial_port = QtSerialPort.QSerialPort("COM4")
@@ -46,6 +47,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.graphWidget.getAxis('bottom').setTextPen('k')
         legend = self.graphWidget.addLegend(offset=(400, 300))
         legend.labelTextColor = pg.mkColor('k')
+
 
         #start_button = Button(указать пин гпио)
 
@@ -319,7 +321,8 @@ class MainWindow(QtWidgets.QMainWindow):
                 time.sleep(2)  # Дайте время устройству для отправки данных
                 time_array = []
                 R_array = []
-                for i in range(62):
+                time_izm = int(self.time_izm.currentText())
+                for i in range(time_izm + 2):
                     ser.write(bytes.fromhex("44670D0A"))
                     output = ser.readline()
 
@@ -336,6 +339,10 @@ class MainWindow(QtWidgets.QMainWindow):
                         time_array.append(int(new_array[4]))
                         R_array.append(r_itog)
                         self.graphWidget.plot(time_array, R_array, pen=pg.mkPen(color='b', width=3))
+
+                        self.ser.write(bytes.fromhex("4044700D0A"))
+                        finish_out = ser.readline().decode("utf-8")
+                        print(finish_out)
 
                 ser.close()
                 print("Serial port closed")
