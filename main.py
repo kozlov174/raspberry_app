@@ -54,8 +54,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.date.setText(str(datetime.date.today()))
         self.show()
 
-        #if (start_button.is_pressed):
-            #self.start_measurement()
+        # if (start_button.when_activated):
+        #     self.start_measurement()
         self.open_button.clicked.connect(self.showDialog)
         self.calculate_button.clicked.connect(self.doCalculation)
         self.keyboard.clicked.connect(self.showKeyboard)
@@ -265,7 +265,7 @@ class MainWindow(QtWidgets.QMainWindow):
         try:
             port_name = "COM4"
             # Открытие последовательного порта
-            with serial.Serial("COM4", baudrate = 9600, timeout=1) as ser:
+            with serial.Serial("/dev/ttyUSB0", baudrate=9600, timeout=1) as ser:
                 time.sleep(1)  # Подождите, пока порт откроется
                 print(f"Serial port {port_name} open")
 
@@ -317,21 +317,26 @@ class MainWindow(QtWidgets.QMainWindow):
                 # Чтение данных после отправки команд
                 print("Reading data from serial port...")
                 time.sleep(2)  # Дайте время устройству для отправки данных
-
+                time_array = []
+                R_array = []
                 for i in range(62):
                     ser.write(bytes.fromhex("44670D0A"))
                     output = ser.readline()
 
-                    time_array = []
-                    R_array = []
                     if len(output) > 30:
                         time.sleep(1)
                         new_str = output.decode("utf-8")
                         new_array = new_str.split(";")
                         self.graphWidget.clear()
-                        time_array.append(new_array[4])
-                        R_array.append(new_array[10])
+                        if new_array[9][0] == "U":
+                            r_itog = 0
+                        else:
+                            R = new_array[9].split("E")
+                            r_itog = float(R[0]) * 10 ** int(R[1])
+                        time_array.append(int(new_array[4]))
+                        R_array.append(r_itog)
                         self.graphWidget.plot(time_array, R_array, pen=pg.mkPen(color='b', width=3))
+
                 ser.close()
                 print("Serial port closed")
 
@@ -339,14 +344,13 @@ class MainWindow(QtWidgets.QMainWindow):
             print(f"Error: {e}")
 
     def read_from_serial(self, ser):
+        output = []
         while True:
             data = ser.read_all()  # Чтение до 1024 байт за раз
             if not data:
                 break
             output.append(data.decode(errors='ignore'))  # Игнорирование ошибок декодирования
         return ''.join(output)
-
-
 
 
 if __name__ == "__main__":
