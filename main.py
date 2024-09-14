@@ -25,18 +25,21 @@ class MainWindow(QtWidgets.QMainWindow):
         self.open_button = self.findChild(QtWidgets.QPushButton, 'open_button')
         self.calculate_button = self.findChild(QtWidgets.QPushButton, 'save_button')
         self.file_name_display = self.findChild(QtWidgets.QTextBrowser, 'file_name')
+        self.position_v = self.findChild(QtWidgets.QTextBrowser, 'position_V')
         self.keyboard = self.findChild(QtWidgets.QPushButton, 'keyboard_button')
         self.sheetName = self.findChild(QtWidgets.QPlainTextEdit, 'sheet_name')
         self.saveSheetButton = self.findChild(QtWidgets.QPushButton, 'save_button_2')
         self.sendCOM = self.findChild(QtWidgets.QPushButton, 'send_COM')
         self.time_izm = self.findChild(QtWidgets.QComboBox, 'time_izm')
 
+        self.position_v.setText("500")
+
         GPIO.setwarnings(False)
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(5, GPIO.IN, GPIO.PUD_UP)
-        # GPIO.setup()
-        # GPIO.setup()
-        # GPIO.setup()
+        GPIO.setup(14, GPIO.IN, GPIO.PUD_UP)
+        GPIO.setup(15, GPIO.IN, GPIO.PUD_UP)
+        GPIO.setup(18, GPIO.IN, GPIO.PUD_UP)
         self.button_thread = Thread(target=self.button_thread, args=())
         self.button_thread.start()
 
@@ -58,8 +61,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.date.setText(str(datetime.date.today()))
         self.show()
 
-        # if (start_button.when_activated):
-        #     self.start_measurement()
+
         self.open_button.clicked.connect(self.showDialog)
         self.calculate_button.clicked.connect(self.doCalculation)
         self.keyboard.clicked.connect(self.showKeyboard)
@@ -80,8 +82,15 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def button_thread(self):
         while True:
+            if GPIO.input(14) == 0:
+                self.position_v.setText("500")
+            if GPIO.input(15) == 0:
+                self.position_v.setText("1000")
+            if GPIO.input(18) == 0:
+                self.position_v.setText("2500")
             if GPIO.input(5) == 0:
-                self.start_com()
+                break
+        self.start_com()
 
 
     def showDialog(self):
