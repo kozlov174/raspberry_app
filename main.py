@@ -32,7 +32,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.sendCOM = self.findChild(QtWidgets.QPushButton, 'send_COM')
         self.time_izm = self.findChild(QtWidgets.QComboBox, 'time_izm')
 
-        self.position_v.setText("500")
+
+        self.mesure_V = "0"
+        self.position_v.setText(self.measure_V)
+
 
         GPIO.setwarnings(False)
         GPIO.setmode(GPIO.BCM)
@@ -83,11 +86,11 @@ class MainWindow(QtWidgets.QMainWindow):
     def button_thread(self):
         while True:
             if GPIO.input(14) == 0:
-                self.position_v.setText("500")
+                self.mesure_V = "500"
             if GPIO.input(15) == 0:
-                self.position_v.setText("1000")
+                self.mesure_V = "1000"
             if GPIO.input(18) == 0:
-                self.position_v.setText("2500")
+                self.mesure_V = "2000"
             if GPIO.input(5) == 0:
                 break
         self.start_com()
