@@ -20,12 +20,13 @@ import time
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
+        self.position_v = None
         uic.loadUi('main.ui', self)
         self.date = self.findChild(QtWidgets.QTextBrowser, 'date')
         self.open_button = self.findChild(QtWidgets.QPushButton, 'open_button')
         self.calculate_button = self.findChild(QtWidgets.QPushButton, 'save_button')
         self.file_name_display = self.findChild(QtWidgets.QTextBrowser, 'file_name')
-        self.position_v = self.findChild(QtWidgets.QTextBrowser, 'position_V')
+
         self.keyboard = self.findChild(QtWidgets.QPushButton, 'keyboard_button')
         self.sheetName = self.findChild(QtWidgets.QPlainTextEdit, 'sheet_name')
         self.saveSheetButton = self.findChild(QtWidgets.QPushButton, 'save_button_2')
@@ -33,8 +34,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.time_izm = self.findChild(QtWidgets.QComboBox, 'time_izm')
 
 
-        self.mesure_V = "0"
-        self.position_v.setText(self.measure_V)
 
 
         GPIO.setwarnings(False)
@@ -84,13 +83,14 @@ class MainWindow(QtWidgets.QMainWindow):
         self.Res = self.findChild(QtWidgets.QTextBrowser, 'Res')
 
     def button_thread(self):
+        self.position_v = self.findChild(QtWidgets.QTextBrowser, 'position_V')
         while True:
             if GPIO.input(14) == 0:
-                self.mesure_V = "500"
+                self.position_v.setText("500")
             if GPIO.input(15) == 0:
-                self.mesure_V = "1000"
+                self.position_v.setText("1000")
             if GPIO.input(18) == 0:
-                self.mesure_V = "2000"
+                self.position_v.setText("2500")
             if GPIO.input(5) == 0:
                 break
         self.start_com()
