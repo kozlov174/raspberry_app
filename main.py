@@ -4,7 +4,7 @@ import sys
 from threading import Thread
 
 import serial
-from RPi.GPIO import GPIO
+import RPi.GPIO as GPIO
 from PyQt5.QtCore import QIODevice, QThread, pyqtSignal
 import pandas as pd
 import numpy as np
