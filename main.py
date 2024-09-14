@@ -100,12 +100,6 @@ class MainWindow(QtWidgets.QMainWindow):
     def button_thread(self):
 
         while True:
-            if GPIO.input(14) == 0:
-                self.update_volts.emit("500")
-            if GPIO.input(15) == 0:
-                self.update_volts.emit("1000")
-            if GPIO.input(18) == 0:
-                self.update_volts.emit("2500")
             if GPIO.input(5) == 0:
                 break
         self.start_com()
