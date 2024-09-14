@@ -1,10 +1,11 @@
 import datetime
 import math
 import sys
+from threading import Thread
+
 import serial
-import gpiozero as gpio
+from RPi.GPIO import GPIO
 from PyQt5.QtCore import QIODevice, QThread, pyqtSignal
-from gpiozero import Button
 import pandas as pd
 import numpy as np
 from PyQt5 import QtCore, QtWidgets, uic, QtSerialPort
@@ -14,7 +15,6 @@ import pyqtgraph as pg
 import subprocess
 from collections import deque
 import time
-import testconn
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -31,10 +31,14 @@ class MainWindow(QtWidgets.QMainWindow):
         self.sendCOM = self.findChild(QtWidgets.QPushButton, 'send_COM')
         self.time_izm = self.findChild(QtWidgets.QComboBox, 'time_izm')
 
-
-        # self.serial_port = QtSerialPort.QSerialPort("COM4")
-        # self.serial_port.setBaudRate(9600)
-
+        GPIO.setwarnings(False)
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setup(5, GPIO.IN, GPIO.PUD_UP)
+        # GPIO.setup()
+        # GPIO.setup()
+        # GPIO.setup()
+        self.button_thread = Thread(target=self.button_thread, args=())
+        self.button_thread.start()
 
         self.graph = QtWidgets.QGridLayout(self.centralwidget)
         self.graphWidget.setBackground('w')
@@ -49,8 +53,6 @@ class MainWindow(QtWidgets.QMainWindow):
         legend.labelTextColor = pg.mkColor('k')
 
 
-        #start_button = Button(указать пин гпио)
-
         self.basic_flag = 0
 
         self.date.setText(str(datetime.date.today()))
@@ -64,8 +66,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.saveSheetButton.clicked.connect(self.start_com)
         self.sendCOM.clicked.connect(self.start_com)
 
-
-
         self.input_file = None  # Инициализация переменной для пути к файлу
 
         self.R15 = self.findChild(QtWidgets.QTextBrowser, 'R15')
@@ -78,8 +78,11 @@ class MainWindow(QtWidgets.QMainWindow):
         self.DP = self.findChild(QtWidgets.QTextBrowser, 'DP')
         self.Res = self.findChild(QtWidgets.QTextBrowser, 'Res')
 
-    def start_thread(self):
-        self.write_thread.start()
+    def button_thread(self):
+        while True:
+            if GPIO.input(5) == 0:
+                self.start_com()
+
 
     def showDialog(self):
         self.input_file = easygui.fileopenbox()
