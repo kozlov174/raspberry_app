@@ -17,37 +17,6 @@ from collections import deque
 import time
 
 
-class VoltsThread(QThread):
-    update_volts = pyqtSignal(str)
-
-    def run(self):
-        GPIO.setwarnings(False)
-        GPIO.setmode(GPIO.BCM)
-        GPIO.setup(14, GPIO.IN, GPIO.PUD_UP)
-        GPIO.setup(15, GPIO.IN, GPIO.PUD_UP)
-        GPIO.setup(18, GPIO.IN, GPIO.PUD_UP)
-
-        while True:
-            if GPIO.input(14) == 0:
-                self.update_volts.emit("500")
-                break
-            if GPIO.input(15) == 0:
-                self.update_volts.emit("1000")
-                break
-            if GPIO.input(18) == 0:
-                self.update_volts.emit("2500")
-                break
-
-class ButtonThread(QThread):
-    def run(self):
-        GPIO.setwarnings(False)
-        GPIO.setmode(GPIO.BCM)
-        GPIO.setup(5, GPIO.IN, GPIO.PUD_UP)
-
-        while True:
-            if GPIO.input(5) == 0:
-                break
-
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
@@ -64,6 +33,20 @@ class MainWindow(QtWidgets.QMainWindow):
         self.sendCOM = self.findChild(QtWidgets.QPushButton, 'send_COM')
         self.time_izm = self.findChild(QtWidgets.QComboBox, 'time_izm')
 
+
+
+
+        GPIO.setwarnings(False)
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setup(5, GPIO.IN, GPIO.PUD_UP)
+        GPIO.setup(14, GPIO.IN, GPIO.PUD_UP)
+        GPIO.setup(15, GPIO.IN, GPIO.PUD_UP)
+        GPIO.setup(18, GPIO.IN, GPIO.PUD_UP)
+        self.button_thread = Thread(target=self.button_thread, args=())
+        #self.volt_thread = Thread(target=self.volts_thread, args=())
+        self.button_thread.start()
+        #self.volt_thread.start()
+
         self.graph = QtWidgets.QGridLayout(self.centralwidget)
         self.graphWidget.setBackground('w')
         self.graphWidget.setLabel('left', 'Сопротивление, Ом', **{'font-size': '20pt'})
@@ -76,10 +59,12 @@ class MainWindow(QtWidgets.QMainWindow):
         legend = self.graphWidget.addLegend(offset=(400, 300))
         legend.labelTextColor = pg.mkColor('k')
 
+
         self.basic_flag = 0
         self.position_v = self.findChild(QtWidgets.QTextBrowser, 'position_V')
         self.date.setText(str(datetime.date.today()))
         self.show()
+
 
         self.open_button.clicked.connect(self.showDialog)
         self.calculate_button.clicked.connect(self.doCalculation)
@@ -99,12 +84,24 @@ class MainWindow(QtWidgets.QMainWindow):
         self.DP = self.findChild(QtWidgets.QTextBrowser, 'DP')
         self.Res = self.findChild(QtWidgets.QTextBrowser, 'Res')
 
-        self.volts_thread = VoltsThread()
-        self.volts_thread.update_volts.connect(self.update_volts)
-        self.volts_thread.start()
+    # def volts_thread(self):
+    #     while True:
+    #         if GPIO.input(14) == 0:
+    #             self.update_volts.emit("500")
+    #             break
+    #         if GPIO.input(15) == 0:
+    #             self.update_volts.emit("1000")
+    #             break
+    #         if GPIO.input(18) == 0:
+    #             self.update_volts.emit("2500")
+    #             break
 
-        self.button_thread = ButtonThread()
-        self.button_thread.start()
+
+    def button_thread(self):
+        while True:
+            if GPIO.input(5) == 0:
+                break
+        self.start_com()
 
     def update_volts(self, volts):
         self.position_v.setText(str(volts))
