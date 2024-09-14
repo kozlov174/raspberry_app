@@ -17,6 +17,27 @@ from collections import deque
 import time
 
 
+class ButtonThread(QThread):
+    update_position = pyqtSignal(str)
+
+    def run(self):
+        GPIO.setwarnings(False)
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setup(5, GPIO.IN, GPIO.PUD_UP)
+        GPIO.setup(14, GPIO.IN, GPIO.PUD_UP)
+        GPIO.setup(15, GPIO.IN, GPIO.PUD_UP)
+        GPIO.setup(18, GPIO.IN, GPIO.PUD_UP)
+
+        while True:
+            if GPIO.input(14) == 0:
+                self.update_position.emit("500")
+            if GPIO.input(15) == 0:
+                self.update_position.emit("1000")
+            if GPIO.input(18) == 0:
+                self.update_position.emit("2500")
+            if GPIO.input(5) == 0:
+                break
+
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
@@ -33,18 +54,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.sendCOM = self.findChild(QtWidgets.QPushButton, 'send_COM')
         self.time_izm = self.findChild(QtWidgets.QComboBox, 'time_izm')
 
-
-
-
-        GPIO.setwarnings(False)
-        GPIO.setmode(GPIO.BCM)
-        GPIO.setup(5, GPIO.IN, GPIO.PUD_UP)
-        GPIO.setup(14, GPIO.IN, GPIO.PUD_UP)
-        GPIO.setup(15, GPIO.IN, GPIO.PUD_UP)
-        GPIO.setup(18, GPIO.IN, GPIO.PUD_UP)
-        self.button_thread = Thread(target=self.button_thread, args=())
-        self.button_thread.start()
-
         self.graph = QtWidgets.QGridLayout(self.centralwidget)
         self.graphWidget.setBackground('w')
         self.graphWidget.setLabel('left', 'Сопротивление, Ом', **{'font-size': '20pt'})
@@ -57,12 +66,10 @@ class MainWindow(QtWidgets.QMainWindow):
         legend = self.graphWidget.addLegend(offset=(400, 300))
         legend.labelTextColor = pg.mkColor('k')
 
-
         self.basic_flag = 0
 
         self.date.setText(str(datetime.date.today()))
         self.show()
-
 
         self.open_button.clicked.connect(self.showDialog)
         self.calculate_button.clicked.connect(self.doCalculation)
@@ -82,18 +89,14 @@ class MainWindow(QtWidgets.QMainWindow):
         self.DP = self.findChild(QtWidgets.QTextBrowser, 'DP')
         self.Res = self.findChild(QtWidgets.QTextBrowser, 'Res')
 
-    def button_thread(self):
         self.position_v = self.findChild(QtWidgets.QTextBrowser, 'position_V')
-        while True:
-            if GPIO.input(14) == 0:
-                self.position_v.setText("500")
-            if GPIO.input(15) == 0:
-                self.position_v.setText("1000")
-            if GPIO.input(18) == 0:
-                self.position_v.setText("2500")
-            if GPIO.input(5) == 0:
-                break
-        self.start_com()
+
+        self.button_thread = ButtonThread()
+        self.button_thread.update_position.connect(self.update_position)
+        self.button_thread.start()
+
+    def update_position(self, value):
+        self.position_v.setText(value)
 
 
     def showDialog(self):
