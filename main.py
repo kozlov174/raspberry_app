@@ -4,7 +4,7 @@ import sys
 from threading import Thread
 
 import serial
-import RPi.GPIO as GPIO
+#import RPi.GPIO as GPIO
 from PyQt5.QtCore import QIODevice, QThread, pyqtSignal
 import pandas as pd
 import numpy as np
@@ -32,7 +32,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.saveSheetButton = self.findChild(QtWidgets.QPushButton, 'save_button_2')
         self.time_izm = self.findChild(QtWidgets.QComboBox, 'time_izm')
         self.status = self.findChild(QtWidgets.QTextBrowser, 'status')
-        self.start = self.findChild(QtWidgets.QPushButton, 'start')
+        self.start_button = self.findChild(QtWidgets.QPushButton, 'start')
 
 
 
@@ -71,7 +71,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.calculate_button.clicked.connect(self.doCalculation)
         self.keyboard.clicked.connect(self.showKeyboard)
         #self.saveSheetButton.clicked.connect(self.start_com)
-        self.start.clicked.connect(self.start_com)
+        self.start_button.clicked.connect(self.start_com)
 
         self.input_file = None  # Инициализация переменной для пути к файлу
 
