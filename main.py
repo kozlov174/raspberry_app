@@ -367,9 +367,9 @@ class MainWindow(QtWidgets.QMainWindow):
                         R_array.append(r_itog)
                         self.graphWidget.plot(time_array, R_array, pen=pg.mkPen(color='b', width=3))
 
-                        self.ser.write(bytes.fromhex("4044700D0A"))
-                        finish_out = ser.readline().decode("utf-8")
-                        print(finish_out)
+                        # self.ser.write(bytes.fromhex("4044700D0A"))
+                        # finish_out = ser.readline().decode("utf-8")
+                        # print(finish_out)
 
                 ser.close()
 
