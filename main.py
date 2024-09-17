@@ -5,7 +5,7 @@ from threading import Thread
 
 import serial
 import RPi.GPIO as GPIO
-from PyQt5.QtCore import QIODevice, QThread, pyqtSignal, QObject
+from PyQt5.QtCore import QIODevice, QThread, pyqtSignal
 import pandas as pd
 import numpy as np
 from PyQt5 import QtCore, QtWidgets, uic, QtSerialPort
@@ -16,14 +16,6 @@ import subprocess
 from collections import deque
 import time
 
-
-class ButtonWorker(QObject):
-    finished = pyqtSignal()
-    def run(self):
-        while True:
-            if GPIO.input(5) == 0:
-                break
-        self.finished.emit()
 
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
@@ -41,21 +33,19 @@ class MainWindow(QtWidgets.QMainWindow):
         self.time_izm = self.findChild(QtWidgets.QComboBox, 'time_izm')
         self.status = self.findChild(QtWidgets.QTextBrowser, 'status')
 
+
+
+
         GPIO.setwarnings(False)
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(5, GPIO.IN, GPIO.PUD_UP)
         GPIO.setup(14, GPIO.IN, GPIO.PUD_UP)
         GPIO.setup(15, GPIO.IN, GPIO.PUD_UP)
         GPIO.setup(18, GPIO.IN, GPIO.PUD_UP)
-
-        self.thread = QThread()
-        self.worker = ButtonWorker()
-        self.worker.moveToThread(self.thread)
-        self.thread.started.connect(self.worker.run)
-        self.worker.finished.connect(self.thread.quit)
-        self.worker.finished.connect(self.worker.deleteLater)
-        self.thread.finished.connect(self.thread.deleteLater)
-        self.thread.start()
+        self.button_thread_injection = Thread(target=self.button_thread, args=())
+        #self.volt_thread = Thread(target=self.volts_thread, args=())
+        self.button_thread_injection.start()
+        #self.volt_thread.start()
 
         self.graph = QtWidgets.QGridLayout(self.centralwidget)
         self.graphWidget.setBackground('w')
@@ -69,10 +59,12 @@ class MainWindow(QtWidgets.QMainWindow):
         legend = self.graphWidget.addLegend(offset=(400, 300))
         legend.labelTextColor = pg.mkColor('k')
 
+
         self.basic_flag = 0
         self.position_v = self.findChild(QtWidgets.QTextBrowser, 'position_V')
         self.date.setText(str(datetime.date.today()))
         self.show()
+
 
         self.open_button.clicked.connect(self.showDialog)
         self.calculate_button.clicked.connect(self.doCalculation)
@@ -90,6 +82,26 @@ class MainWindow(QtWidgets.QMainWindow):
         self.W = self.findChild(QtWidgets.QTextBrowser, 'W')
         self.DP = self.findChild(QtWidgets.QTextBrowser, 'DP')
         self.Res = self.findChild(QtWidgets.QTextBrowser, 'Res')
+
+    # def volts_thread(self):
+    #     while True:
+    #         if GPIO.input(14) == 0:
+    #             self.update_volts.emit("500")
+    #             break
+    #         if GPIO.input(15) == 0:
+    #             self.update_volts.emit("1000")
+    #             break
+    #         if GPIO.input(18) == 0:
+    #             self.update_volts.emit("2500")
+    #             break
+
+
+    def button_thread(self):
+        while True:
+            if GPIO.input(5) == 0:
+                break
+        self.start_com()
+
     def update_volts(self, volts):
         self.position_v.setText(str(volts))
 
