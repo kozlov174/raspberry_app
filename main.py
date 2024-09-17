@@ -30,8 +30,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.keyboard = self.findChild(QtWidgets.QPushButton, 'keyboard_button')
         self.sheetName = self.findChild(QtWidgets.QPlainTextEdit, 'sheet_name')
         self.saveSheetButton = self.findChild(QtWidgets.QPushButton, 'save_button_2')
-        self.sendCOM = self.findChild(QtWidgets.QPushButton, 'send_COM')
         self.time_izm = self.findChild(QtWidgets.QComboBox, 'time_izm')
+        self.status = self.findChild(QtWidgets.QTextBrowser, 'status')
 
 
 
@@ -70,7 +70,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.calculate_button.clicked.connect(self.doCalculation)
         self.keyboard.clicked.connect(self.showKeyboard)
         self.saveSheetButton.clicked.connect(self.start_com)
-        self.sendCOM.clicked.connect(self.start_com)
 
         self.input_file = None  # Инициализация переменной для пути к файлу
 
@@ -291,6 +290,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def start_com(self):
         try:
             port_name = "COM4"
+            self.status.setText("начало измерений")
             # Открытие последовательного порта
             with serial.Serial("/dev/ttyUSB0", baudrate=9600, timeout=1) as ser:
                 time.sleep(1)  # Подождите, пока порт откроется
@@ -339,7 +339,7 @@ class MainWindow(QtWidgets.QMainWindow):
                     print(f"Received output: {output}")
                     time.sleep(3)  # Пауза между командами (если необходимо)
 
-                print("All commands sent")
+                self.status.setText("Все команды отправлены")
 
                 # Чтение данных после отправки команд
                 print("Reading data from serial port...")
@@ -370,8 +370,8 @@ class MainWindow(QtWidgets.QMainWindow):
                         print(finish_out)
 
                 ser.close()
-                print("Serial port closed")
 
+                self.status.setText("Serial port closed")
         except serial.SerialException as e:
             print(f"Error: {e}")
 
