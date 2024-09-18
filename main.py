@@ -4,7 +4,7 @@ import sys
 from threading import Thread
 
 import serial
-import RPi.GPIO as GPIO
+#import RPi.GPIO as GPIO
 from PyQt5.QtCore import QIODevice, QThread, pyqtSignal
 import pandas as pd
 import numpy as np
@@ -30,21 +30,22 @@ class MainWindow(QtWidgets.QMainWindow):
         self.keyboard = self.findChild(QtWidgets.QPushButton, 'keyboard_button')
         self.sheetName = self.findChild(QtWidgets.QPlainTextEdit, 'sheet_name')
         self.saveSheetButton = self.findChild(QtWidgets.QPushButton, 'save_button_2')
-        self.sendCOM = self.findChild(QtWidgets.QPushButton, 'send_COM')
         self.time_izm = self.findChild(QtWidgets.QComboBox, 'time_izm')
+        self.status = self.findChild(QtWidgets.QTextBrowser, 'status')
+        self.start_button = self.findChild(QtWidgets.QPushButton, 'start')
 
 
 
 
-        GPIO.setwarnings(False)
-        GPIO.setmode(GPIO.BCM)
-        GPIO.setup(5, GPIO.IN, GPIO.PUD_UP)
-        GPIO.setup(14, GPIO.IN, GPIO.PUD_UP)
-        GPIO.setup(15, GPIO.IN, GPIO.PUD_UP)
-        GPIO.setup(18, GPIO.IN, GPIO.PUD_UP)
-        self.button_thread_instance = Thread(target=self.button_thread, args=())
-        #self.volt_thread = Thread(target=self.volts_thread, args=())
-        self.button_thread_instance.start()
+        # GPIO.setwarnings(False)
+        # GPIO.setmode(GPIO.BCM)
+        # GPIO.setup(5, GPIO.IN, GPIO.PUD_UP)
+        # GPIO.setup(14, GPIO.IN, GPIO.PUD_UP)
+        # GPIO.setup(15, GPIO.IN, GPIO.PUD_UP)
+        # GPIO.setup(18, GPIO.IN, GPIO.PUD_UP)
+        # self.button_thread_injection = Thread(target=self.button_thread, args=())
+        # #self.volt_thread = Thread(target=self.volts_thread, args=())
+        # self.button_thread_injection.start()
         #self.volt_thread.start()
 
         self.graph = QtWidgets.QGridLayout(self.centralwidget)
@@ -69,8 +70,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.open_button.clicked.connect(self.showDialog)
         self.calculate_button.clicked.connect(self.doCalculation)
         self.keyboard.clicked.connect(self.showKeyboard)
-        self.saveSheetButton.clicked.connect(self.start_com)
-        self.sendCOM.clicked.connect(self.start_com)
+        #self.saveSheetButton.clicked.connect(self.start_com)
+        self.start_button.clicked.connect(self.start_com)
 
         self.input_file = None  # Инициализация переменной для пути к файлу
 
@@ -97,11 +98,11 @@ class MainWindow(QtWidgets.QMainWindow):
     #             break
 
 
-    def button_thread(self):
-        while True:
-            if GPIO.input(5) == 0:
-                break
-        self.start_com()
+    # def button_thread(self):
+    #     while True:
+    #         if GPIO.input(5) == 0:
+    #             break
+    #     self.start_com()
 
     def update_volts(self, volts):
         self.position_v.setText(str(volts))
@@ -291,6 +292,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def start_com(self):
         try:
             port_name = "COM4"
+            self.status.setText("начало измерений")
             # Открытие последовательного порта
             with serial.Serial("/dev/ttyUSB0", baudrate=9600, timeout=1) as ser:
                 time.sleep(1)  # Подождите, пока порт откроется
@@ -339,7 +341,7 @@ class MainWindow(QtWidgets.QMainWindow):
                     print(f"Received output: {output}")
                     time.sleep(3)  # Пауза между командами (если необходимо)
 
-                print("All commands sent")
+                self.status.setText("Все команды отправлены")
 
                 # Чтение данных после отправки команд
                 print("Reading data from serial port...")
@@ -365,13 +367,13 @@ class MainWindow(QtWidgets.QMainWindow):
                         R_array.append(r_itog)
                         self.graphWidget.plot(time_array, R_array, pen=pg.mkPen(color='b', width=3))
 
-                        self.ser.write(bytes.fromhex("4044700D0A"))
-                        finish_out = ser.readline().decode("utf-8")
-                        print(finish_out)
+                        # self.ser.write(bytes.fromhex("4044700D0A"))
+                        # finish_out = ser.readline().decode("utf-8")
+                        # print(finish_out)
 
                 ser.close()
-                print("Serial port closed")
 
+                self.status.setText("Serial port closed")
         except serial.SerialException as e:
             print(f"Error: {e}")
 
