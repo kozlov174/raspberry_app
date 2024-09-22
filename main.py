@@ -1,10 +1,9 @@
 import datetime
 import math
 import sys
-from threading import Thread
-
+import asyncio
 import serial
-#import RPi.GPIO as GPIO
+import RPi.GPIO as GPIO
 from PyQt5.QtCore import QIODevice, QThread, pyqtSignal
 import pandas as pd
 import numpy as np
@@ -33,20 +32,11 @@ class MainWindow(QtWidgets.QMainWindow):
         self.time_izm = self.findChild(QtWidgets.QComboBox, 'time_izm')
         self.status = self.findChild(QtWidgets.QTextBrowser, 'status')
         self.start_button = self.findChild(QtWidgets.QPushButton, 'start')
+        self.position_V = 500
 
-
-
-
-        # GPIO.setwarnings(False)
-        # GPIO.setmode(GPIO.BCM)
-        # GPIO.setup(5, GPIO.IN, GPIO.PUD_UP)
-        # GPIO.setup(14, GPIO.IN, GPIO.PUD_UP)
-        # GPIO.setup(15, GPIO.IN, GPIO.PUD_UP)
-        # GPIO.setup(18, GPIO.IN, GPIO.PUD_UP)
-        # self.button_thread_injection = Thread(target=self.button_thread, args=())
-        # #self.volt_thread = Thread(target=self.volts_thread, args=())
-        # self.button_thread_injection.start()
-        #self.volt_thread.start()
+        GPIO.setwarnings(False)
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setup(5, GPIO.IN, GPIO.PUD_UP)
 
         self.graph = QtWidgets.QGridLayout(self.centralwidget)
         self.graphWidget.setBackground('w')
@@ -70,7 +60,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.open_button.clicked.connect(self.showDialog)
         self.calculate_button.clicked.connect(self.doCalculation)
         self.keyboard.clicked.connect(self.showKeyboard)
-        #self.saveSheetButton.clicked.connect(self.start_com)
         self.start_button.clicked.connect(self.start_com)
 
         self.input_file = None  # Инициализация переменной для пути к файлу
@@ -85,27 +74,11 @@ class MainWindow(QtWidgets.QMainWindow):
         self.DP = self.findChild(QtWidgets.QTextBrowser, 'DP')
         self.Res = self.findChild(QtWidgets.QTextBrowser, 'Res')
 
-    # def volts_thread(self):
-    #     while True:
-    #         if GPIO.input(14) == 0:
-    #             self.update_volts.emit("500")
-    #             break
-    #         if GPIO.input(15) == 0:
-    #             self.update_volts.emit("1000")
-    #             break
-    #         if GPIO.input(18) == 0:
-    #             self.update_volts.emit("2500")
-    #             break
-
-
-    # def button_thread(self):
-    #     while True:
-    #         if GPIO.input(5) == 0:
-    #             break
-    #     self.start_com()
-
-    def update_volts(self, volts):
-        self.position_v.setText(str(volts))
+    async def touch_button(self):
+        while True:
+            if GPIO.input(5) == 0:
+                break
+        self.start_com()
 
     def showDialog(self):
         self.input_file = easygui.fileopenbox()
@@ -319,17 +292,42 @@ class MainWindow(QtWidgets.QMainWindow):
                         print(f"Received output: {output}")
                         time.sleep(1)  # Пауза между командами (если необходимо)
                     self.basic_flag = 1
-                commands = [
-                    "404045723030300D0A",
-                    "457730303030453033334233433033314530303343303235383032353830303041303030410D0A",
-                    "404045723030300D0A",
-                    "457730303030453033334233433033314530303343303235383032353830303035303030410D0A",
-                    "404045723030300D0A",
-                    "457730303030453033334233433033314530303343303235383030336330303035303030410D0A",
-                    "4466666666660D0A",
-                    "467332310D0A"
-                    "42640D0A"
-                ]
+                if self.position_V == 500:
+                    commands = [
+                        "404045723030300D0A",
+                        "457730303030453033334233433033314530303343303235383032353830303041303030410D0A",
+                        "404045723030300D0A",
+                        "457730303030453033334233433033314530303343303235383032353830303035303030410D0A",
+                        "404045723030300D0A",
+                        "457730303030453033334233433033314530303343303235383030336330303035303030410D0A",
+                        "4466666666660D0A",
+                        "467332310D0A"
+                        "42640D0A"
+                    ]
+                elif self.position_V == 1000:
+                    commands = [
+                        "404045723030300D0A",
+                        "457730303030453033334233433033314530303343303235383032353830303041303030410D0A",
+                        "404045723030300D0A",
+                        "457730303030453033334233433033314530303343303235383032353830303035303030410D0A",
+                        "404045723030300D0A",
+                        "457730303030453033334233433033314530303343303235383030336330303035303030410D0A",
+                        "4466666666660D0A",
+                        "467332320D0A"
+                        "42640D0A"
+                    ]
+                elif self.position_V == 2500:
+                    commands = [
+                        "404045723030300D0A",
+                        "457730303030453033334233433033314530303343303235383032353830303041303030410D0A",
+                        "404045723030300D0A",
+                        "457730303030453033334233433033314530303343303235383032353830303035303030410D0A",
+                        "404045723030300D0A",
+                        "457730303030453033334233433033314530303343303235383030336330303035303030410D0A",
+                        "4466666666660D0A",
+                        "467332330D0A"
+                        "42640D0A"
+                    ]
 
                 # Отправка команд
                 for cmd in commands:
@@ -367,24 +365,11 @@ class MainWindow(QtWidgets.QMainWindow):
                         R_array.append(r_itog)
                         self.graphWidget.plot(time_array, R_array, pen=pg.mkPen(color='b', width=3))
 
-                        # self.ser.write(bytes.fromhex("4044700D0A"))
-                        # finish_out = ser.readline().decode("utf-8")
-                        # print(finish_out)
-
                 ser.close()
 
                 self.status.setText("Serial port closed")
         except serial.SerialException as e:
             print(f"Error: {e}")
-
-    def read_from_serial(self, ser):
-        output = []
-        while True:
-            data = ser.read_all()  # Чтение до 1024 байт за раз
-            if not data:
-                break
-            output.append(data.decode(errors='ignore'))  # Игнорирование ошибок декодирования
-        return ''.join(output)
 
 
 if __name__ == "__main__":
