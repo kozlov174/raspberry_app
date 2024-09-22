@@ -38,6 +38,8 @@ class MainWindow(QtWidgets.QMainWindow):
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(5, GPIO.IN, GPIO.PUD_UP)
 
+
+
         self.graph = QtWidgets.QGridLayout(self.centralwidget)
         self.graphWidget.setBackground('w')
         self.graphWidget.setLabel('left', 'Сопротивление, Ом', **{'font-size': '20pt'})
@@ -52,6 +54,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
         self.basic_flag = 0
+        task1 = asyncio.create_task(self.touch_button())
         self.position_v = self.findChild(QtWidgets.QTextBrowser, 'position_V')
         self.date.setText(str(datetime.date.today()))
         self.show()
@@ -76,6 +79,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     async def touch_button(self):
         while True:
+            await asyncio.sleep(0.1)
             if GPIO.input(5) == 0:
                 break
         self.start_com()
