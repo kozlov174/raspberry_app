@@ -54,7 +54,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
         self.basic_flag = 0
-        task1 = asyncio.create_task(self.touch_button())
+        asyncio.run(self.touch_button())
         self.position_v = self.findChild(QtWidgets.QTextBrowser, 'position_V')
         self.date.setText(str(datetime.date.today()))
         self.show()
@@ -77,6 +77,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.DP = self.findChild(QtWidgets.QTextBrowser, 'DP')
         self.Res = self.findChild(QtWidgets.QTextBrowser, 'Res')
         task1.close()
+
+
     async def touch_button(self):
         while True:
             await asyncio.sleep(0.1)
