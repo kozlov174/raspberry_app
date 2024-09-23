@@ -80,7 +80,16 @@ class MainWindow(QtWidgets.QMainWindow):
         # Start the touch button coroutine
         loop = asyncio.get_event_loop()
         loop.create_task(self.touch_button())
-        asyncio.run()
+        loop.call_soon(self.start_qt_event_loop, loop)
+
+    def start_qt_event_loop(self, loop):
+        asyncio.set_event_loop(loop)
+        self.show()
+        # Use QTimer to periodically call asyncio event loop
+        timer = QtCore.QTimer()
+        timer.timeout.connect(loop.call_soon_threadsafe, loop.stop)
+        timer.start(50)  # Adjust the interval as needed
+        loop.run_forever()
 
 
     async def touch_button(self):
@@ -353,31 +362,21 @@ class MainWindow(QtWidgets.QMainWindow):
 
                 # Чтение данных после отправки команд
                 print("Reading data from serial port...")
-                time.sleep(2)  # Дайте время устройству для отправки данных
+                # Дайте время устройству для отправки данных
                 time_array = []
                 R_array = []
                 time_izm = int(self.time_izm.currentText())
-                for i in range(time_izm * 60 + 2):
-                    ser.write(bytes.fromhex("44670D0A"))
-                    output = ser.readline()
-
-                    if len(output) > 30:
-                        time.sleep(1)
-                        new_str = output.decode("utf-8")
-                        new_array = new_str.split(";")
-                        self.graphWidget.clear()
-                        if new_array[9][0] == "U":
-                            r_itog = 0
-                        else:
-                            R = new_array[9].split("E")
-                            r_itog = float(R[0]) * 10 ** int(R[1])
-                        if r_itog > 0:
-                            time_array.append(int(new_array[4]))
-                            R_array.append(r_itog)
-                        self.graphWidget.plot(time_array, R_array, pen=pg.mkPen(color='b', width=3))
+                time.sleep(time_izm)
                 ser.write(bytes.fromhex("4044700D0A"))
-                sleep(1)
-                print(ser.readline())
+                time.sleep(2)
+                result_array = ser.readline()
+                result_array = result_array.decode("utf-8")
+                result_array.split("; ")
+                default_position = 2
+                for i in range(0, time_izm*60+, 5):
+                    time_array.append(i)
+                    R_array.append(result_array[default_position])
+                    default_position += 2
 
                 ser.close()
 
