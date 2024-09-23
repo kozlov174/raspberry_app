@@ -2,6 +2,8 @@ import datetime
 import math
 import sys
 import asyncio
+from time import sleep
+
 import serial
 import RPi.GPIO as GPIO
 from PyQt5.QtCore import QIODevice, QThread, pyqtSignal
@@ -78,6 +80,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # Start the touch button coroutine
         loop = asyncio.get_event_loop()
         loop.create_task(self.touch_button())
+        asyncio.run()
 
 
     async def touch_button(self):
@@ -372,6 +375,9 @@ class MainWindow(QtWidgets.QMainWindow):
                             time_array.append(int(new_array[4]))
                             R_array.append(r_itog)
                         self.graphWidget.plot(time_array, R_array, pen=pg.mkPen(color='b', width=3))
+                ser.write(bytes.fromhex("4044700D0A"))
+                sleep(1)
+                print(ser.readline())
 
                 ser.close()
 
