@@ -77,7 +77,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Start the touch button coroutine
         loop = asyncio.get_event_loop()
-        loop.run_until_complete(self.touch_button)
+        loop.create_task(self.touch_button())
 
 
     async def touch_button(self):
@@ -368,8 +368,9 @@ class MainWindow(QtWidgets.QMainWindow):
                         else:
                             R = new_array[9].split("E")
                             r_itog = float(R[0]) * 10 ** int(R[1])
-                        time_array.append(int(new_array[4]))
-                        R_array.append(r_itog)
+                        if r_itog > 0:
+                            time_array.append(int(new_array[4]))
+                            R_array.append(r_itog)
                         self.graphWidget.plot(time_array, R_array, pen=pg.mkPen(color='b', width=3))
 
                 ser.close()
