@@ -76,7 +76,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.W = self.findChild(QtWidgets.QTextBrowser, 'W')
         self.DP = self.findChild(QtWidgets.QTextBrowser, 'DP')
         self.Res = self.findChild(QtWidgets.QTextBrowser, 'Res')
-
+        task1.close()
     async def touch_button(self):
         while True:
             await asyncio.sleep(0.1)
@@ -126,8 +126,8 @@ class MainWindow(QtWidgets.QMainWindow):
         value = Razmernost.loc[unit_index[0], 'Value']
         C_test = float(Cap[:n - 3]) * value
 
-        self.time = self.findChild(QtWidgets.QSpinBox, 'time')
-        time = int(self.time.value())
+        #self.time = self.findChild(QtWidgets.QSpinBox, 'time')
+        time = 600
         Tizm = []
         Uizm = []
         R_meas = []
