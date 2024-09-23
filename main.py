@@ -83,7 +83,7 @@ class MainWindow(QtWidgets.QMainWindow):
             await asyncio.sleep(0.1)
             if GPIO.input(5) == 0:
                 break
-        self.start_com()
+        await self.start_com()
 
     def showDialog(self):
         self.input_file = easygui.fileopenbox()
