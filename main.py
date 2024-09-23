@@ -365,7 +365,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 result_array = ser.readline()
                 result_array = ser.readline()
                 result_array = ser.readline()
-
+                print(result_array)
                 result_array = result_array.decode("utf-8")
                 result_array.split("; ")
                 default_position = 2
