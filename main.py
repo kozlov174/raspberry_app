@@ -369,8 +369,8 @@ class MainWindow(QtWidgets.QMainWindow):
                     time_array.append(i)
                     R = result_array[default_position].split("E")
                     print(R)
-                    #r_itog = float(R[0]) * 10 ** int(R[1])
-                    R_array.append(r_itog)
+                    # #r_itog = float(R[0]) * 10 ** int(R[1])
+                    # R_array.append(r_itog)
                     default_position += 2
 
                 ser.close()
