@@ -359,7 +359,11 @@ class MainWindow(QtWidgets.QMainWindow):
                 time_izm = int(self.time_izm.currentText())
                 time.sleep(time_izm*60)
                 ser.write(bytes.fromhex("4044700D0A"))
+                ser.write(bytes.fromhex("4044700D0A"))
+                ser.write(bytes.fromhex("4044700D0A"))
                 time.sleep(2)
+                result_array = ser.readline()
+                result_array = ser.readline()
                 result_array = ser.readline()
 
                 result_array = result_array.decode("utf-8")
