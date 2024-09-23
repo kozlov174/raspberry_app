@@ -28,6 +28,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.keyboard = self.findChild(QtWidgets.QPushButton, 'keyboard_button')
         self.sheetName = self.findChild(QtWidgets.QPlainTextEdit, 'sheet_name')
+        self.calculate = self.findChild(QtWidgets.QPushButton, 'save_button')
         self.saveSheetButton = self.findChild(QtWidgets.QPushButton, 'save_button_2')
         self.time_izm = self.findChild(QtWidgets.QComboBox, 'time_izm')
         self.status = self.findChild(QtWidgets.QTextBrowser, 'status')
@@ -61,7 +62,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.open_button.clicked.connect(self.showDialog)
         self.keyboard.clicked.connect(self.showKeyboard)
         self.start_button.clicked.connect(self.start_com)
-
+        self.calculate.clicked.connect(self.doCalculation)
         self.input_file = None  # Инициализация переменной для пути к файлу
 
         self.R15 = self.findChild(QtWidgets.QTextBrowser, 'R15')
@@ -76,7 +77,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Start the touch button coroutine
         loop = asyncio.get_event_loop()
-        asyncio.create_task(self.touch_button)
+        loop.run_until_complete(self.touch_button)
 
 
     async def touch_button(self):
@@ -353,7 +354,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 time_array = []
                 R_array = []
                 time_izm = int(self.time_izm.currentText())
-                for i in range(time_izm + 2):
+                for i in range(time_izm * 60 + 2):
                     ser.write(bytes.fromhex("44670D0A"))
                     output = ser.readline()
 
