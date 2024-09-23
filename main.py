@@ -353,30 +353,31 @@ class MainWindow(QtWidgets.QMainWindow):
 
                 # Чтение данных после отправки команд
                 print("Reading data from serial port...")
-                # Дайте время устройству для отправки данных
+                time.sleep(2)  # Дайте время устройству для отправки данных
                 time_array = []
                 R_array = []
                 time_izm = int(self.time_izm.currentText())
                 for i in range(time_izm * 60 + 2):
                     ser.write(bytes.fromhex("44670D0A"))
                     output = ser.readline()
-                    print(f"Received output: {output}")
 
+                    if len(output) > 30:
+                        time.sleep(1)
+                        new_str = output.decode("utf-8")
+                        new_array = new_str.split(";")
+                        self.graphWidget.clear()
+                        if new_array[9][0] == "U":
+                            r_itog = 0
+                        else:
+                            R = new_array[9].split("E")
+                            r_itog = float(R[0]) * 10 ** int(R[1])
+                        if r_itog > 0:
+                            time_array.append(int(new_array[4]))
+                            R_array.append(r_itog)
+                        self.graphWidget.plot(time_array, R_array, pen=pg.mkPen(color='b', width=3))
                 ser.write(bytes.fromhex("4044700D0A"))
                 sleep(1)
-                result_array = ser.readline()
-
-                print(result_array)
-                result_array = result_array.decode("utf-8")
-                result_array.split("; ")
-                default_position = 2
-                for i in range(0, time_izm*60 - 5, 5):
-                    time_array.append(i)
-                    R = result_array[default_position].split("E")
-                    print(R)
-                    r_itog = float(R[0]) * 10 ** int(R[1])
-                    R_array.append(r_itog)
-                    default_position += 2
+                print(ser.readline())
 
                 ser.close()
 
