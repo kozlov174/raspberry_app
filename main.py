@@ -357,14 +357,15 @@ class MainWindow(QtWidgets.QMainWindow):
                 time_array = []
                 R_array = []
                 time_izm = int(self.time_izm.currentText())
-                time.sleep(time_izm*60)
+                for i in range(time_izm * 60 + 2):
+                    ser.write(bytes.fromhex("44670D0A"))
+                    output = ser.readline()
+                    print(f"Received output: {output}")
+
                 ser.write(bytes.fromhex("4044700D0A"))
-                ser.write(bytes.fromhex("4044700D0A"))
-                ser.write(bytes.fromhex("4044700D0A"))
-                time.sleep(2)
+                sleep(1)
                 result_array = ser.readline()
-                result_array = ser.readline()
-                result_array = ser.readline()
+
                 print(result_array)
                 result_array = result_array.decode("utf-8")
                 result_array.split("; ")
@@ -373,8 +374,8 @@ class MainWindow(QtWidgets.QMainWindow):
                     time_array.append(i)
                     R = result_array[default_position].split("E")
                     print(R)
-                    # #r_itog = float(R[0]) * 10 ** int(R[1])
-                    # R_array.append(r_itog)
+                    r_itog = float(R[0]) * 10 ** int(R[1])
+                    R_array.append(r_itog)
                     default_position += 2
 
                 ser.close()
