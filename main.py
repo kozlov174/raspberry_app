@@ -75,6 +75,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.Res = self.findChild(QtWidgets.QTextBrowser, 'Res')
 
         # Start the touch button coroutine
+        loop = asyncio.get_event_loop()
         asyncio.create_task(self.touch_button)
 
 
