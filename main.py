@@ -80,7 +80,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # Start the touch button coroutine
         loop = asyncio.get_event_loop()
         loop.create_task(self.touch_button())
-        loop.run_forever(self.touch_button())
+        loop.run_forever()
 
 
     async def touch_button(self):
@@ -357,14 +357,15 @@ class MainWindow(QtWidgets.QMainWindow):
                 time_array = []
                 R_array = []
                 time_izm = int(self.time_izm.currentText())
-                time.sleep(time_izm)
+                time.sleep(time_izm*60)
                 ser.write(bytes.fromhex("4044700D0A"))
                 time.sleep(2)
                 result_array = ser.readline()
+
                 result_array = result_array.decode("utf-8")
                 result_array.split("; ")
                 default_position = 2
-                for i in range(0, time_izm*60, 5):
+                for i in range(0, time_izm*60 - 5, 5):
                     time_array.append(i)
                     R = result_array[default_position].split("E")
                     r_itog = float(R[0]) * 10 ** int(R[1])
