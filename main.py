@@ -17,6 +17,8 @@ import subprocess
 from collections import deque
 import time
 
+from fontTools.misc.plistlib import end_array
+
 
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
@@ -374,11 +376,20 @@ class MainWindow(QtWidgets.QMainWindow):
                         if r_itog > 0:
                             time_array.append(int(new_array[4]))
                             R_array.append(r_itog)
-                        self.graphWidget.plot(time_array, R_array, pen=pg.mkPen(color='b', width=3))
+
                 ser.write(bytes.fromhex("4044700D0A"))
                 sleep(1)
-                print(ser.readline())
-
+                time_array = []
+                R_array = []
+                base_index = 2
+                end_array = ser.readline().decode("utf-8").split("; ")
+                for i in range(0, time_izm * 60 - 5, 5):
+                    time_array.append(i)
+                    R = end_array[base_index].split("E")
+                    itogR = float(R[0]) * 10 ** int(R[1])
+                    R_array.append(itogR)
+                    base_index += 2
+                self.graphWidget.plot(time_array, R_array, pen=pg.mkPen(color='b', width=3))
                 ser.close()
 
                 self.status.setText("Serial port closed")
