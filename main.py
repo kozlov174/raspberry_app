@@ -267,7 +267,7 @@ class MainWindow(QtWidgets.QMainWindow):
             PI = R_apr[120]/R_apr[12]
             DAR = R_apr[12]/R_apr[6]
 
-    def start_com(self):
+    async def start_com(self):
         try:
             port_name = "COM4"
             self.status.setText("начало измерений")
