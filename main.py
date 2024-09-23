@@ -24,7 +24,6 @@ class MainWindow(QtWidgets.QMainWindow):
         uic.loadUi('main.ui', self)
         self.date = self.findChild(QtWidgets.QTextBrowser, 'date')
         self.open_button = self.findChild(QtWidgets.QPushButton, 'open_button')
-        self.calculate_button = self.findChild(QtWidgets.QPushButton, 'calculate_button')  # Corrected button name
         self.file_name_display = self.findChild(QtWidgets.QTextBrowser, 'file_name')
 
         self.keyboard = self.findChild(QtWidgets.QPushButton, 'keyboard_button')
@@ -60,7 +59,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.show()
 
         self.open_button.clicked.connect(self.showDialog)
-        self.calculate_button.clicked.connect(self.doCalculation)
         self.keyboard.clicked.connect(self.showKeyboard)
         self.start_button.clicked.connect(self.start_com)
 
