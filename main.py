@@ -375,7 +375,9 @@ class MainWindow(QtWidgets.QMainWindow):
                 default_position = 2
                 for i in range(0, time_izm*60+, 5):
                     time_array.append(i)
-                    R_array.append(result_array[default_position])
+                    R = result_array[default_position].split("E")
+                    r_itog = float(R[0]) * 10 ** int(R[1])
+                    R_array.append(r_itog)
                     default_position += 2
 
                 ser.close()
