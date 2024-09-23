@@ -18,12 +18,13 @@ import time
 
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
+
         super(MainWindow, self).__init__()
         self.position_v = None
         uic.loadUi('main.ui', self)
         self.date = self.findChild(QtWidgets.QTextBrowser, 'date')
         self.open_button = self.findChild(QtWidgets.QPushButton, 'open_button')
-        self.calculate_button = self.findChild(QtWidgets.QPushButton, 'save_button')
+        self.calculate_button = self.findChild(QtWidgets.QPushButton, 'calculate_button')  # Corrected button name
         self.file_name_display = self.findChild(QtWidgets.QTextBrowser, 'file_name')
 
         self.keyboard = self.findChild(QtWidgets.QPushButton, 'keyboard_button')
@@ -36,11 +37,12 @@ class MainWindow(QtWidgets.QMainWindow):
 
         GPIO.setwarnings(False)
         GPIO.setmode(GPIO.BCM)
-        GPIO.setup(5, GPIO.IN, GPIO.PUD_UP)
+        try:
+            GPIO.setup(5, GPIO.IN, GPIO.PUD_UP)
+        except Exception as e:
+            print(f"Error setting up GPIO: {e}")
 
-
-
-        self.graph = QtWidgets.QGridLayout(self.centralwidget)
+        self.graphWidget = self.findChild(pg.PlotWidget, 'graphWidget')  # Ensure this is initialized
         self.graphWidget.setBackground('w')
         self.graphWidget.setLabel('left', 'Сопротивление, Ом', **{'font-size': '20pt'})
         self.graphWidget.setLabel('bottom', 'Время, сек', **{'font-size': '20pt'})
@@ -52,13 +54,10 @@ class MainWindow(QtWidgets.QMainWindow):
         legend = self.graphWidget.addLegend(offset=(400, 300))
         legend.labelTextColor = pg.mkColor('k')
 
-
         self.basic_flag = 0
-        asyncio.run(self.touch_button())
         self.position_v = self.findChild(QtWidgets.QTextBrowser, 'position_V')
         self.date.setText(str(datetime.date.today()))
         self.show()
-
 
         self.open_button.clicked.connect(self.showDialog)
         self.calculate_button.clicked.connect(self.doCalculation)
@@ -76,7 +75,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.W = self.findChild(QtWidgets.QTextBrowser, 'W')
         self.DP = self.findChild(QtWidgets.QTextBrowser, 'DP')
         self.Res = self.findChild(QtWidgets.QTextBrowser, 'Res')
-        task1.close()
+
+        # Start the touch button coroutine
+        asyncio.create_task(self.touch_button())
 
 
     async def touch_button(self):
