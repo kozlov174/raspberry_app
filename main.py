@@ -36,7 +36,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.saveSheetButton = self.findChild(QtWidgets.QPushButton, 'save_button_2')
         self.time_izm = self.findChild(QtWidgets.QComboBox, 'time_izm')
         self.status = self.findChild(QtWidgets.QTextBrowser, 'status')
-        self.start_button = self.findChild(QtWidgets.QPushButton, 'start')
         self.position_V = 500
         self.R_itog_array = []
 
@@ -256,8 +255,10 @@ class MainWindow(QtWidgets.QMainWindow):
 
     async def start_com(self):
         # Создание и отображение всплывающего окна
-        msg_box = CustomMessageBox(self.time_izm.currentText())
-        msg_box.show()
+        duration = int(self.time_izm.currentText()) * 60
+        self.msg_thread = MessageBoxThread(duration)
+        self.msg_thread.finished.connect(self.on_message_box_closed)
+        self.msg_thread.start()
         try:
             port_name = "COM4"
             self.status.setText("начало измерений")
@@ -461,6 +462,18 @@ class CustomMessageBox(QMessageBox):
             self.timer.stop()
             self.accept()
 
+class MessageBoxThread(QThread):
+    finished = pyqtSignal()
+
+    def __init__(self, duration):
+        super().__init__()
+        self.duration = duration
+
+    def run(self):
+        msg_box = CustomMessageBox(self.duration)
+        msg_box.show()
+        msg_box.exec_()  # This will block until the message box is closed
+        self.finished.emit()
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
