@@ -381,6 +381,7 @@ class MainWindow(QtWidgets.QMainWindow):
                     ser.write(bytes.fromhex("4044700D0A"))
                     sleep(2)
                     end_output = ser.readline()
+                    print(end_output)
                 sleep(1)
                 time_array = []
                 R_array = []
