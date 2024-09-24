@@ -6,7 +6,7 @@ from time import sleep
 
 import serial
 import RPi.GPIO as GPIO
-from PyQt5.QtCore import QIODevice, QThread, pyqtSignal
+from PyQt5.QtCore import QIODevice, QThread, pyqtSignal, QTimer
 import pandas as pd
 import numpy as np
 from PyQt5 import QtCore, QtWidgets, uic, QtSerialPort
@@ -16,8 +16,6 @@ import pyqtgraph as pg
 import subprocess
 from collections import deque
 import time
-
-from fontTools.misc.plistlib import end_array
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -80,17 +78,21 @@ class MainWindow(QtWidgets.QMainWindow):
         self.Res = self.findChild(QtWidgets.QTextBrowser, 'Res')
 
         # Start the touch button coroutine
-        loop = asyncio.get_event_loop()
-        loop.create_task(self.touch_button())
-        loop.run_forever()
+        self.loop = asyncio.get_event_loop()
+
+        # Используем QTimer для запуска асинхронных задач
+        self.timer = QTimer()
+        self.timer.timeout.connect(self.run_async_tasks)
+        self.timer.start(100)  # Проверяем каждые 100 мс
+
         self.show()
 
+    def run_async_tasks(self):
+        self.loop.run_until_complete(self.touch_button())
+
     async def touch_button(self):
-        while True:
-            await asyncio.sleep(0.1)
-            if GPIO.input(5) == 0:
-                break
-        await self.start_com()
+        if GPIO.input(5) == 0:
+            await self.start_com()
 
     def showDialog(self):
         self.input_file = easygui.fileopenbox()
@@ -393,6 +395,7 @@ class MainWindow(QtWidgets.QMainWindow):
                     itogR = float(R[0]) * 10 ** int(R[1])
                     R_array.append(itogR)
                     base_index += 2
+                print(R_array)
                 self.graphWidget.plot(time_array, R_array, pen=pg.mkPen(color='b', width=3))
                 ser.close()
 
