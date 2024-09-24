@@ -17,6 +17,8 @@ import subprocess
 from collections import deque
 import time
 
+from PyQt5.QtWidgets import QMessageBox
+
 
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
@@ -253,6 +255,9 @@ class MainWindow(QtWidgets.QMainWindow):
         sheet.close()
 
     async def start_com(self):
+        # Создание и отображение всплывающего окна
+        msg_box = CustomMessageBox(self.time_izm.currentText())
+        msg_box.show()
         try:
             port_name = "COM4"
             self.status.setText("начало измерений")
@@ -393,8 +398,8 @@ class MainWindow(QtWidgets.QMainWindow):
         if int(self.time_izm.currentText())*60 > 100:
             I_apr = np.polyval(np.polyfit(Tizm[21:], I_t[21:], 4), Tizm)
 
-        if len(R_apr) > 13:
-            DAR=R_apr[12]/R_apr[6]
+        if len(R_apr) > 12:
+            DAR=R_apr[11]/R_apr[5]
         else:
             DAR = 0
         self.DAR.setText(str(round(DAR, 3)))
@@ -420,17 +425,42 @@ class MainWindow(QtWidgets.QMainWindow):
         self.W.setText(str(round(W, 3)))
         self.Res.setText(str(math.trunc(Res)))
 
-        Kabs = R_apr[12]/R_apr[3]
+        Kabs = R_apr[11]/R_apr[3]
         self.Kabs.setText(str(round(Kabs, 3)))
         DP = 200 * TPI ** 0.251
         self.DP.setText(str(math.trunc(DP)))
         R15 = R_apr[3] / 10**9
         self.R15.setText(str(round(R15, 3)))
-        R60 = R_apr[12] / 10 ** 9
+        R60 = R_apr[11] / 10 ** 9
         self.R60.setText(str(round(R60, 3)))
         if time > 100:
             I_ut = min(I_apr)
             I_spectr = (I_apr - I_ut) * time #особое внимание этой строчке
+
+
+class CustomMessageBox(QMessageBox):
+    def __init__(self, duration, parent=None):
+        super().__init__(parent)
+        self.setIcon(QMessageBox.Information)
+        self.setText("Интерфейс заблокирован на время измерений. Осталось:")
+        self.setWindowTitle("Предупреждение!!")
+        self.setStandardButtons(QMessageBox.NoButton)
+        self.time_left = duration  # Время теперь передается как параметр
+
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(self.update_timer)
+        self.timer.start(1000)  # Обновление каждую секунду
+
+        self.update_timer()
+
+    def update_timer(self):
+        if self.time_left > 0:
+            self.setInformativeText(f"{self.time_left} секунд")
+            self.time_left -= 1
+        else:
+            self.timer.stop()
+            self.accept()
+
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
