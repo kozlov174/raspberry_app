@@ -155,7 +155,7 @@ class MainWindow(QtWidgets.QMainWindow):
             I_apr = np.polyval(np.polyfit(Tizm[21:], I_t[21:], 4), Tizm)
 
 
-        self.graph.addWidget(self.graphWidget, 0, 0)
+
         self.graphWidget.clear()
         self.graphWidget.plot(Tizm, R_meas, pen = pg.mkPen(color='b', width=3), name='R измеренное ')
         self.graphWidget.plot(Tizm, R_apr, pen = pg.mkPen(color='k', width=3), name='R апроксимированное')
@@ -389,13 +389,19 @@ class MainWindow(QtWidgets.QMainWindow):
                 R_array = []
                 base_index = 2
                 end_array = end_output.decode("utf-8").split("; ")
-                for i in range(0, time_izm * 60 - 5, 5):
+                for i in range(0, time_izm * 60, 5):
                     time_array.append(i)
+                    if i == time_izm * 60:
+
                     R = end_array[base_index].split("E")
-                    itogR = float(R[0]) * 10 ** int(R[1])
+                    if i == time_izm * 60:
+                        itogR = float(R[0]) * 10 ** int(R[1][:-4])
+                    else:
+                        itogR = float(R[0]) * 10 ** int(R[1])
                     R_array.append(itogR)
                     base_index += 2
                 print(R_array)
+
                 self.graphWidget.plot(time_array, R_array, pen=pg.mkPen(color='b', width=3))
                 ser.close()
 
