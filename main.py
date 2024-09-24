@@ -36,6 +36,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.status = self.findChild(QtWidgets.QTextBrowser, 'status')
         self.start_button = self.findChild(QtWidgets.QPushButton, 'start')
         self.position_V = 500
+        self.R_itog_array = []
 
         GPIO.setwarnings(False)
         GPIO.setmode(GPIO.BCM)
@@ -251,31 +252,6 @@ class MainWindow(QtWidgets.QMainWindow):
             sheet.save((self.sheetName.toPlainText() + ".xlsx"))
         sheet.close()
 
-    def measure_real_numbers(self):
-        time = int(self.time.value())
-        self.time_array = deque(time // 5 + 1)
-        self.U_array = deque(time // 5 + 1)
-        self.R_array = deque(time // 5 + 1)
-        self.R_corr_array = deque(time // 5 + 1)
-
-        for i in range(time // 5 + 1):
-            #добавление значений в массив данных с прибора
-            self.time_array.append(i * 5)
-            self.U_array.append()
-            self.R_array.append()
-            self.R_corr_array.append()
-
-            #live построение графика на основе данных
-            self.graphWidget.clear()
-            self.graphWidget.plot(self.time_array, self.R_array, pen=pg.mkPen(color='b', width=3), name='R измеренное ')
-            p = np.polyfit(Tizm, R_meas, 4)
-            R_apr = np.polyval(p, self.time_array)
-            self.graphWidget.plot(self.time_array, R_apr, pen=pg.mkPen(color='b', width=3), name='R измеренное ')
-
-            #рассчёт показателей PI и DAR на основе измерений
-            PI = R_apr[120]/R_apr[12]
-            DAR = R_apr[12]/R_apr[6]
-
     async def start_com(self):
         try:
             port_name = "COM4"
@@ -386,13 +362,13 @@ class MainWindow(QtWidgets.QMainWindow):
                     print(end_output)
                 sleep(1)
                 time_array = []
+                volt_array = []
                 R_array = []
                 base_index = 2
                 end_array = end_output.decode("utf-8").split("; ")
                 for i in range(0, time_izm * 60, 5):
+                    volt_array.append(int(self.position_V))
                     time_array.append(i)
-                    if i == time_izm * 60:
-
                     R = end_array[base_index].split("E")
                     if i == time_izm * 60:
                         itogR = float(R[0]) * 10 ** int(R[1][:-4])
@@ -401,14 +377,60 @@ class MainWindow(QtWidgets.QMainWindow):
                     R_array.append(itogR)
                     base_index += 2
                 print(R_array)
-
+                self.R_itog_array = R_array
                 self.graphWidget.plot(time_array, R_array, pen=pg.mkPen(color='b', width=3))
                 ser.close()
-
+                self.calculate_itog(time_array, volt_array, R_array)
                 self.status.setText("Serial port closed")
         except serial.SerialException as e:
             print(f"Error: {e}")
 
+    def calculate_itog(self, Tizm, Uizm, R_meas ):
+        I_t = np.array(Uizm) / np.array(R_meas)
+
+        p = np.polyfit(Tizm, R_meas, 4)
+        R_apr = np.polyval(p, Tizm)
+        if time > 100:
+            I_apr = np.polyval(np.polyfit(Tizm[21:], I_t[21:], 4), Tizm)
+
+        if len(R_apr) > 13:
+            DAR=R_apr[12]/R_apr[6]
+        else:
+            DAR = 0
+        self.DAR.setText(str(round(DAR, 3)))
+        if (time // 5 + 1 < 121):
+            PI = 0
+            DD = 0
+        else:
+            PI = R_apr[120]/R_apr[12]
+            DD = 1000 * (R_apr[120] - R_apr[10]) / (R_apr[12]*R_apr[120]*C_test)
+
+        self.PI.setText(str(round(PI, 3)))
+        self.DD.setText(str(round(DD, 3)))
+
+        if PI == 0:
+            W = 0
+            TPI = 0
+            Res = 0
+        else:
+            W = 3.275 - 4.819*math.log10(PI)
+            TPI = 59.029*PI-56.391
+            Res = (70 - Tg) * ((TPI / 3) ** 0.251 - 1)
+
+        self.W.setText(str(round(W, 3)))
+        self.Res.setText(str(math.trunc(Res)))
+
+        Kabs = R_apr[12]/R_apr[3]
+        self.Kabs.setText(str(round(Kabs, 3)))
+        DP = 200 * TPI ** 0.251
+        self.DP.setText(str(math.trunc(DP)))
+        R15 = R_apr[3] / 10**9
+        self.R15.setText(str(round(R15, 3)))
+        R60 = R_apr[12] / 10 ** 9
+        self.R60.setText(str(round(R60, 3)))
+        if time > 100:
+            I_ut = min(I_apr)
+            I_spectr = (I_apr - I_ut) * time #особое внимание этой строчке
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
