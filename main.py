@@ -376,13 +376,15 @@ class MainWindow(QtWidgets.QMainWindow):
                         if r_itog > 0:
                             time_array.append(int(new_array[4]))
                             R_array.append(r_itog)
-
-                ser.write(bytes.fromhex("4044700D0A"))
+                end_output = ""
+                while len(end_array) < 50
+                    ser.write(bytes.fromhex("4044700D0A"))
+                    end_output = ser.readline()
                 sleep(1)
                 time_array = []
                 R_array = []
                 base_index = 2
-                end_array = ser.readline().decode("utf-8").split("; ")
+                end_array = end_output.decode("utf-8").split("; ")
                 for i in range(0, time_izm * 60 - 5, 5):
                     time_array.append(i)
                     R = end_array[base_index].split("E")
