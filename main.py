@@ -390,7 +390,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         p = np.polyfit(Tizm, R_meas, 4)
         R_apr = np.polyval(p, Tizm)
-        if time > 100:
+        if int(self.time_izm.currentText())*60 > 100:
             I_apr = np.polyval(np.polyfit(Tizm[21:], I_t[21:], 4), Tizm)
 
         if len(R_apr) > 13:
@@ -398,7 +398,7 @@ class MainWindow(QtWidgets.QMainWindow):
         else:
             DAR = 0
         self.DAR.setText(str(round(DAR, 3)))
-        if (time // 5 + 1 < 121):
+        if ( int(self.time_izm.currentText())*60 // 5 + 1 < 121):
             PI = 0
             DD = 0
         else:
