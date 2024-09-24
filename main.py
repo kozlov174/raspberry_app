@@ -61,7 +61,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.basic_flag = 0
         self.position_v = self.findChild(QtWidgets.QTextBrowser, 'position_V')
         self.date.setText(str(datetime.date.today()))
-        self.show()
+
 
         self.open_button.clicked.connect(self.showDialog)
         self.keyboard.clicked.connect(self.showKeyboard)
@@ -83,7 +83,7 @@ class MainWindow(QtWidgets.QMainWindow):
         loop = asyncio.get_event_loop()
         loop.create_task(self.touch_button())
         loop.run_forever()
-
+        self.show()
 
     async def touch_button(self):
         while True:
@@ -377,8 +377,9 @@ class MainWindow(QtWidgets.QMainWindow):
                             time_array.append(int(new_array[4]))
                             R_array.append(r_itog)
                 end_output = ""
-                while len(end_array) < 50
+                while len(end_output) < 50:
                     ser.write(bytes.fromhex("4044700D0A"))
+                    sleep(2)
                     end_output = ser.readline()
                 sleep(1)
                 time_array = []
