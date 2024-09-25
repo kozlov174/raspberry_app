@@ -340,7 +340,9 @@ class MainWindow(QtWidgets.QMainWindow):
                     ser.flush()  # Убедитесь, что данные записаны в порт
                     output = ser.readline().decode("utf-8")
                     while "EX" in output:
+                        time.sleep(1)
                         ser.write(hex_cmd)
+                        time.sleep(1)
                         output = ser.readline().decode("utf-8")
                     print(f"Received output: {output}")
                     time.sleep(3)  # Пауза между командами (если необходимо)
