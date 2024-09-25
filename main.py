@@ -231,7 +231,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
         #присваивание динамических значений второй и последующих строк
-        time = self.time_izm.value()
+        time = int(self.time_izm.value())
         book['D2'].value = datetime.datetime.now().strftime('%d-%m-%Y')
         book['E2'].value = datetime.datetime.now().strftime('%H:%M:%S')
         
