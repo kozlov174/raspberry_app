@@ -462,7 +462,7 @@ class SettingsWindow(QtWidgets.QMainWindow):
             self.name_obj.setText(upd_cont[1])
             upd_cont = content[1].split(":")
             self.location.setText(upd_cont[1])
-            self.date = datetime.date.today()
+            self.date.setText(str(datetime.date.today()))
             upd_cont = content[3].split(":")
             self.operator.setText(upd_cont[1])
 
@@ -475,15 +475,19 @@ class SettingsWindow(QtWidgets.QMainWindow):
 
             upd_cont = content[0].split(":")
             upd_cont[1] = self.name_obj.toPlainText()
+            file.write(content[0])
 
             upd_cont = content[1].split(":")
             self.location.setText(upd_cont[1])
+            file.write(content[1])
 
             upd_cont = content[2].split(":")
             upd_cont[1] = datetime.date.today()
+            file.write(content[2])
 
             upd_cont = content[3].split(":")
             upd_cont[1] = self.operator.toPlainText()
+            file.write(content[3])
 
     def showKeyboard(self):
         print("click button")
