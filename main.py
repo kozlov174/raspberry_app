@@ -357,7 +357,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 for i in range(time_izm * 60 + 2):
                     ser.write(bytes.fromhex("44670D0A"))
                     output = ser.readline()
-
+                    print(f"Received output: {output}")
                     if len(output) > 30:
                         time.sleep(1)
                         new_str = output.decode("utf-8")
