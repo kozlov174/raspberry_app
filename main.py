@@ -470,28 +470,36 @@ class SettingsWindow(QtWidgets.QMainWindow):
             upd_cont = content[3].split(":")
             self.operator.setText(upd_cont[1])
 
-
-
+    import datetime
 
     def saveSettings(self):
-        with open("./metadata.txt", "w") as file:
+        with open("./metadata.txt", "r") as file:
             content = file.readlines()
 
-            upd_cont = content[0].split(":")
-            upd_cont[1] = self.name_obj.toPlainText()
-            file.write(content[0])
+        updated_content = []
 
-            upd_cont = content[1].split(":")
-            self.location.setText(upd_cont[1])
-            file.write(content[1])
+        # Наименование объекта измерения
+        upd_cont = content[0].split(":", 1)
+        upd_cont[1] = " " + self.name_obj.toPlainText() + "\n"
+        updated_content.append(":".join(upd_cont))
 
-            upd_cont = content[2].split(":")
-            upd_cont[1] = datetime.date.today()
-            file.write(content[2])
+        # Место расположения объекта измерения
+        upd_cont = content[1].split(":", 1)
+        upd_cont[1] = " " + self.location.text() + "\n"
+        updated_content.append(":".join(upd_cont))
 
-            upd_cont = content[3].split(":")
-            upd_cont[1] = self.operator.toPlainText()
-            file.write(content[3])
+        # Дата измерения
+        upd_cont = content[2].split(":", 1)
+        upd_cont[1] = " " + datetime.date.today().strftime("%d.%m.%y") + "\n"
+        updated_content.append(":".join(upd_cont))
+
+        # Оператор
+        upd_cont = content[3].split(":", 1)
+        upd_cont[1] = " " + self.operator.toPlainText() + "\n"
+        updated_content.append(":".join(upd_cont))
+
+        with open("./metadata.txt", "w") as file:
+            file.writelines(updated_content)
 
     def showKeyboard(self):
         print("click button")
