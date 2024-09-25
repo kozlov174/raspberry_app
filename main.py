@@ -65,7 +65,6 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.open_button.clicked.connect(self.showDialog)
         self.keyboard.clicked.connect(self.showKeyboard)
-        self.start_button.clicked.connect(self.start_com)
         self.calculate.clicked.connect(self.doCalculation)
         self.input_file = None  # Инициализация переменной для пути к файлу
         self.saveSheetButton.clicked.connect(self.saveSheet)
@@ -199,7 +198,7 @@ class MainWindow(QtWidgets.QMainWindow):
             I_ut = min(I_apr)
             I_spectr = (I_apr - I_ut) * time #особое внимание этой строчке
 
-    def saveSheet(self, time_izm, R_izm):
+    def saveSheet(self):
         print(self.sheetName.toPlainText())
         sheet = openpyxl.Workbook()
         book = sheet['Sheet']
@@ -229,6 +228,7 @@ class MainWindow(QtWidgets.QMainWindow):
         book['T1'].value = "R (MOhm)"
         book['U1'].value = "R (MOhm)T° corrected:40C"
 
+        R_izm = self.R_itog_array
 
         #присваивание динамических значений второй и последующих строк
         time = int(self.time_izm.value())
@@ -236,11 +236,11 @@ class MainWindow(QtWidgets.QMainWindow):
         book['E2'].value = datetime.datetime.now().strftime('%H:%M:%S')
         
         default_position = 0
-        
+        default_time_position = 0
         #заполнение ячеек со значениями
         for i in range(2, time // 5 + 3):
             column = "R" + str(i)
-            book[column].value =  time_izm[default_position]
+            book[column].value =  default_time_position
             column = "S" + str(i)
             book[column].value = self.position_v.value()
             column = "T" + str(i)
@@ -248,6 +248,7 @@ class MainWindow(QtWidgets.QMainWindow):
             column = "U" + str(i)
             book[column].value = R_izm[default_position]
             default_position = default_position + 1
+            default_time_position = default_time_position + 5
 
 
         if (self.sheetName.toPlainText() == ""):
@@ -259,7 +260,6 @@ class MainWindow(QtWidgets.QMainWindow):
     async def start_com(self):
         try:
             port_name = "COM4"
-            self.status.setText("начало измерений")
             # Открытие последовательного порта
             with serial.Serial("/dev/ttyUSB0", baudrate=9600, timeout=1) as ser:
                 time.sleep(1)  # Подождите, пока порт откроется
@@ -295,7 +295,7 @@ class MainWindow(QtWidgets.QMainWindow):
                         "404045723030300D0A",
                         "457730303030453033334233433033314530303343303235383030336330303035303030410D0A",
                         "4466666666660D0A",
-                        "467332310D0A"
+                        "467332310D0A",
                         "42640D0A"
                     ]
                 elif self.position_V == 1000:
@@ -307,7 +307,7 @@ class MainWindow(QtWidgets.QMainWindow):
                         "404045723030300D0A",
                         "457730303030453033334233433033314530303343303235383030336330303035303030410D0A",
                         "4466666666660D0A",
-                        "467332320D0A"
+                        "467332320D0A",
                         "42640D0A"
                     ]
                 elif self.position_V == 2500:
@@ -319,7 +319,7 @@ class MainWindow(QtWidgets.QMainWindow):
                         "404045723030300D0A",
                         "457730303030453033334233433033314530303343303235383030336330303035303030410D0A",
                         "4466666666660D0A",
-                        "467332330D0A"
+                        "467332330D0A",
                         "42640D0A"
                     ]
 
@@ -333,7 +333,6 @@ class MainWindow(QtWidgets.QMainWindow):
                     print(f"Received output: {output}")
                     time.sleep(3)  # Пауза между командами (если необходимо)
 
-                self.status.setText("Все команды отправлены")
 
                 # Чтение данных после отправки команд
                 print("Reading data from serial port...")
