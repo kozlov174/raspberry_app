@@ -727,7 +727,7 @@ background-repeat: no-repeat; /* Отключает повторение изо�
      <string>Режим измерения, В</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="open_setiings">
+   <widget class="QPushButton" name="open_settings">
     <property name="geometry">
      <rect>
       <x>250</x>
