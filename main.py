@@ -378,7 +378,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 R_array = []
                 base_index = 2
                 end_array = end_output.decode("utf-8").split("; ")
-                for i in range(0, time_izm * 60, 5):
+                for i in range(0, time_izm * 60 + 5, 5):
                     volt_array.append(int(self.position_V))
                     time_array.append(i)
                     R = end_array[base_index].split("E")
@@ -480,22 +480,22 @@ class SettingsWindow(QtWidgets.QMainWindow):
 
         # Наименование объекта измерения
         upd_cont = content[0].split(":", 1)
-        upd_cont[1] = " " + self.name_obj.toPlainText() + "\n"
+        upd_cont[1] = " " + self.name_obj.toPlainText()
         updated_content.append(":".join(upd_cont))
 
         # Место расположения объекта измерения
         upd_cont = content[1].split(":", 1)
-        upd_cont[1] = " " + self.location.toPlainText() + "\n"
+        upd_cont[1] = " " + self.location.toPlainText()
         updated_content.append(":".join(upd_cont))
 
         # Дата измерения
         upd_cont = content[2].split(":", 1)
-        upd_cont[1] = " " + datetime.date.today().strftime("%d.%m.%y") + "\n"
+        upd_cont[1] = " " + datetime.date.today().strftime("%d.%m.%y")
         updated_content.append(":".join(upd_cont))
 
         # Оператор
         upd_cont = content[3].split(":", 1)
-        upd_cont[1] = " " + self.operator.toPlainText() + "\n"
+        upd_cont[1] = " " + self.operator.toPlainText()
         updated_content.append(":".join(upd_cont))
 
         with open("./metadata.txt", "w") as file:
