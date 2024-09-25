@@ -29,7 +29,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.date = self.findChild(QtWidgets.QTextBrowser, 'date')
         self.open_button = self.findChild(QtWidgets.QPushButton, 'open_button')
         self.file_name_display = self.findChild(QtWidgets.QTextBrowser, 'file_name')
-
+        self.open_settings = self.findChild(QtWidgets.QPushButton, 'open_settings')
         self.keyboard = self.findChild(QtWidgets.QPushButton, 'keyboard_button')
         self.sheetName = self.findChild(QtWidgets.QPlainTextEdit, 'sheet_name')
         self.calculate = self.findChild(QtWidgets.QPushButton, 'save_button')
@@ -68,6 +68,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.calculate.clicked.connect(self.doCalculation)
         self.input_file = None  # Инициализация переменной для пути к файлу
         self.saveSheetButton.clicked.connect(self.saveSheet)
+        self.open_settings.clicked.connect(self.open_window_settings)
+
+
 
         self.R15 = self.findChild(QtWidgets.QTextBrowser, 'R15')
         self.R60 = self.findChild(QtWidgets.QTextBrowser, 'R60')
@@ -88,6 +91,13 @@ class MainWindow(QtWidgets.QMainWindow):
         self.timer.start(100)  # Проверяем каждые 100 мс
 
         self.show()
+
+    def open_window_settings(self):
+        try:
+            second_window = SettingsWindow()
+            second_window.show()
+        except Exception as e:
+            print(f"Ошибка при открытии окна настроек")
 
     def run_async_tasks(self):
         self.loop.run_until_complete(self.touch_button())
@@ -210,14 +220,19 @@ class MainWindow(QtWidgets.QMainWindow):
         book['E1'].value = "Time"
         book['F1'].value = "Function"
         book['G1'].value = "R"
+
         book['H1'].value = "Unit"
         book['I1'].value = "R (T° corrected)"
         book['J1'].value = "U (Volt)"
+        book['J2'].value = self.position_V
         book['K1'].value = "DAR"
+        book['K2'].value = self.DAR
         book['L1'].value = "PI"
+        book['L2'].value = self.PI
         book['M1'].value = "C"
         book['N1'].value = "I"
         book['O1'].value = "DD"
+        book["O2"].value = self.DD
         book['P1'].value = "Comments"
         book['Q1'].value = "Next Test"
         book['R1'].value = "Time"
@@ -235,11 +250,11 @@ class MainWindow(QtWidgets.QMainWindow):
         default_position = 0
         default_time_position = 0
         #заполнение ячеек со значениями
-        for i in range(2, time // 5 + 3):
+        for i in range(2, time // 5 + 2):
             column = "R" + str(i)
             book[column].value =  default_time_position
             column = "S" + str(i)
-            book[column].value = self.position_v.value()
+            book[column].value = self.position_V
             column = "T" + str(i)
             book[column].value = R_izm[default_position]
             column = "U" + str(i)
@@ -248,10 +263,7 @@ class MainWindow(QtWidgets.QMainWindow):
             default_time_position = default_time_position + 5
 
 
-        if (self.sheetName.toPlainText() == ""):
-            sheet.save(("new_sheet.xlsx"))
-        else:
-            sheet.save((self.sheetName.toPlainText() + ".xlsx"))
+        sheet.save(("new_sheet.xlsx"))
         sheet.close()
 
     async def start_com(self):
@@ -433,7 +445,10 @@ class MainWindow(QtWidgets.QMainWindow):
             I_spectr = (I_apr - I_ut) * time #особое внимание этой строчке
 
 
-
+class SettingsWindow(QtWidgets.QMainWindow):
+    def __init__(self):
+        super(SettingsWindow, self).__init__()
+        uic.loadUi('secondUI.ui', self)
 
 
 if __name__ == "__main__":
