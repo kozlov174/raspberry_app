@@ -461,7 +461,7 @@ class SettingsWindow(QtWidgets.QMainWindow):
             upd_cont = content[0].split(":")
             self.name_obj.setText(upd_cont[1])
             upd_cont = content[1].split(":")
-            self.date = datetime.date()
+            self.date = datetime.date.today()
             upd_cont = content[3].split(":")
             self.operator.setText(upd_cont[1])
 
