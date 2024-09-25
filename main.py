@@ -199,11 +199,8 @@ class MainWindow(QtWidgets.QMainWindow):
             I_spectr = (I_apr - I_ut) * time #особое внимание этой строчке
 
     def saveSheet(self):
-        print(self.sheetName.toPlainText())
         sheet = openpyxl.Workbook()
         book = sheet['Sheet']
-        report = openpyxl.load_workbook(filename=self.input_file)
-        report_sheet = report['Лист1']
 
         #присваивание статических значений первой строки
         book['A1'].value = "Obj:Tst"
