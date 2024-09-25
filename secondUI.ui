@@ -169,7 +169,7 @@ background-repeat: no-repeat; /* Отключает повторение изо�
      </rect>
     </property>
    </widget>
-   <widget class="QPushButton" name="keyboard_button_2">
+   <widget class="QPushButton" name="save_button">
     <property name="geometry">
      <rect>
       <x>440</x>
