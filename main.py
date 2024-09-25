@@ -456,7 +456,7 @@ class SettingsWindow(QtWidgets.QMainWindow):
         self.date = self.findChild(QtWidgets.QTextEdit, 'date')
         self.operator = self.findChild(QtWidgets.QPushButton, 'operator')
 
-        with open("metadata.txt", "w+") as file:
+        with open("./metadata.txt", "r") as file:
             content = file.readlines()
             upd_cont = content[0].split(":")
             self.name_obj.setText(upd_cont[1])
