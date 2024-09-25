@@ -94,8 +94,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def open_window_settings(self):
         try:
-            second_window = SettingsWindow()
-            second_window.show()
+            self.second_window = SettingsWindow()
+            self.second_window.show()
         except Exception as e:
             print(f"Ошибка при открытии окна настроек")
 
