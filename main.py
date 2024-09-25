@@ -97,7 +97,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.second_window = SettingsWindow()
             self.second_window.show()
         except Exception as e:
-            print(f"Ошибка при открытии окна настроек")
+            print(f"Ошибка при открытии окна настроек {e}")
 
     def run_async_tasks(self):
         self.loop.run_until_complete(self.touch_button())
@@ -454,7 +454,7 @@ class SettingsWindow(QtWidgets.QMainWindow):
         self.name_obj = self.findChild(QtWidgets.QTextEdit, 'name_obj')
         self.location = self.findChild(QtWidgets.QTextEdit, 'location_obj')
         self.date = self.findChild(QtWidgets.QTextEdit, 'date')
-        self.operator = self.findChild(QtWidgets.QPushButton, 'operator')
+        self.operator = self.findChild(QtWidgets.QTextEdit, 'operator_2')
 
         with open("./metadata.txt", "r") as file:
             content = file.readlines()
