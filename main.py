@@ -457,6 +457,9 @@ class SettingsWindow(QtWidgets.QMainWindow):
         self.operator = self.findChild(QtWidgets.QTextEdit, 'operator_2')
         self.save_button = self.findChild(QtWidgets.QPushButton, 'save_button')
 
+        self.keyboard.clicked.connect(self.showKeyboard)
+        self.save_button.clicked.connect(self.saveSettings)
+
         with open("./metadata.txt", "r") as file:
             content = file.readlines()
             upd_cont = content[0].split(":")
@@ -468,10 +471,9 @@ class SettingsWindow(QtWidgets.QMainWindow):
             self.operator.setText(upd_cont[1])
 
 
-        self.keyboard.clicked.connect(self.showKeyboard)
-        self.save_button.clicked.connect(self.save)
 
-    def save(self):
+
+    def saveSettings(self):
         with open("./metadata.txt", "w") as file:
             content = file.readlines()
 
