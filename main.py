@@ -455,6 +455,7 @@ class SettingsWindow(QtWidgets.QMainWindow):
         self.location = self.findChild(QtWidgets.QTextEdit, 'location_obj')
         self.date = self.findChild(QtWidgets.QTextEdit, 'date')
         self.operator = self.findChild(QtWidgets.QTextEdit, 'operator_2')
+        self.save_button = self.findChild(QtWidgets.QPushButton, 'save_button')
 
         with open("./metadata.txt", "r") as file:
             content = file.readlines()
@@ -468,6 +469,7 @@ class SettingsWindow(QtWidgets.QMainWindow):
 
 
         self.keyboard.clicked.connect(self.showKeyboard)
+        self.save_button.clicked.connect(self.save)
 
     def save(self):
         with open("./metadata.txt", "w") as file:
