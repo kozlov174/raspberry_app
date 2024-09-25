@@ -68,6 +68,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.start_button.clicked.connect(self.start_com)
         self.calculate.clicked.connect(self.doCalculation)
         self.input_file = None  # Инициализация переменной для пути к файлу
+        self.saveSheetButton.clicked.connect(self.saveSheet)
 
         self.R15 = self.findChild(QtWidgets.QTextBrowser, 'R15')
         self.R60 = self.findChild(QtWidgets.QTextBrowser, 'R60')
@@ -198,7 +199,7 @@ class MainWindow(QtWidgets.QMainWindow):
             I_ut = min(I_apr)
             I_spectr = (I_apr - I_ut) * time #особое внимание этой строчке
 
-    def saveSheet(self):
+    def saveSheet(self, time_izm, R_izm):
         print(self.sheetName.toPlainText())
         sheet = openpyxl.Workbook()
         book = sheet['Sheet']
@@ -230,21 +231,23 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
         #присваивание динамических значений второй и последующих строк
-        time = self.time.value()
+        time = self.time_izm.value()
         book['D2'].value = datetime.datetime.now().strftime('%d-%m-%Y')
         book['E2'].value = datetime.datetime.now().strftime('%H:%M:%S')
-
+        
+        default_position = 0
+        
         #заполнение ячеек со значениями
         for i in range(2, time // 5 + 3):
             column = "R" + str(i)
-            book[column].value = 5 * (i-2)
+            book[column].value =  time_izm[default_position]
             column = "S" + str(i)
-            book[column].value = report_sheet[column].value
+            book[column].value = self.position_v.value()
             column = "T" + str(i)
-            book[column].value = report_sheet[column].value
+            book[column].value = R_izm[default_position]
             column = "U" + str(i)
-            book[column].value = int(report_sheet["T" + str(i)].value) / 4
-
+            book[column].value = R_izm[default_position]
+            default_position = default_position + 1
 
 
         if (self.sheetName.toPlainText() == ""):
@@ -254,11 +257,6 @@ class MainWindow(QtWidgets.QMainWindow):
         sheet.close()
 
     async def start_com(self):
-        # Создание и отображение всплывающего окна
-        duration = int(self.time_izm.currentText()) * 60
-        self.msg_thread = MessageBoxThread(duration)
-        self.msg_thread.finished.connect(self.on_message_box_closed)
-        self.msg_thread.start()
         try:
             port_name = "COM4"
             self.status.setText("начало измерений")
@@ -439,41 +437,8 @@ class MainWindow(QtWidgets.QMainWindow):
             I_spectr = (I_apr - I_ut) * time #особое внимание этой строчке
 
 
-class CustomMessageBox(QMessageBox):
-    def __init__(self, duration, parent=None):
-        super().__init__(parent)
-        self.setIcon(QMessageBox.Information)
-        self.setText("Интерфейс заблокирован на время измерений. Осталось:")
-        self.setWindowTitle("Предупреждение!!")
-        self.setStandardButtons(QMessageBox.NoButton)
-        self.time_left = duration  # Время теперь передается как параметр
 
-        self.timer = QTimer(self)
-        self.timer.timeout.connect(self.update_timer)
-        self.timer.start(1000)  # Обновление каждую секунду
 
-        self.update_timer()
-
-    def update_timer(self):
-        if self.time_left > 0:
-            self.setInformativeText(f"{self.time_left} секунд")
-            self.time_left -= 1
-        else:
-            self.timer.stop()
-            self.accept()
-
-class MessageBoxThread(QThread):
-    finished = pyqtSignal()
-
-    def __init__(self, duration):
-        super().__init__()
-        self.duration = duration
-
-    def run(self):
-        msg_box = CustomMessageBox(self.duration)
-        msg_box.show()
-        msg_box.exec_()  # This will block until the message box is closed
-        self.finished.emit()
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)

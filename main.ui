@@ -731,7 +731,7 @@ background-repeat: no-repeat; /* Отключает повторение изо�
     <property name="geometry">
      <rect>
       <x>250</x>
-      <y>189</y>
+      <y>190</y>
       <width>181</width>
       <height>51</height>
      </rect>
@@ -743,37 +743,9 @@ background-repeat: no-repeat; /* Отключает повторение изо�
      </font>
     </property>
     <property name="text">
-     <string>Открыть</string>
+     <string>Настройки</string>
     </property>
    </widget>
-  </widget>
-  <widget class="QMenuBar" name="menuBar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>800</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <widget class="QMenu" name="menu_1">
-    <property name="title">
-     <string>Окно 1</string>
-    </property>
-   </widget>
-   <widget class="QMenu" name="menu_2">
-    <property name="title">
-     <string>Окно 2</string>
-    </property>
-   </widget>
-   <widget class="QMenu" name="menu_3">
-    <property name="title">
-     <string>Окно 3</string>
-    </property>
-   </widget>
-   <addaction name="menu_1"/>
-   <addaction name="menu_2"/>
-   <addaction name="menu_3"/>
   </widget>
   <action name="action">
    <property name="checkable">
