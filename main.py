@@ -485,7 +485,7 @@ class SettingsWindow(QtWidgets.QMainWindow):
 
         # Место расположения объекта измерения
         upd_cont = content[1].split(":", 1)
-        upd_cont[1] = " " + self.location.text() + "\n"
+        upd_cont[1] = " " + self.location.toPlainText() + "\n"
         updated_content.append(":".join(upd_cont))
 
         # Дата измерения
