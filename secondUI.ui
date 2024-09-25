@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>SettingsWindow</class>
- <widget class="QMainWindow" name="SettingsWindow">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
     <width>555</width>
-    <height>338</height>
+    <height>353</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -108,6 +108,65 @@
     </property>
     <property name="textFormat">
      <enum>Qt::RichText</enum>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="keyboard_button">
+    <property name="geometry">
+     <rect>
+      <x>500</x>
+      <y>10</y>
+      <width>50</width>
+      <height>50</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-image: url(&quot;keyboard.png&quot;);
+background-size: contain; /* Уменьшает изображение, чтобы оно полностью вписалось в контейнер */
+background-position: center; /* Центрирует изображение */
+background-repeat: no-repeat; /* Отключает повторение изображения */</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QTextEdit" name="name_obj">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>70</y>
+      <width>401</width>
+      <height>31</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QTextEdit" name="location_obj">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>140</y>
+      <width>401</width>
+      <height>31</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QTextEdit" name="date">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>220</y>
+      <width>401</width>
+      <height>31</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QTextEdit" name="operator_2">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>280</y>
+      <width>401</width>
+      <height>31</height>
+     </rect>
     </property>
    </widget>
   </widget>

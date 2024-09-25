@@ -450,6 +450,28 @@ class SettingsWindow(QtWidgets.QMainWindow):
         super(SettingsWindow, self).__init__()
         uic.loadUi('secondUI.ui', self)
 
+        self.keyboard = self.findChild(QtWidgets.QPushButton, 'keyboard_button')
+        self.name_obj = self.findChild(QtWidgets.QTextEdit, 'name_obj')
+        self.location = self.findChild(QtWidgets.QTextEdit, 'location_obj')
+        self.date = self.findChild(QtWidgets.QTextEdit, 'date')
+        self.operator = self.findChild(QtWidgets.QPushButton, 'operator')
+
+        with open("metadata.txt", "w+") as file:
+            content = file.readlines()
+            upd_cont = content[0].split(":")
+            self.name_obj.setText(upd_cont[1])
+            upd_cont = content[1].split(":")
+            self.date = datetime.date()
+            upd_cont = content[3].split(":")
+            self.operator.setText(upd_cont[1])
+
+
+        self.keyboard.clicked.connect(self.showKeyboard)
+
+
+    def showKeyboard(self):
+        print("click button")
+        subprocess.run(['florence'])
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
