@@ -228,7 +228,7 @@ class MainWindow(QtWidgets.QMainWindow):
         R_izm = self.R_itog_array
 
         #присваивание динамических значений второй и последующих строк
-        time = int(self.time_izm.value())
+        time = int(self.time_izm.currentText()) * 60
         book['D2'].value = datetime.datetime.now().strftime('%d-%m-%Y')
         book['E2'].value = datetime.datetime.now().strftime('%H:%M:%S')
         
