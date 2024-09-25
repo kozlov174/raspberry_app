@@ -461,6 +461,7 @@ class SettingsWindow(QtWidgets.QMainWindow):
             upd_cont = content[0].split(":")
             self.name_obj.setText(upd_cont[1])
             upd_cont = content[1].split(":")
+            self.location.setText(upd_cont[1])
             self.date = datetime.date.today()
             upd_cont = content[3].split(":")
             self.operator.setText(upd_cont[1])
@@ -468,6 +469,21 @@ class SettingsWindow(QtWidgets.QMainWindow):
 
         self.keyboard.clicked.connect(self.showKeyboard)
 
+    def save(self):
+        with open("./metadata.txt", "w") as file:
+            content = file.readlines()
+
+            upd_cont = content[0].split(":")
+            upd_cont[1] = self.name_obj.toPlainText()
+
+            upd_cont = content[1].split(":")
+            self.location.setText(upd_cont[1])
+
+            upd_cont = content[2].split(":")
+            upd_cont[1] = datetime.date.today()
+
+            upd_cont = content[3].split(":")
+            upd_cont[1] = self.operator.toPlainText()
 
     def showKeyboard(self):
         print("click button")
