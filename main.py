@@ -1,5 +1,6 @@
 import datetime
 import math
+import re
 import sys
 import asyncio
 from time import sleep
@@ -250,7 +251,7 @@ class MainWindow(QtWidgets.QMainWindow):
         default_position = 0
         default_time_position = 0
         #заполнение ячеек со значениями
-        for i in range(2, time // 5 + 2):
+        for i in range(2, time // 5 + 3):
             column = "R" + str(i)
             book[column].value =  default_time_position
             column = "S" + str(i)
@@ -382,7 +383,8 @@ class MainWindow(QtWidgets.QMainWindow):
                 volt_array = []
                 R_array = []
                 base_index = 2
-                end_array = end_output.decode("utf-8").split("; ")
+                decoded_output = end_output.decode("utf-8")
+                end_array = re.split(r';\*?\s?0?\s',decoded_output)
                 for i in range(0, time_izm * 60 + 5, 5):
                     volt_array.append(int(self.position_V))
                     time_array.append(i)
