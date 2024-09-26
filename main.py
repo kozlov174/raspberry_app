@@ -388,7 +388,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 base_index = 2
                 decoded_output = end_output.decode("utf-8")
                 end_array = decoded_output.split(";")
-                for i in range(0, time_izm * 60 + 5, 5):
+                for i in range(0, time_izm * 60, 5):
                     volt_array.append(int(self.position_V))
                     time_array.append(i)
                     R = end_array[base_index].split("E")
@@ -403,7 +403,9 @@ class MainWindow(QtWidgets.QMainWindow):
                 print(R_array)
                 self.R_itog_array = R_array
                 self.graphWidget.plot(time_array, R_array, pen=pg.mkPen(color='b', width=3))
+                print("считывание финального измерения")
                 ser.write(bytes.fromhex("44670D0A"))
+                sleep(2)
                 output = ser.readline()
                 output = output.decode("utf-8")
                 result_array = output.split("; ")
