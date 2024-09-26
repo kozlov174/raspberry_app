@@ -367,7 +367,7 @@ class MainWindow(QtWidgets.QMainWindow):
                     if len(output) > 30:
                         time.sleep(1)
                         new_str = output.decode("utf-8")
-                        new_array = new_str.split(";")
+                        new_array = re.split(r';\*?\s?0?\s', new_str)
                         self.graphWidget.clear()
                         if new_array[9][0] == "U":
                             r_itog = 0
