@@ -363,7 +363,6 @@ class MainWindow(QtWidgets.QMainWindow):
                 for i in range(time_izm * 60 + 2):
                     ser.write(bytes.fromhex("44670D0A"))
                     output = ser.readline()
-                    print(f"Received output: {output}")
                     if len(output) > 30:
                         time.sleep(1)
                         new_str = output.decode("utf-8")
@@ -407,6 +406,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 ser.write(bytes.fromhex("44670D0A"))
                 sleep(2)
                 output = ser.readline()
+                print(f"Received output: {output}")
                 output = output.decode("utf-8")
                 result_array = output.split("; ")
                 C = result_array[12].split("E")
