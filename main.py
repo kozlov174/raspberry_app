@@ -367,7 +367,7 @@ class MainWindow(QtWidgets.QMainWindow):
                     if len(output) > 30:
                         time.sleep(1)
                         new_str = output.decode("utf-8")
-                        new_array = re.split(r';\*?\s?0?\s?', new_str)
+                        new_array = re.split(r";|; |;\* |;O |;U ", new_str)
                         self.graphWidget.clear()
                         if new_array[9][0] == "U":
                             r_itog = 0
@@ -389,7 +389,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 R_array = []
                 base_index = 2
                 decoded_output = end_output.decode("utf-8")
-                end_array = re.split(r';\*?\s?0?\s?',decoded_output)
+                end_array = re.split(r";|; |;\* |;O |;U ",decoded_output)
                 for i in range(0, time_izm * 60 + 5, 5):
                     volt_array.append(int(self.position_V))
                     time_array.append(i)
