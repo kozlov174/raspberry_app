@@ -367,13 +367,11 @@ class MainWindow(QtWidgets.QMainWindow):
                     if len(output) > 30:
                         time.sleep(1)
                         new_str = output.decode("utf-8")
-                        new_array = re.split(r";|; |;\* |;O |;U ", new_str)
+                        new_array = new_str.split(";")
                         self.graphWidget.clear()
-                        if new_array[9][0] == "U":
-                            r_itog = 0
-                        else:
-                            R = new_array[9].split("E")
-                            r_itog = float(R[0]) * 10 ** int(R[1])
+                        R = new_array[9].split("E")
+                        R[0] = R[0][1:]
+                        r_itog = float(R[0]) * 10 ** int(R[1])
                         if r_itog > 0:
                             time_array.append(int(new_array[4]))
                             R_array.append(r_itog)
@@ -389,14 +387,16 @@ class MainWindow(QtWidgets.QMainWindow):
                 R_array = []
                 base_index = 2
                 decoded_output = end_output.decode("utf-8")
-                end_array = re.split(r";|; |;\* |;O |;U ",decoded_output)
+                end_array = decoded_output.split(";")
                 for i in range(0, time_izm * 60 + 5, 5):
                     volt_array.append(int(self.position_V))
                     time_array.append(i)
                     R = end_array[base_index].split("E")
                     if i == time_izm * 60:
+                        R[0] = R[0][1:]
                         itogR = float(R[0]) * 10 ** int(R[1][:-4])
                     else:
+                        R[0] = R[0][1:]
                         itogR = float(R[0]) * 10 ** int(R[1])
                     R_array.append(itogR)
                     base_index += 2
