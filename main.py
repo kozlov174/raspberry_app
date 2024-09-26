@@ -229,9 +229,9 @@ class MainWindow(QtWidgets.QMainWindow):
         book['J1'].value = "U (Volt)"
         book['J2'].value = self.position_V
         book['K1'].value = "DAR"
-        book['K2'].value = self.DAR
+        book['K2'].value = self.DAR.toPlainText()
         book['L1'].value = "PI"
-        book['L2'].value = self.PI
+        book['L2'].value = self.PI.toPlainText()
         book['M1'].value = "C"
         book['M2'].value = self.C
         book['N1'].value = "I"
@@ -401,6 +401,7 @@ class MainWindow(QtWidgets.QMainWindow):
                     base_index += 2
                 print(R_array)
                 self.R_itog_array = R_array
+                print(R_array)
                 self.graphWidget.plot(time_array, R_array, pen=pg.mkPen(color='b', width=3))
                 print("считывание финального измерения")
                 ser.write(bytes.fromhex("44670D0A"))
