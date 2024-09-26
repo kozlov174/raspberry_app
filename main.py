@@ -82,6 +82,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.W = self.findChild(QtWidgets.QTextBrowser, 'W')
         self.DP = self.findChild(QtWidgets.QTextBrowser, 'DP')
         self.Res = self.findChild(QtWidgets.QTextBrowser, 'Res')
+        self.C = 0
+        self.I = 0
 
         # Start the touch button coroutine
         self.loop = asyncio.get_event_loop()
@@ -231,7 +233,10 @@ class MainWindow(QtWidgets.QMainWindow):
         book['L1'].value = "PI"
         book['L2'].value = self.PI
         book['M1'].value = "C"
+        book['M2'].value = self.C
         book['N1'].value = "I"
+        book['N2'].value = self.I
+
         book['O1'].value = "DD"
         book["O2"].value = self.DD
         book['P1'].value = "Comments"
@@ -398,6 +403,17 @@ class MainWindow(QtWidgets.QMainWindow):
                 print(R_array)
                 self.R_itog_array = R_array
                 self.graphWidget.plot(time_array, R_array, pen=pg.mkPen(color='b', width=3))
+                ser.write(bytes.fromhex("44670D0A"))
+                output = ser.readline()
+                output = output.decode("utf-8")
+                result_array = output.split("; ")
+                C = result_array[12].split("E")
+                C_itog = float(C[0]) * 10 ** int(C[1])
+                self.C = C_itog
+                I = result_array[8].split("E")
+                I_itog = float(I[0]) * 10 ** int(I[1])
+                self.I = I_itog
+                #ток в степени -8(элемент 8)
                 ser.close()
                 self.calculate_itog(time_array, volt_array, R_array)
                 self.status.setText("Serial port closed")
