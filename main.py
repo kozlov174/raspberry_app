@@ -408,11 +408,13 @@ class MainWindow(QtWidgets.QMainWindow):
                 output = ser.readline()
                 print(f"Received output: {output}")
                 output = output.decode("utf-8")
-                result_array = output.split("; ")
+                result_array = output.split(";")
                 C = result_array[12].split("E")
+                C[0] = C[0][1:]
                 C_itog = float(C[0]) * 10 ** int(C[1])
                 self.C = C_itog
                 I = result_array[8].split("E")
+                I[0] = I[0][1:]
                 I_itog = float(I[0]) * 10 ** int(I[1])
                 self.I = I_itog
                 #ток в степени -8(элемент 8)
