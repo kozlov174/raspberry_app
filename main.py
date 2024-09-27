@@ -44,6 +44,9 @@ class MainWindow(QtWidgets.QMainWindow):
         GPIO.setmode(GPIO.BCM)
         try:
             GPIO.setup(5, GPIO.IN, GPIO.PUD_UP)
+            GPIO.setup(16, GPIO.IN, GPIO.PUD_UP)
+            GPIO.setup(20, GPIO.IN, GPIO.PUD_UP)
+            GPIO.setup(21, GPIO.IN, GPIO.PUD_UP)
         except Exception as e:
             print(f"Error setting up GPIO: {e}")
 
@@ -106,8 +109,49 @@ class MainWindow(QtWidgets.QMainWindow):
         self.loop.run_until_complete(self.touch_button())
 
     async def touch_button(self):
+        if GPIO.input(16) == 0:
+            self.position_V = 500
+            print("500В")
+        if GPIO.input(20) == 0:
+            self.position_V = 1000
+            print("1000В")
+        if GPIO.input(21) == 0:
+            self.position_V = 2500
+            print("2500В")
         if GPIO.input(5) == 0:
             await self.start_com()
+
+    def convert_farads(self, value):
+        units = [
+            (1e-12, 'pФ)'),
+            (1e-9, 'nФ'),
+            (1e-6, 'µФ'),
+            (1e-3, 'mФ'),
+            (1, 'фарад (Ф)')
+        ]
+
+        for factor, unit in units:
+            if value >= factor:
+                converted_value = value / factor
+                return f"{converted_value:.12g} {unit}"
+
+        return f"{value} фарад (Ф)"
+
+    def convert_amperes(self, value):
+        units = [
+            (1e-12, 'pА'),
+            (1e-9, 'nА'),
+            (1e-6, 'µА'),
+            (1e-3, 'mА'),
+            (1, 'А')
+        ]
+
+        for factor, unit in units:
+            if value >= factor:
+                converted_value = value / factor
+                return f"{converted_value:.12g} {unit}"
+
+        return f"{value} ампер (А)"
 
     def showDialog(self):
         self.input_file = easygui.fileopenbox()
@@ -233,9 +277,9 @@ class MainWindow(QtWidgets.QMainWindow):
         book['L1'].value = "PI"
         book['L2'].value = self.PI.toPlainText()
         book['M1'].value = "C"
-        book['M2'].value = self.C
+        book['M2'].value = self.convert_farads(int(self.C))
         book['N1'].value = "I"
-        book['N2'].value = self.I
+        book['N2'].value = self.convert_amperes(int(self.I))
 
         book['O1'].value = "DD"
         book["O2"].value = self.DD.toPlainText()
@@ -256,13 +300,13 @@ class MainWindow(QtWidgets.QMainWindow):
         default_position = 0
         default_time_position = 0
         #заполнение ячеек со значениями
-        for i in range(2, time // 5 + 3):
+        for i in range(2, time // 5 + 2):
             column = "R" + str(i)
             book[column].value =  default_time_position
             column = "S" + str(i)
             book[column].value = self.position_V
             column = "T" + str(i)
-            book[column].value = R_izm[default_position]
+            book[column].value = R_izm[default_position] // 1000000
             column = "U" + str(i)
             book[column].value = R_izm[default_position]
             default_position = default_position + 1
