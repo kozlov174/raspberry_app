@@ -238,7 +238,7 @@ class MainWindow(QtWidgets.QMainWindow):
         book['N2'].value = self.I
 
         book['O1'].value = "DD"
-        book["O2"].value = self.DD
+        book["O2"].value = self.DD.toPlainText()
         book['P1'].value = "Comments"
         book['Q1'].value = "Next Test"
         book['R1'].value = "Time"
