@@ -49,7 +49,15 @@ class MainWindow(QtWidgets.QMainWindow):
             GPIO.setup(21, GPIO.IN, GPIO.PUD_UP)
         except Exception as e:
             print(f"Error setting up GPIO: {e}")
-
+        if GPIO.input(16) == 0:
+            self.position_V = 500
+            print("500В")
+        if GPIO.input(20) == 0:
+            self.position_V = 1000
+            print("1000В")
+        if GPIO.input(21) == 0:
+            self.position_V = 2500
+            print("2500В")
         self.graphWidget = self.findChild(pg.PlotWidget, 'graphWidget')  # Ensure this is initialized
         self.graphWidget.setBackground('w')
         self.graphWidget.setLabel('left', 'Сопротивление, Ом', **{'font-size': '20pt'})
@@ -108,15 +116,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.loop.run_until_complete(self.touch_button())
 
     async def touch_button(self):
-        if GPIO.input(16) == 0:
-            self.position_V = 500
-            print("500В")
-        if GPIO.input(20) == 0:
-            self.position_V = 1000
-            print("1000В")
-        if GPIO.input(21) == 0:
-            self.position_V = 2500
-            print("2500В")
+
         if GPIO.input(5) == 0:
             await self.start_com()
 
