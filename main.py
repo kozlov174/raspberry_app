@@ -75,7 +75,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.open_settings.clicked.connect(self.open_window_settings)
 
 
-
         self.R15 = self.findChild(QtWidgets.QTextBrowser, 'R15')
         self.R60 = self.findChild(QtWidgets.QTextBrowser, 'R60')
         self.Kabs = self.findChild(QtWidgets.QTextBrowser, 'Kabs')
@@ -312,7 +311,21 @@ class MainWindow(QtWidgets.QMainWindow):
             default_position = default_position + 1
             default_time_position = default_time_position + 5
 
-
+        book = sheet.create_sheet('Метаданные')
+        with open("./metadata.txt", "r") as file:
+            content = file.readlines()
+            upd_cont = content[0].split(":")
+            book['A1'] = upd_cont[0]
+            book['A2'] = upd_cont[1]
+            upd_cont = content[1].split(":")
+            book['B1'] = upd_cont[0]
+            book['B2'] = upd_cont[1]
+            upd_cont = content[2].split(":")
+            book['C1'] = upd_cont[0]
+            book['C2'] = upd_cont[1]
+            upd_cont = content[3].split(":")
+            book['D1'] = upd_cont[0]
+            book['D2'] = upd_cont[1]
         sheet.save(("new_sheet.xlsx"))
         sheet.close()
 
