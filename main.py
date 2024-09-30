@@ -76,7 +76,6 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
         self.open_button.clicked.connect(self.showDialog)
-        self.keyboard.clicked.connect(self.showKeyboard)
         self.calculate.clicked.connect(self.doCalculation)
         self.input_file = None  # Инициализация переменной для пути к файлу
         self.saveSheetButton.clicked.connect(self.saveSheet)
@@ -326,7 +325,8 @@ class MainWindow(QtWidgets.QMainWindow):
             upd_cont = content[3].split(":")
             book['D1'] = upd_cont[0]
             book['D2'] = upd_cont[1]
-        sheet.save(("new_sheet.xlsx"))
+            sheet_name = book['A2'] + book['C2']
+        sheet.save(sheet_name + ".xlsx")
         sheet.close()
 
     async def start_com(self):
@@ -459,7 +459,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 print(R_array)
                 self.R_itog_array = R_array
                 print(R_array)
-                self.graphWidget.plot(time_array, R_array, pen=pg.mkPen(color='b', width=3))
+
                 print("считывание финального измерения")
                 ser.write(bytes.fromhex("44670D0A"))
                 sleep(2)
@@ -477,6 +477,10 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.I = I_itog
                 #ток в степени -8(элемент 8)
                 ser.close()
+                p = np.polyfit(time_array, R_array, 4)
+                R_apr = np.polyval(p, time_array)
+                self.graphWidget.plot(time_array, R_array, pen=pg.mkPen(color='b', width=3))
+                self.graphWidget.plot(time_array, R_apr, pen=pg.mkPen(color='k', width=3), name='R апроксимированное')
                 self.calculate_itog(time_array, volt_array, R_array)
                 self.status.setText("Serial port closed")
         except serial.SerialException as e:
@@ -521,9 +525,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.Kabs.setText(str(round(Kabs, 3)))
         DP = 200 * TPI ** 0.251
         self.DP.setText(str(math.trunc(DP)))
-        R15 = R_apr[3] / 10**9
+        R15 = R_meas[4] / 10**9
         self.R15.setText(str(round(R15, 3)))
-        R60 = R_apr[11] / 10 ** 9
+        R60 = R_meas[12] / 10 ** 9
         self.R60.setText(str(round(R60, 3)))
         if time > 100:
             I_ut = min(I_apr)
