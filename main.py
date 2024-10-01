@@ -336,7 +336,7 @@ class MainWindow(QtWidgets.QMainWindow):
             with serial.Serial("/dev/ttyUSB0", baudrate=9600, timeout=1) as ser:
                 time.sleep(1)  # Подождите, пока порт откроется
                 print(f"Serial port {port_name} open")
-
+                time_izm = int(self.time_izm.currentText())
                 start_commands = [
                     "40526E0D0A",
                     "4055660D0A",
@@ -358,43 +358,72 @@ class MainWindow(QtWidgets.QMainWindow):
                         print(f"Received output: {output}")
                         time.sleep(1)  # Пауза между командами (если необходимо)
                     self.basic_flag = 1
-                if self.position_V == 500:
+                if self.position_V == 500 and time_izm == 1:
                     commands = [
                         "404045723030300D0A",
                         "457730303030453033334233433033314530303343303235383032353830303041303030410D0A",
                         "404045723030300D0A",
                         "457730303030453033334233433033314530303343303235383032353830303035303030410D0A",
                         "404045723030300D0A",
-                        "457730303030453033334233433033314530303343303235383030336330303035303030410D0A",
+                        "457730303030453033334233433033314530303343303235383030343630303035303030410D0A",
                         "4466666666660D0A",
                         "467332310D0A",
                         "42640D0A"
                     ]
-                elif self.position_V == 1000:
+                elif self.position_V == 1000 and time_izm == 1:
                     commands = [
                         "404045723030300D0A",
                         "457730303030453033334233433033314530303343303235383032353830303041303030410D0A",
                         "404045723030300D0A",
                         "457730303030453033334233433033314530303343303235383032353830303035303030410D0A",
                         "404045723030300D0A",
-                        "457730303030453033334233433033314530303343303235383030336330303035303030410D0A",
+                        "457730303030453033334233433033314530303343303235383030343630303035303030410D0A",
                         "4466666666660D0A",
                         "467332320D0A",
                         "42640D0A"
                     ]
-                elif self.position_V == 2500:
+                elif self.position_V == 2500 and time_izm == 1:
                     commands = [
                         "404045723030300D0A",
                         "457730303030453033334233433033314530303343303235383032353830303041303030410D0A",
                         "404045723030300D0A",
                         "457730303030453033334233433033314530303343303235383032353830303035303030410D0A",
                         "404045723030300D0A",
-                        "457730303030453033334233433033314530303343303235383030336330303035303030410D0A",
+                        "457730303030453033334233433033314530303343303235383030343630303035303030410D0A",
                         "4466666666660D0A",
                         "467332330D0A",
                         "42640D0A"
                     ]
-
+                    if self.position_V == 500 and time_izm == 10:
+                        commands = [
+                            "404045723030300D0A",
+                            "457730303030453033334233433033314530303343303235383032363230303035303030410D0A",
+                            "404045723030300D0A",
+                            "457730303030453033334233433033314530303343303235383032353830303035303030410D0A",
+                            "4466666666660D0A",
+                            "467332310D0A",
+                            "42640D0A"
+                        ]
+                    elif self.position_V == 1000 and time_izm == 1:
+                        commands = [
+                            "404045723030300D0A",
+                            "457730303030453033334233433033314530303343303235383032363230303035303030410D0A",
+                            "404045723030300D0A",
+                            "457730303030453033334233433033314530303343303235383032353830303035303030410D0A",
+                            "4466666666660D0A",
+                            "467332320D0A",
+                            "42640D0A"
+                        ]
+                    elif self.position_V == 2500 and time_izm == 1:
+                        commands = [
+                            "404045723030300D0A",
+                            "457730303030453033334233433033314530303343303235383032363230303035303030410D0A",
+                            "404045723030300D0A",
+                            "457730303030453033334233433033314530303343303235383032353830303035303030410D0A",
+                            "4466666666660D0A",
+                            "467332330D0A",
+                            "42640D0A"
+                        ]
                 # Отправка команд
                 for cmd in commands:
                     hex_cmd = bytes.fromhex(cmd)
@@ -416,8 +445,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 time.sleep(2)  # Дайте время устройству для отправки данных
                 time_array = []
                 R_array = []
-                time_izm = int(self.time_izm.currentText())
-                for i in range(time_izm * 60 + 2):
+                for i in range(time_izm * 60 + 10):
                     ser.write(bytes.fromhex("44670D0A"))
                     output = ser.readline()
                     if len(output) > 30:
@@ -444,7 +472,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 base_index = 2
                 decoded_output = end_output.decode("utf-8")
                 end_array = decoded_output.split(";")
-                for i in range(0, time_izm * 60, 5):
+                for i in range(0, time_izm * 60 + 15, 5):
                     volt_array.append(int(self.position_V))
                     time_array.append(i)
                     R = end_array[base_index].split("E")
@@ -477,11 +505,51 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.I = I_itog
                 #ток в степени -8(элемент 8)
                 ser.close()
+                time_array.pop(1)
+                time_array.pop(0)
+                volt_array.pop(0)
+                volt_array.pop(1)
+                R_array.pop(1)
+                R_array.pop(0)
                 p = np.polyfit(time_array, R_array, 4)
                 R_apr = np.polyval(p, time_array)
                 self.graphWidget.plot(time_array, R_array, pen=pg.mkPen(color='b', width=3))
                 self.graphWidget.plot(time_array, R_apr, pen=pg.mkPen(color='k', width=3), name='R апроксимированное')
                 self.calculate_itog(time_array, volt_array, R_array)
+
+
+                with open("./metadata.txt", "r") as file:
+                    content = file.readlines()
+                updated_content = []
+                # Наименование объекта измерения
+                upd_cont = content[0].split(":", 1)
+                upd_cont[1] = " " + self.name_obj.toPlainText()
+                updated_content.append(":".join(upd_cont))
+
+                # Место расположения объекта измерения
+                upd_cont = content[1].split(":", 1)
+                upd_cont[1] = " " + self.location.toPlainText()
+                updated_content.append(":".join(upd_cont))
+
+                # Дата измерения
+                upd_cont = content[2].split(":", 1)
+                upd_cont[1] = " " + datetime.date.today().strftime("%d.%m.%y")
+                updated_content.append(":".join(upd_cont))
+
+                # Оператор
+                upd_cont = content[3].split(":", 1)
+                upd_cont[1] = " " + self.operator.toPlainText()
+                updated_content.append(":".join(upd_cont))
+
+                # номер измерения
+                upd_cont = content[4].split(":", 1)
+                upd_cont[1] = int(upd_cont[1]) + 1
+                updated_content.append(":".join(upd_cont))
+
+                with open("./metadata.txt", "w") as file:
+                    file.writelines(updated_content)
+
+
                 self.status.setText("Serial port closed")
         except serial.SerialException as e:
             print(f"Error: {e}")
@@ -521,13 +589,13 @@ class MainWindow(QtWidgets.QMainWindow):
         self.W.setText(str(round(W, 3)))
         self.Res.setText(str(math.trunc(Res)))
 
-        Kabs = R_apr[11]/R_apr[3]
+        Kabs = R_apr[9]/R_apr[1]
         self.Kabs.setText(str(round(Kabs, 3)))
         DP = 200 * TPI ** 0.251
         self.DP.setText(str(math.trunc(DP)))
-        R15 = R_meas[4] / 10**9
+        R15 = R_meas[1] / 10**9
         self.R15.setText(str(round(R15, 3)))
-        R60 = R_meas[12] / 10 ** 9
+        R60 = R_meas[9] / 10 ** 9
         self.R60.setText(str(round(R60, 3)))
         if time > 100:
             I_ut = min(I_apr)
@@ -545,6 +613,7 @@ class SettingsWindow(QtWidgets.QMainWindow):
         self.date = self.findChild(QtWidgets.QTextEdit, 'date')
         self.operator = self.findChild(QtWidgets.QTextEdit, 'operator_2')
         self.save_button = self.findChild(QtWidgets.QPushButton, 'save_button')
+        self.number_measurment = self.findChild(QtWidgets.QTextEdit, 'number_measurment')
 
         self.keyboard.clicked.connect(self.showKeyboard)
         self.save_button.clicked.connect(self.saveSettings)
@@ -558,8 +627,8 @@ class SettingsWindow(QtWidgets.QMainWindow):
             self.date.setText(str(datetime.date.today()))
             upd_cont = content[3].split(":")
             self.operator.setText(upd_cont[1])
-
-    import datetime
+            upd_cont = content[4].split(":")
+            self.number_measurment = upd_cont[1]
 
     def saveSettings(self):
         with open("./metadata.txt", "r") as file:
@@ -585,6 +654,11 @@ class SettingsWindow(QtWidgets.QMainWindow):
         # Оператор
         upd_cont = content[3].split(":", 1)
         upd_cont[1] = " " + self.operator.toPlainText()
+        updated_content.append(":".join(upd_cont))
+
+        #номер измерения
+        upd_cont = content[4].split(":", 1)
+        upd_cont[1] = " " + self.number_measurment.toPlainText()
         updated_content.append(":".join(upd_cont))
 
         with open("./metadata.txt", "w") as file:
