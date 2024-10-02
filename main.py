@@ -15,11 +15,8 @@ import easygui
 import openpyxl
 import pyqtgraph as pg
 import subprocess
-from collections import deque
 import time
 
-from PyQt5.QtWidgets import QMessageBox
-from numpy.doc.constants import lines
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -276,9 +273,9 @@ class MainWindow(QtWidgets.QMainWindow):
         book['L1'].value = "PI"
         book['L2'].value = self.PI.toPlainText()
         book['M1'].value = "C"
-        book['M2'].value = self.convert_farads(int(self.C))
+        book['M2'].value = int(self.C)
         book['N1'].value = "I"
-        book['N2'].value = self.convert_amperes(int(self.I))
+        book['N2'].value = int(self.I)
 
         book['O1'].value = "DD"
         book["O2"].value = self.DD.toPlainText()
@@ -473,7 +470,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 base_index = 2
                 decoded_output = end_output.decode("utf-8")
                 end_array = decoded_output.split(";")
-                for i in range(0, time_izm * 60 + 12, 5):
+                for i in range(0, time_izm * 60 + 10, 5):
                     volt_array.append(int(self.position_V))
                     time_array.append(i)
                     R = end_array[base_index].split("E")
