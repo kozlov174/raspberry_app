@@ -19,6 +19,7 @@ from collections import deque
 import time
 
 from PyQt5.QtWidgets import QMessageBox
+from numpy.doc.constants import lines
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -472,7 +473,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 base_index = 2
                 decoded_output = end_output.decode("utf-8")
                 end_array = decoded_output.split(";")
-                for i in range(0, time_izm * 60 + 10, 5):
+                for i in range(0, time_izm * 60 + 12, 5):
                     volt_array.append(int(self.position_V))
                     time_array.append(i)
                     R = end_array[base_index].split("E")
@@ -519,35 +520,18 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
                 with open("./metadata.txt", "r") as file:
-                    content = file.readlines()
-                updated_content = []
-                # Наименование объекта измерения
-                upd_cont = content[0].split(":", 1)
-                upd_cont[1] = " " + self.name_obj.toPlainText()
-                updated_content.append(":".join(upd_cont))
+                    lines = file.readlines()
 
-                # Место расположения объекта измерения
-                upd_cont = content[1].split(":", 1)
-                upd_cont[1] = " " + self.location.toPlainText()
-                updated_content.append(":".join(upd_cont))
-
-                # Дата измерения
-                upd_cont = content[2].split(":", 1)
-                upd_cont[1] = " " + datetime.date.today().strftime("%d.%m.%y")
-                updated_content.append(":".join(upd_cont))
-
-                # Оператор
-                upd_cont = content[3].split(":", 1)
-                upd_cont[1] = " " + self.operator.toPlainText()
-                updated_content.append(":".join(upd_cont))
-
-                # номер измерения
-                upd_cont = content[4].split(":", 1)
-                upd_cont[1] = int(upd_cont[1]) + 1
-                updated_content.append(":".join(upd_cont))
+                for i, line in enumerate(lines):
+                    if line.startswith('Номер измерения:'):
+                        # Извлекаем текущее значение, увеличиваем его на 1 и обновляем строку
+                        current_value = int(line.split(': ')[1])
+                        new_value = current_value + 1
+                        lines[i] = f'Номер измерения: {new_value}\n'
+                        break
 
                 with open("./metadata.txt", "w") as file:
-                    file.writelines(updated_content)
+                    file.writelines(lines)
 
 
                 self.status.setText("Serial port closed")
