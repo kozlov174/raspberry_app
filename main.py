@@ -628,7 +628,7 @@ class SettingsWindow(QtWidgets.QMainWindow):
             upd_cont = content[3].split(":")
             self.operator.setText(upd_cont[1])
             upd_cont = content[4].split(":")
-            self.number_measurment = upd_cont[1]
+            self.number_measurment.setText(upd_cont[1])
 
     def saveSettings(self):
         with open("./metadata.txt", "r") as file:
