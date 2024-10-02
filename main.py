@@ -476,7 +476,7 @@ class MainWindow(QtWidgets.QMainWindow):
                     volt_array.append(int(self.position_V))
                     time_array.append(i)
                     R = end_array[base_index].split("E")
-                    if i == time_izm * 60:
+                    if i == time_izm * 60 + 10:
                         R[0] = R[0][1:]
                         itogR = float(R[0]) * 10 ** int(R[1][:-4])
                     else:
