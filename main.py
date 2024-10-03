@@ -446,19 +446,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 time_array = []
                 R_array = []
                 for i in range(time_izm * 60 + 10):
-                    ser.write(bytes.fromhex("44670D0A"))
-                    output = ser.readline()
-                    if len(output) > 30:
-                        time.sleep(1)
-                        new_str = output.decode("utf-8")
-                        new_array = new_str.split(";")
-                        self.graphWidget.clear()
-                        R = new_array[9].split("E")
-                        R[0] = R[0][1:]
-                        r_itog = float(R[0]) * 10 ** int(R[1])
-                        if r_itog > 0:
-                            time_array.append(int(new_array[4]))
-                            R_array.append(r_itog)
+                    time.sleep(1)
                 end_output = ""
                 while len(end_output) < 50:
                     ser.write(bytes.fromhex("4044700D0A"))
@@ -631,7 +619,7 @@ class SettingsWindow(QtWidgets.QMainWindow):
 
         # Дата измерения
         upd_cont = content[2].split(":", 1)
-        upd_cont[1] = " " + datetime.date.today().strftime("%d.%m.%y")
+        upd_cont[1] = " " + datetime.date.today().strftime("%d.%m.%y") + "\n"
         updated_content.append(":".join(upd_cont))
 
         # Оператор
