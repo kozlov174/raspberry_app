@@ -91,11 +91,9 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Start the touch button coroutine
         self.loop = asyncio.get_event_loop()
-        self.message = "Ожидание запуска"
         # Используем QTimer для запуска асинхронных задач
         self.timer = QTimer()
         self.timer.timeout.connect(self.run_async_tasks)
-        self.timer.timeout.connect(self.update_status)
         self.timer.start(100)# Проверяем каждые 100 мс
 
         self.show()
@@ -445,7 +443,6 @@ class MainWindow(QtWidgets.QMainWindow):
                 time_array = []
                 R_array = []
                 for i in range(time_izm * 60 + 5):
-                    self.message = "Идёт измерение. Осталось: " + str(time_izm * 60 + 5 - i) + " секунд"
                     time.sleep(1)
                 end_output = ""
                 while len(end_output) < 50:
@@ -520,7 +517,6 @@ class MainWindow(QtWidgets.QMainWindow):
                 with open("./metadata.txt", "w") as file:
                     file.writelines(lines)
 
-                self.status.setText("Serial port closed")
         except serial.SerialException as e:
             print(f"Error: {e}")
 
