@@ -71,6 +71,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.basic_flag = 0
         self.position_v = self.findChild(QtWidgets.QTextBrowser, 'position_V')
+        self.position_v.setText(str(self.position_V))
         self.date.setText(str(datetime.date.today()))
 
         self.open_button.clicked.connect(self.showDialog)
@@ -326,14 +327,6 @@ class MainWindow(QtWidgets.QMainWindow):
 
     async def start_com(self):
         try:
-            # Create and show the timer dialog
-            duration = 10  # Set the duration for the timer
-            timer_dialog = TimerDialog(duration)
-            timer_dialog.show()
-
-            # Run the dialog in a separate thread to keep it non-blocking
-            loop = asyncio.get_event_loop()
-            await loop.run_in_executor(None, timer_dialog.exec_)
 
             port_name = "COM4"
             # Открытие последовательного порта
@@ -341,6 +334,8 @@ class MainWindow(QtWidgets.QMainWindow):
                 time.sleep(1)  # Подождите, пока порт откроется
                 print(f"Serial port {port_name} open")
                 time_izm = int(self.time_izm.currentText())
+                self.status.setText("Отправляются команды настройки")
+                self.update()
                 start_commands = [
                     "40526E0D0A",
                     "4055660D0A",
@@ -449,7 +444,9 @@ class MainWindow(QtWidgets.QMainWindow):
                 time.sleep(2)  # Дайте время устройству для отправки данных
                 time_array = []
                 R_array = []
-                for i in range(time_izm * 60 + 10):
+                for i in range(time_izm * 60 + 5):
+                    self.status.setText("Идёт измерение. Осталось: " + str(time_izm * 60 + 5 - i) + " секунд")
+                    self.update()
                     time.sleep(1)
                 end_output = ""
                 while len(end_output) < 50:
@@ -643,27 +640,6 @@ class SettingsWindow(QtWidgets.QMainWindow):
         print("click button")
         subprocess.run(['florence'])
 
-
-class TimerDialog(QDialog):
-    def __init__(self, duration):
-        super().__init__()
-        self.setWindowTitle("Timer")
-        self.layout = QVBoxLayout()
-        self.label = QLabel(f"Time remaining: {duration} seconds")
-        self.layout.addWidget(self.label)
-        self.setLayout(self.layout)
-
-        self.timer = QTimer(self)
-        self.timer.timeout.connect(self.update_timer)
-        self.remaining_time = duration
-        self.timer.start(1000)  # Update every second
-
-    def update_timer(self):
-        self.remaining_time -= 1
-        self.label.setText(f"Time remaining: {self.remaining_time} seconds")
-        if self.remaining_time <= 0:
-            self.timer.stop()
-            self.accept()
 
 
 if __name__ == "__main__":

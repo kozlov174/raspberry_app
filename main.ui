@@ -24,7 +24,7 @@
     <property name="geometry">
      <rect>
       <x>550</x>
-      <y>1070</y>
+      <y>1110</y>
       <width>180</width>
       <height>59</height>
      </rect>
@@ -41,7 +41,7 @@
     <property name="geometry">
      <rect>
       <x>310</x>
-      <y>1070</y>
+      <y>1110</y>
       <width>180</width>
       <height>59</height>
      </rect>
@@ -58,7 +58,7 @@
     <property name="geometry">
      <rect>
       <x>70</x>
-      <y>1070</y>
+      <y>1110</y>
       <width>180</width>
       <height>59</height>
      </rect>
@@ -75,7 +75,7 @@
     <property name="geometry">
      <rect>
       <x>310</x>
-      <y>870</y>
+      <y>910</y>
       <width>180</width>
       <height>59</height>
      </rect>
@@ -92,7 +92,7 @@
     <property name="geometry">
      <rect>
       <x>550</x>
-      <y>870</y>
+      <y>910</y>
       <width>180</width>
       <height>59</height>
      </rect>
@@ -109,7 +109,7 @@
     <property name="geometry">
      <rect>
       <x>70</x>
-      <y>870</y>
+      <y>910</y>
       <width>180</width>
       <height>59</height>
      </rect>
@@ -133,7 +133,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>310</x>
-      <y>970</y>
+      <y>1010</y>
       <width>180</width>
       <height>59</height>
      </rect>
@@ -150,7 +150,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>550</x>
-      <y>970</y>
+      <y>1010</y>
       <width>180</width>
       <height>59</height>
      </rect>
@@ -167,7 +167,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>70</x>
-      <y>970</y>
+      <y>1010</y>
       <width>180</width>
       <height>59</height>
      </rect>
@@ -345,7 +345,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>70</x>
-      <y>940</y>
+      <y>980</y>
       <width>181</width>
       <height>21</height>
      </rect>
@@ -372,7 +372,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>310</x>
-      <y>940</y>
+      <y>980</y>
       <width>181</width>
       <height>21</height>
      </rect>
@@ -399,7 +399,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>550</x>
-      <y>940</y>
+      <y>980</y>
       <width>181</width>
       <height>21</height>
      </rect>
@@ -426,7 +426,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>70</x>
-      <y>840</y>
+      <y>880</y>
       <width>181</width>
       <height>21</height>
      </rect>
@@ -453,7 +453,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>310</x>
-      <y>840</y>
+      <y>880</y>
       <width>181</width>
       <height>21</height>
      </rect>
@@ -483,7 +483,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>550</x>
-      <y>840</y>
+      <y>880</y>
       <width>181</width>
       <height>21</height>
      </rect>
@@ -510,7 +510,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>70</x>
-      <y>1040</y>
+      <y>1080</y>
       <width>181</width>
       <height>21</height>
      </rect>
@@ -537,7 +537,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>310</x>
-      <y>1040</y>
+      <y>1080</y>
       <width>181</width>
       <height>21</height>
      </rect>
@@ -564,7 +564,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>550</x>
-      <y>1040</y>
+      <y>1080</y>
       <width>181</width>
       <height>21</height>
      </rect>
@@ -725,6 +725,57 @@ alternate-background-color: rgb(85, 0, 255);</string>
     </property>
     <property name="text">
      <string>Метаданные</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_14">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>810</y>
+      <width>181</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Verdana</family>
+      <pointsize>18</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
+    <property name="text">
+     <string>Статус:</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QTextBrowser" name="status">
+    <property name="geometry">
+     <rect>
+      <x>170</x>
+      <y>810</y>
+      <width>401</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>26</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="html">
+     <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:26pt; font-weight:600; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:30pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
   </widget>
