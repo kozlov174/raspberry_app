@@ -17,8 +17,6 @@ import pyqtgraph as pg
 import subprocess
 import time
 
-from gevent.testing.travis import commands
-
 
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
@@ -73,13 +71,11 @@ class MainWindow(QtWidgets.QMainWindow):
         self.position_v = self.findChild(QtWidgets.QTextBrowser, 'position_V')
         self.date.setText(str(datetime.date.today()))
 
-
         self.open_button.clicked.connect(self.showDialog)
         self.calculate.clicked.connect(self.doCalculation)
         self.input_file = None  # Инициализация переменной для пути к файлу
         self.saveSheetButton.clicked.connect(self.saveSheet)
         self.open_settings.clicked.connect(self.open_window_settings)
-
 
         self.R15 = self.findChild(QtWidgets.QTextBrowser, 'R15')
         self.R60 = self.findChild(QtWidgets.QTextBrowser, 'R60')
@@ -192,7 +188,7 @@ class MainWindow(QtWidgets.QMainWindow):
         value = Razmernost.loc[unit_index[0], 'Value']
         C_test = float(Cap[:n - 3]) * value
 
-        #self.time = self.findChild(QtWidgets.QSpinBox, 'time')
+        # self.time = self.findChild(QtWidgets.QSpinBox, 'time')
         time = 600
         Tizm = []
         Uizm = []
@@ -210,20 +206,18 @@ class MainWindow(QtWidgets.QMainWindow):
         if time > 100:
             I_apr = np.polyval(np.polyfit(Tizm[21:], I_t[21:], 4), Tizm)
 
-
-
         self.graphWidget.clear()
-        self.graphWidget.plot(Tizm, R_meas, pen = pg.mkPen(color='b', width=3), name='R измеренное ')
-        self.graphWidget.plot(Tizm, R_apr, pen = pg.mkPen(color='k', width=3), name='R апроксимированное')
+        self.graphWidget.plot(Tizm, R_meas, pen=pg.mkPen(color='b', width=3), name='R измеренное ')
+        self.graphWidget.plot(Tizm, R_apr, pen=pg.mkPen(color='k', width=3), name='R апроксимированное')
 
-        DAR=R_apr[12]/R_apr[6]
+        DAR = R_apr[12] / R_apr[6]
         self.DAR.setText(str(round(DAR, 3)))
         if (time // 5 + 1 < 121):
             PI = 0
             DD = 0
         else:
-            PI = R_apr[120]/R_apr[12]
-            DD = 1000 * (R_apr[120] - R_apr[10]) / (R_apr[12]*R_apr[120]*C_test)
+            PI = R_apr[120] / R_apr[12]
+            DD = 1000 * (R_apr[120] - R_apr[10]) / (R_apr[12] * R_apr[120] * C_test)
 
         self.PI.setText(str(round(PI, 3)))
         self.DD.setText(str(round(DD, 3)))
@@ -233,30 +227,30 @@ class MainWindow(QtWidgets.QMainWindow):
             TPI = 0
             Res = 0
         else:
-            W = 3.275 - 4.819*math.log10(PI)
-            TPI = 59.029*PI-56.391
+            W = 3.275 - 4.819 * math.log10(PI)
+            TPI = 59.029 * PI - 56.391
             Res = (70 - Tg) * ((TPI / 3) ** 0.251 - 1)
 
         self.W.setText(str(round(W, 3)))
         self.Res.setText(str(math.trunc(Res)))
 
-        Kabs = R_apr[12]/R_apr[3]
+        Kabs = R_apr[12] / R_apr[3]
         self.Kabs.setText(str(round(Kabs, 3)))
         DP = 200 * TPI ** 0.251
         self.DP.setText(str(math.trunc(DP)))
-        R15 = R_apr[3] / 10**9
+        R15 = R_apr[3] / 10 ** 9
         self.R15.setText(str(round(R15, 3)))
         R60 = R_apr[12] / 10 ** 9
         self.R60.setText(str(round(R60, 3)))
         if time > 100:
             I_ut = min(I_apr)
-            I_spectr = (I_apr - I_ut) * time #особое внимание этой строчке
+            I_spectr = (I_apr - I_ut) * time  # особое внимание этой строчке
 
     def saveSheet(self):
         sheet = openpyxl.Workbook()
         book = sheet['Sheet']
 
-        #присваивание статических значений первой строки
+        # присваивание статических значений первой строки
         book['A1'].value = "Obj:Tst"
         book['B1'].value = "Description"
         book['C1'].value = "Location"
@@ -289,17 +283,17 @@ class MainWindow(QtWidgets.QMainWindow):
 
         R_izm = self.R_itog_array
 
-        #присваивание динамических значений второй и последующих строк
+        # присваивание динамических значений второй и последующих строк
         time = int(self.time_izm.currentText()) * 60
         book['D2'].value = datetime.datetime.now().strftime('%d-%m-%Y')
         book['E2'].value = datetime.datetime.now().strftime('%H:%M:%S')
-        
+
         default_position = 0
         default_time_position = 0
-        #заполнение ячеек со значениями
+        # заполнение ячеек со значениями
         for i in range(2, time // 5 + 2):
             column = "R" + str(i)
-            book[column].value =  default_time_position
+            book[column].value = default_time_position
             column = "S" + str(i)
             book[column].value = self.position_V
             column = "T" + str(i)
@@ -372,27 +366,27 @@ class MainWindow(QtWidgets.QMainWindow):
                     ]
                 elif self.position_V == 1000 and time_izm == 1:
                     commands = [
-                    "404045723030300D0A",
-                    "457730303030453033334233433033314530303343303235383032353830303041303030410D0A",
-                    "404045723030300D0A",
-                    "457730303030453033334233433033314530303343303235383032353830303035303030410D0A",
-                    "404045723030300D0A",
-                    "457730303030453033334233433033314530303343303235383030343630303035303030410D0A",
-                    "4466666666660D0A",
-                    "467332320D0A",
-                    "42640D0A"
-                ]
+                        "404045723030300D0A",
+                        "457730303030453033334233433033314530303343303235383032353830303041303030410D0A",
+                        "404045723030300D0A",
+                        "457730303030453033334233433033314530303343303235383032353830303035303030410D0A",
+                        "404045723030300D0A",
+                        "457730303030453033334233433033314530303343303235383030343630303035303030410D0A",
+                        "4466666666660D0A",
+                        "467332320D0A",
+                        "42640D0A"
+                    ]
                 elif self.position_V == 2500 and time_izm == 1:
                     commands = [
-                    "404045723030300D0A",
-                    "457730303030453033334233433033314530303343303235383032353830303041303030410D0A",
-                    "404045723030300D0A",
-                    "457730303030453033334233433033314530303343303235383032353830303035303030410D0A",
-                    "404045723030300D0A",
-                    "457730303030453033334233433033314530303343303235383030343630303035303030410D0A",
-                    "4466666666660D0A",
-                    "467332330D0A",
-                    "42640D0A"
+                        "404045723030300D0A",
+                        "457730303030453033334233433033314530303343303235383032353830303041303030410D0A",
+                        "404045723030300D0A",
+                        "457730303030453033334233433033314530303343303235383032353830303035303030410D0A",
+                        "404045723030300D0A",
+                        "457730303030453033334233433033314530303343303235383030343630303035303030410D0A",
+                        "4466666666660D0A",
+                        "467332330D0A",
+                        "42640D0A"
                     ]
                 elif self.position_V == 500 and time_izm == 10:
                     commands = [
@@ -439,7 +433,6 @@ class MainWindow(QtWidgets.QMainWindow):
                     print(f"Received output: {output}")
                     time.sleep(3)  # Пауза между командами (если необходимо)
 
-
                 # Чтение данных после отправки команд
                 print("Reading data from serial port...")
                 time.sleep(2)  # Дайте время устройству для отправки данных
@@ -460,11 +453,12 @@ class MainWindow(QtWidgets.QMainWindow):
                 base_index = 2
                 decoded_output = end_output.decode("utf-8")
                 end_array = decoded_output.split(";")
-                for i in range(0, time_izm * 60 + 5, 5):
+                print('Array length' + " " + str(len(end_array)))
+                for i in range(0, time_izm * 60, 5):
                     volt_array.append(int(self.position_V))
                     time_array.append(i)
                     R = end_array[base_index].split("E")
-                    if i == time_izm * 60 + 10:
+                    if i == time_izm * 60:
                         R[0] = R[0][1:]
                         itogR = float(R[0]) * 10 ** int(R[1][:-4])
                     else:
@@ -491,7 +485,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 I[0] = I[0][1:]
                 I_itog = float(I[0]) * 10 ** int(I[1])
                 self.I = I_itog
-                #ток в степени -8(элемент 8)
+                # ток в степени -8(элемент 8)
                 ser.close()
                 time_array.pop(1)
                 time_array.pop(0)
@@ -501,10 +495,9 @@ class MainWindow(QtWidgets.QMainWindow):
                 R_array.pop(0)
                 p = np.polyfit(time_array, R_array, 4)
                 R_apr = np.polyval(p, time_array)
-                self.graphWidget.plot(time_array, R_array, pen=pg.mkPen(color='b', width=3),  name='R измеренное')
+                self.graphWidget.plot(time_array, R_array, pen=pg.mkPen(color='b', width=3), name='R измеренное')
                 self.graphWidget.plot(time_array, R_apr, pen=pg.mkPen(color='k', width=3), name='R апроксимированное')
                 self.calculate_itog(time_array, volt_array, R_array)
-
 
                 with open("./metadata.txt", "r") as file:
                     lines = file.readlines()
@@ -520,30 +513,29 @@ class MainWindow(QtWidgets.QMainWindow):
                 with open("./metadata.txt", "w") as file:
                     file.writelines(lines)
 
-
                 self.status.setText("Serial port closed")
         except serial.SerialException as e:
             print(f"Error: {e}")
 
-    def calculate_itog(self, Tizm, Uizm, R_meas ):
+    def calculate_itog(self, Tizm, Uizm, R_meas):
         I_t = np.array(Uizm) / np.array(R_meas)
 
         p = np.polyfit(Tizm, R_meas, 4)
         R_apr = np.polyval(p, Tizm)
-        if int(self.time_izm.currentText())*60 > 100:
+        if int(self.time_izm.currentText()) * 60 > 100:
             I_apr = np.polyval(np.polyfit(Tizm[21:], I_t[21:], 4), Tizm)
 
         if len(R_apr) > 12:
-            DAR=R_apr[11]/R_apr[5]
+            DAR = R_apr[11] / R_apr[5]
         else:
             DAR = 0
         self.DAR.setText(str(round(DAR, 3)))
-        if ( int(self.time_izm.currentText())*60 // 5 + 1 < 121):
+        if (int(self.time_izm.currentText()) * 60 // 5 + 1 < 121):
             PI = 0
             DD = 0
         else:
-            PI = R_apr[120]/R_apr[12]
-            DD = 1000 * (R_apr[120] - R_apr[10]) / (R_apr[12]*R_apr[120]*C_test)
+            PI = R_apr[117] / R_apr[9]
+            DD = 1000 * (R_apr[117] - R_apr[7]) / (R_apr[9] * R_apr[117] * self.C)
 
         self.PI.setText(str(round(PI, 3)))
         self.DD.setText(str(round(DD, 3)))
@@ -553,24 +545,24 @@ class MainWindow(QtWidgets.QMainWindow):
             TPI = 0
             Res = 0
         else:
-            W = 3.275 - 4.819*math.log10(PI)
-            TPI = 59.029*PI-56.391
-            Res = (70 - Tg) * ((TPI / 3) ** 0.251 - 1)
+            W = 3.275 - 4.819 * math.log10(PI)
+            TPI = 59.029 * PI - 56.391
+            Res = (70 - 45) * ((TPI / 3) ** 0.251 - 1)
 
         self.W.setText(str(round(W, 3)))
         self.Res.setText(str(math.trunc(Res)))
 
-        Kabs = R_apr[9]/R_apr[1]
+        Kabs = R_apr[9] / R_apr[1]
         self.Kabs.setText(str(round(Kabs, 3)))
         DP = 200 * TPI ** 0.251
         self.DP.setText(str(math.trunc(DP)))
-        R15 = R_meas[1] / 10**9
+        R15 = R_meas[1] / 10 ** 9
         self.R15.setText(str(round(R15, 3)))
         R60 = R_meas[9] / 10 ** 9
         self.R60.setText(str(round(R60, 3)))
         if time > 100:
             I_ut = min(I_apr)
-            I_spectr = (I_apr - I_ut) * time #особое внимание этой строчке
+            I_spectr = (I_apr - I_ut) * time  # особое внимание этой строчке
 
 
 class SettingsWindow(QtWidgets.QMainWindow):
@@ -627,7 +619,7 @@ class SettingsWindow(QtWidgets.QMainWindow):
         upd_cont[1] = " " + self.operator.toPlainText()
         updated_content.append(":".join(upd_cont))
 
-        #номер измерения
+        # номер измерения
         upd_cont = content[4].split(":", 1)
         upd_cont[1] = " " + self.number_measurment.toPlainText()
         updated_content.append(":".join(upd_cont))
@@ -638,6 +630,7 @@ class SettingsWindow(QtWidgets.QMainWindow):
     def showKeyboard(self):
         print("click button")
         subprocess.run(['florence'])
+
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
