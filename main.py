@@ -17,6 +17,8 @@ import pyqtgraph as pg
 import subprocess
 import time
 
+from PyQt5.QtWidgets import QVBoxLayout, QDialog, QLabel
+
 
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
@@ -291,7 +293,7 @@ class MainWindow(QtWidgets.QMainWindow):
         default_position = 0
         default_time_position = 0
         # заполнение ячеек со значениями
-        for i in range(2, time // 5 + 2):
+        for i in range(2, len(R_izm) + 1):
             column = "R" + str(i)
             book[column].value = default_time_position
             column = "S" + str(i)
@@ -324,6 +326,15 @@ class MainWindow(QtWidgets.QMainWindow):
 
     async def start_com(self):
         try:
+            # Create and show the timer dialog
+            duration = 10  # Set the duration for the timer
+            timer_dialog = TimerDialog(duration)
+            timer_dialog.show()
+
+            # Run the dialog in a separate thread to keep it non-blocking
+            loop = asyncio.get_event_loop()
+            await loop.run_in_executor(None, timer_dialog.exec_)
+
             port_name = "COM4"
             # Открытие последовательного порта
             with serial.Serial("/dev/ttyUSB0", baudrate=9600, timeout=1) as ser:
@@ -514,6 +525,7 @@ class MainWindow(QtWidgets.QMainWindow):
                     file.writelines(lines)
 
                 self.status.setText("Serial port closed")
+                timer_dialog.close()
         except serial.SerialException as e:
             print(f"Error: {e}")
 
@@ -630,6 +642,28 @@ class SettingsWindow(QtWidgets.QMainWindow):
     def showKeyboard(self):
         print("click button")
         subprocess.run(['florence'])
+
+
+class TimerDialog(QDialog):
+    def __init__(self, duration):
+        super().__init__()
+        self.setWindowTitle("Timer")
+        self.layout = QVBoxLayout()
+        self.label = QLabel(f"Time remaining: {duration} seconds")
+        self.layout.addWidget(self.label)
+        self.setLayout(self.layout)
+
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(self.update_timer)
+        self.remaining_time = duration
+        self.timer.start(1000)  # Update every second
+
+    def update_timer(self):
+        self.remaining_time -= 1
+        self.label.setText(f"Time remaining: {self.remaining_time} seconds")
+        if self.remaining_time <= 0:
+            self.timer.stop()
+            self.accept()
 
 
 if __name__ == "__main__":
