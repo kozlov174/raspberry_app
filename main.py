@@ -17,11 +17,7 @@ import pyqtgraph as pg
 import subprocess
 import time
 
-from PyQt5.QtWidgets import QVBoxLayout, QDialog, QLabel
-
-
 class MainWindow(QtWidgets.QMainWindow):
-    update_status_signal = QtCore.pyqtSignal(str)
     def __init__(self):
 
         super(MainWindow, self).__init__()
@@ -80,7 +76,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.input_file = None  # Инициализация переменной для пути к файлу
         self.saveSheetButton.clicked.connect(self.saveSheet)
         self.open_settings.clicked.connect(self.open_window_settings)
-        self.update_status_signal.connect(self.update_status)
 
         self.R15 = self.findChild(QtWidgets.QTextBrowser, 'R15')
         self.R60 = self.findChild(QtWidgets.QTextBrowser, 'R60')
@@ -340,7 +335,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 time.sleep(1)  # Подождите, пока порт откроется
                 print(f"Serial port {port_name} open")
                 time_izm = int(self.time_izm.currentText())
-                self.status = "Выполняется отправка команд"
+                self.message = "Выполняется отправка команд"
                 start_commands = [
                     "40526E0D0A",
                     "4055660D0A",
@@ -450,7 +445,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 time_array = []
                 R_array = []
                 for i in range(time_izm * 60 + 5):
-                    self.status = "Идёт измерение. Осталось: " + str(time_izm * 60 + 5 - i) + " секунд"
+                    self.message = "Идёт измерение. Осталось: " + str(time_izm * 60 + 5 - i) + " секунд"
                     time.sleep(1)
                 end_output = ""
                 while len(end_output) < 50:
