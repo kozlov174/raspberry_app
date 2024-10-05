@@ -301,7 +301,7 @@ class MainWindow(QtWidgets.QMainWindow):
             column = "T" + str(i)
             book[column].value = R_izm[default_position] // 1000000
             column = "U" + str(i)
-            book[column].value = R_izm[default_position]
+            book[column].value = R_izm[default_position] // 1000000
             default_position = default_position + 1
             default_time_position = default_time_position + 5
 
