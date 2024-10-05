@@ -21,6 +21,7 @@ from PyQt5.QtWidgets import QVBoxLayout, QDialog, QLabel
 
 
 class MainWindow(QtWidgets.QMainWindow):
+    update_status_signal = QtCore.pyqtSignal(str)
     def __init__(self):
 
         super(MainWindow, self).__init__()
