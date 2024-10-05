@@ -105,8 +105,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.show()
 
     def update_status(self, message):
-        # Метод для обновления текста в QTextBrowser
-        self.status.append(message)
+        self.status.setText(message)
 
     def open_window_settings(self):
         try:
@@ -341,7 +340,6 @@ class MainWindow(QtWidgets.QMainWindow):
                 print(f"Serial port {port_name} open")
                 time_izm = int(self.time_izm.currentText())
                 self.update_status_signal.emit("Выполняется отправка команд")
-                self.update()
                 start_commands = [
                     "40526E0D0A",
                     "4055660D0A",
