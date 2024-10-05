@@ -96,17 +96,17 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Start the touch button coroutine
         self.loop = asyncio.get_event_loop()
-        self.message = ""
+        self.message = "Ожидание запуска"
         # Используем QTimer для запуска асинхронных задач
         self.timer = QTimer()
         self.timer.timeout.connect(self.run_async_tasks)
-        self.timer.timeout.connect(self.update_status(self.message))
+        self.timer.timeout.connect(self.update_status)
         self.timer.start(100)# Проверяем каждые 100 мс
 
         self.show()
 
-    def update_status(self, message):
-        self.status.setText(message)
+    def update_status(self):
+        self.status.setText(self.message)
 
     def open_window_settings(self):
         try:
