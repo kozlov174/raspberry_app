@@ -79,6 +79,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.input_file = None  # Инициализация переменной для пути к файлу
         self.saveSheetButton.clicked.connect(self.saveSheet)
         self.open_settings.clicked.connect(self.open_window_settings)
+        self.update_status_signal.connect(self.update_status)
 
         self.R15 = self.findChild(QtWidgets.QTextBrowser, 'R15')
         self.R60 = self.findChild(QtWidgets.QTextBrowser, 'R60')
@@ -101,6 +102,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.timer.start(100)  # Проверяем каждые 100 мс
 
         self.show()
+
+    def update_status(self, message):
+        # Метод для обновления текста в QTextBrowser
+        self.status.append(message)
 
     def open_window_settings(self):
         try:
@@ -334,7 +339,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 time.sleep(1)  # Подождите, пока порт откроется
                 print(f"Serial port {port_name} open")
                 time_izm = int(self.time_izm.currentText())
-                self.status.setText("Отправляются команды настройки")
+                self.update_status_signal.emit("Выполняется отправка команд")
                 self.update()
                 start_commands = [
                     "40526E0D0A",
@@ -445,7 +450,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 time_array = []
                 R_array = []
                 for i in range(time_izm * 60 + 5):
-                    self.status.setText("Идёт измерение. Осталось: " + str(time_izm * 60 + 5 - i) + " секунд")
+                    self.update_status_signal.emit("Идёт измерение. Осталось: " + str(time_izm * 60 + 5 - i) + " секунд")
                     self.update()
                     time.sleep(1)
                 end_output = ""
