@@ -528,7 +528,6 @@ class MainWindow(QtWidgets.QMainWindow):
                     file.writelines(lines)
 
                 self.status.setText("Serial port closed")
-                timer_dialog.close()
         except serial.SerialException as e:
             print(f"Error: {e}")
 
