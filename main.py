@@ -96,11 +96,12 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Start the touch button coroutine
         self.loop = asyncio.get_event_loop()
-
+        self.message = ""
         # Используем QTimer для запуска асинхронных задач
         self.timer = QTimer()
         self.timer.timeout.connect(self.run_async_tasks)
-        self.timer.start(100)  # Проверяем каждые 100 мс
+        self.timer.timeout.connect(self.update_status(self.message))
+        self.timer.start(100)# Проверяем каждые 100 мс
 
         self.show()
 
@@ -339,7 +340,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 time.sleep(1)  # Подождите, пока порт откроется
                 print(f"Serial port {port_name} open")
                 time_izm = int(self.time_izm.currentText())
-                self.update_status_signal.emit("Выполняется отправка команд")
+                self.status = "Выполняется отправка команд"
                 start_commands = [
                     "40526E0D0A",
                     "4055660D0A",
@@ -449,8 +450,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 time_array = []
                 R_array = []
                 for i in range(time_izm * 60 + 5):
-                    self.update_status_signal.emit("Идёт измерение. Осталось: " + str(time_izm * 60 + 5 - i) + " секунд")
-                    self.update()
+                    self.status = "Идёт измерение. Осталось: " + str(time_izm * 60 + 5 - i) + " секунд"
                     time.sleep(1)
                 end_output = ""
                 while len(end_output) < 50:
