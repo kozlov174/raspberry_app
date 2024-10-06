@@ -46,7 +46,7 @@ class TimerApp(QWidget):
         self.setup_timer = QTimer(self)
         self.setup_timer.setSingleShot(True)
         self.setup_timer.timeout.connect(self.start_measurement)
-        self.setup_timer.start(10000)  # 10 секунд
+        self.setup_timer.start(15000)  # 10 секунд
 
     def start_measurement(self):
         self.label.setText("Выполняются измерения")
