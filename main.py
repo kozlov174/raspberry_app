@@ -326,7 +326,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     async def start_com(self):
         try:
-            subprocess.run(['python3', 'timer_app.py', str(self.time_izm * 61)], check=True)
+            subprocess.Popen(['python3', 'timer_app.py', str(self.time_izm * 61)])
             port_name = "COM4"
             # Открытие последовательного порта
             with serial.Serial("/dev/ttyUSB0", baudrate=9600, timeout=1) as ser:
