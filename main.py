@@ -293,7 +293,7 @@ class MainWindow(QtWidgets.QMainWindow):
         default_position = 0
         default_time_position = 0
         # заполнение ячеек со значениями
-        for i in range(2, len(R_izm) + 1):
+        for i in range(2, len(R_izm) + 2):
             column = "R" + str(i)
             book[column].value = default_time_position
             column = "S" + str(i)
@@ -326,7 +326,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     async def start_com(self):
         try:
-
+            subprocess.run(['python3', 'timer_app.py', str(self.time_izm * 61)], check=True)
             port_name = "COM4"
             # Открытие последовательного порта
             with serial.Serial("/dev/ttyUSB0", baudrate=9600, timeout=1) as ser:
@@ -470,9 +470,7 @@ class MainWindow(QtWidgets.QMainWindow):
                         itogR = float(R[0]) * 10 ** int(R[1])
                     R_array.append(itogR)
                     base_index += 2
-                print(R_array)
                 self.R_itog_array = R_array
-                print(R_array)
 
                 print("считывание финального измерения")
                 ser.write(bytes.fromhex("44670D0A"))
@@ -481,6 +479,12 @@ class MainWindow(QtWidgets.QMainWindow):
                 print(f"Received output: {output}")
                 output = output.decode("utf-8")
                 result_array = output.split(";")
+                R = result_array[9].split("E")
+                R[0] = R[0][1:]
+                r_itog = float(R[0]) * 10 ** int(R[1])
+                self.R_itog_array.append(r_itog)
+                volt_array.append(int(self.position_V))
+                time_array.append(self.time_izm * 60)
                 C = result_array[12].split("E")
                 C[0] = C[0][1:]
                 C_itog = float(C[0]) * 10 ** int(C[1])
