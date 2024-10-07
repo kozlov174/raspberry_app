@@ -201,9 +201,9 @@ class MainWindow(QtWidgets.QMainWindow):
             u_cell = sheet['S' + str(row)]
             r_cell = sheet['T' + str(row)]
 
-            if t_cell.value is None or int(t_cell.value) > time:
+            if t_cell.value is None:
                 break
-
+            time = int(t_cell.value)
             Tizm.append(int(t_cell.value))
             Uizm.append(int(u_cell.value))
             R_meas.append(int(r_cell.value) * 10 ** 6)
@@ -259,7 +259,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def saveSheet(self):
         sheet = openpyxl.Workbook()
-        book = sheet['Sheet']
+        book = sheet['Лист1']
 
         # присваивание статических значений первой строки
         book['A1'].value = "Obj:Tst"
@@ -587,7 +587,6 @@ class MainWindow(QtWidgets.QMainWindow):
         if time > 100:
             I_ut = min(I_apr)
             I_spectr = (I_apr - I_ut) * time  # особое внимание этой строчке
-
 
 class SettingsWindow(QtWidgets.QMainWindow):
     def __init__(self):
