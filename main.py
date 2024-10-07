@@ -191,15 +191,24 @@ class MainWindow(QtWidgets.QMainWindow):
         C_test = float(Cap[:n - 3]) * value
 
         # self.time = self.findChild(QtWidgets.QSpinBox, 'time')
-        time = 600
         Tizm = []
         Uizm = []
         R_meas = []
 
-        for i in range(time // 5 + 1):
-            Tizm.append(int(sheet['R' + str(i + 2)].value))
-            Uizm.append(int(sheet['S' + str(i + 2)].value))
-            R_meas.append(int(sheet['T' + str(i + 2)].value) * 10 ** 6)
+        row = 2
+        while True:
+            t_cell = sheet['R' + str(row)]
+            u_cell = sheet['S' + str(row)]
+            r_cell = sheet['T' + str(row)]
+
+            if t_cell.value is None or int(t_cell.value) > time:
+                break
+
+            Tizm.append(int(t_cell.value))
+            Uizm.append(int(u_cell.value))
+            R_meas.append(int(r_cell.value) * 10 ** 6)
+
+            row += 1
 
         I_t = np.array(Uizm) / np.array(R_meas)
 
@@ -517,14 +526,14 @@ class MainWindow(QtWidgets.QMainWindow):
                 with open("./metadata.txt", "r") as file:
                     lines = file.readlines()
 
-                for line in lines:
-                    first_line = line.split(":")
-                    if first_line == "Номер измерения":
-                        # Извлекаем текущее значение, увеличиваем его на 1 и обновляем строку
-
-                        new_value = int(first_line[2]) + 1
-                        line = f'Номер измерения: {new_value}\n'
-                        break
+                for i, line in enumerate(lines):
+                    if line.startswith("Номер измерения:"):
+                        parts = line.split(":")
+                        if len(parts) == 2:
+                            current_value = int(parts[1].strip())
+                            new_value = current_value + 1
+                            lines[i] = f'Номер измерения: {new_value}\n'
+                            break
 
                 with open("./metadata.txt", "w") as file:
                     file.writelines(lines)
