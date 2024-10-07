@@ -326,7 +326,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     async def start_com(self):
         try:
-            subprocess.Popen(['python3', 'timer_app.py', str(self.time_izm * 61)])
+            process = subprocess.Popen(['python3', 'init_commands.py'])
             port_name = "COM4"
             # Открытие последовательного порта
             with serial.Serial("/dev/ttyUSB0", baudrate=9600, timeout=1) as ser:
@@ -436,7 +436,8 @@ class MainWindow(QtWidgets.QMainWindow):
                         output = ser.readline().decode("utf-8")
                     print(f"Received output: {output}")
                     time.sleep(3)  # Пауза между командами (если необходимо)
-
+                process.kill()
+                process = subprocess.Popen(['python3', 'measurment_timer.py'])
                 # Чтение данных после отправки команд
                 print("Reading data from serial port...")
                 time.sleep(2)  # Дайте время устройству для отправки данных
@@ -445,6 +446,8 @@ class MainWindow(QtWidgets.QMainWindow):
                 for i in range(time_izm * 60 + 5):
                     time.sleep(1)
                 end_output = ""
+                process.kill()
+                process = subprocess.Popen(['python3', 'calculation.py'])
                 while len(end_output) < 50:
                     ser.write(bytes.fromhex("4044700D0A"))
                     sleep(2)
@@ -503,6 +506,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 R_array.pop(0)
                 p = np.polyfit(time_array, R_array, 4)
                 R_apr = np.polyval(p, time_array)
+                process.kill()
                 self.graphWidget.plot(time_array, R_array, pen=pg.mkPen(color='b', width=3), name='R измеренное')
                 self.graphWidget.plot(time_array, R_apr, pen=pg.mkPen(color='k', width=3), name='R апроксимированное')
                 self.calculate_itog(time_array, volt_array, R_array)
