@@ -259,6 +259,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def saveSheet(self):
         sheet = openpyxl.Workbook()
+        sheet.create_sheet("Лист1")
         book = sheet['Лист1']
 
         # присваивание статических значений первой строки
