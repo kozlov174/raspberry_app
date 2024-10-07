@@ -437,7 +437,7 @@ class MainWindow(QtWidgets.QMainWindow):
                     print(f"Received output: {output}")
                     time.sleep(3)  # Пауза между командами (если необходимо)
                 process.kill()
-                process = subprocess.Popen(['python3', 'measurment_timer.py'])
+                process = subprocess.Popen(['python3', 'measurment_timer.py', str(int(self.time_izm.currentText()) * 61)])
                 # Чтение данных после отправки команд
                 print("Reading data from serial port...")
                 time.sleep(2)  # Дайте время устройству для отправки данных
