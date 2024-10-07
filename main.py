@@ -544,6 +544,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 p = np.polyfit(time_array, R_array, 4)
                 R_apr = np.polyval(p, time_array)
                 process.kill()
+                self.graphWidget.clear()
                 self.graphWidget.plot(time_array, R_array, pen=pg.mkPen(color='b', width=3), name='R измеренное')
                 self.graphWidget.plot(time_array, R_apr, pen=pg.mkPen(color='k', width=3), name='R апроксимированное')
                 self.calculate_itog(time_array, volt_array, R_array)
