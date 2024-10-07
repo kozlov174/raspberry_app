@@ -549,19 +549,23 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.graphWidget.plot(time_array, R_apr, pen=pg.mkPen(color='k', width=3), name='R апроксимированное')
                 self.calculate_itog(time_array, volt_array, R_array)
 
-                with open("./metadata.txt", "r") as file:
-                    lines = file.readlines()
+                # Читаем содержимое файла
+                with open('metadata.txt', 'r', encoding='utf-8') as file:
+                    lines = file.readlines()  # Считываем все строки
 
+                # Ищем строку с номером измерения
+                prefix = "Номер измерения: "
                 for i, line in enumerate(lines):
-                    if line.startswith("Номер измерения:"):
-                        parts = line.split(":")
-                        if len(parts) == 2:
-                            current_value = int(parts[1].strip())
-                            new_value = current_value + 1
-                            lines[i] = f'Номер измерения: {new_value}\n'
-                            break
+                    if line.startswith(prefix):
+                        number = int(line[len(prefix):].strip())  # Получаем число и удаляем лишние пробелы
+                        number += 1  # Увеличиваем его на 1
+                        lines[i] = f"{prefix}{number}\n"  # Обновляем строку с новым номером
+                        break
+                else:
+                    print("Строка с номером измерения не найдена.")
 
-                with open("./metadata.txt", "w") as file:
+                # Записываем обновлённые строки обратно в файл
+                with open('metadata.txt', 'w', encoding='utf-8') as file:
                     file.writelines(lines)
 
         except serial.SerialException as e:
@@ -678,7 +682,7 @@ class SettingsWindow(QtWidgets.QMainWindow):
 
     def showKeyboard(self):
         print("click button")
-        subprocess.run(['florence'])
+        subprocess.run(['onboard'])
 
 
 
