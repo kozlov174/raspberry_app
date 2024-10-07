@@ -190,27 +190,29 @@ class MainWindow(QtWidgets.QMainWindow):
         DD_test = sheet['O2'].value  # считываем параметр DD
 
         Tg = 45  # Время жизни трансформатора - Константа в годах
+        try:
+            I = sheet['N2'].value
+            n = len(I)
+            I_test = float(I[:n - 3])
+            data = {
+                'Unit': ['p', 'n', 'µ', 'm', ' ', 'k', 'M', 'G', 'T'],
+                'Value': [0.000000000001, 0.000000001, 0.000001, 0.001, 1, 1000, 1000000, 1000000000, 1000000000000]
+            }
+            Razmernost = pd.DataFrame(data)
+            unit = I[n - 2]  # Символ, который нужно найти в таблице
+            unit_index = Razmernost[Razmernost['Unit'] == unit].index
+            value = Razmernost.loc[unit_index[0], 'Value']
+            I_test = float(I[:n - 3]) * value
 
-        I = sheet['N2'].value
-        n = len(I)
-        I_test = float(I[:n - 3])
-        data = {
-            'Unit': ['p', 'n', 'µ', 'm', ' ', 'k', 'M', 'G', 'T'],
-            'Value': [0.000000000001, 0.000000001, 0.000001, 0.001, 1, 1000, 1000000, 1000000000, 1000000000000]
-        }
-        Razmernost = pd.DataFrame(data)
-        unit = I[n - 2]  # Символ, который нужно найти в таблице
-        unit_index = Razmernost[Razmernost['Unit'] == unit].index
-        value = Razmernost.loc[unit_index[0], 'Value']
-        I_test = float(I[:n - 3]) * value
-
-        Cap = sheet['M2'].value
-        n = len(Cap)
-        C_test = float(Cap[:n - 3])
-        unit = Cap[n - 2]  # Символ, который нужно найти в таблице
-        unit_index = Razmernost[Razmernost['Unit'] == unit].index
-        value = Razmernost.loc[unit_index[0], 'Value']
-        C_test = float(Cap[:n - 3]) * value
+            Cap = sheet['M2'].value
+            n = len(Cap)
+            C_test = float(Cap[:n - 3])
+            unit = Cap[n - 2]  # Символ, который нужно найти в таблице
+            unit_index = Razmernost[Razmernost['Unit'] == unit].index
+            value = Razmernost.loc[unit_index[0], 'Value']
+            C_test = float(Cap[:n - 3]) * value
+        except Exception as e:
+            print(e)
 
         # self.time = self.findChild(QtWidgets.QSpinBox, 'time')
         Tizm = []
@@ -240,7 +242,7 @@ class MainWindow(QtWidgets.QMainWindow):
             I_apr = np.polyval(np.polyfit(Tizm[21:], I_t[21:], 4), Tizm)
 
         self.graphWidget.clear()
-        self.graphWidget.plot(Tizm, R_meas, pen=pg.mkPen(color='b', width=3), name='R измеренное ')
+        self.graphWidget.plot(Tizm, R_meas, pen=pg.mkPen(color='b', width=3), name='R измеренное')
         self.graphWidget.plot(Tizm, R_apr, pen=pg.mkPen(color='k', width=3), name='R апроксимированное')
 
         DAR = R_apr[12] / R_apr[6]
