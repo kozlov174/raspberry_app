@@ -116,37 +116,59 @@ class MainWindow(QtWidgets.QMainWindow):
         if GPIO.input(5) == 0:
             await self.start_com()
 
-    def convert_farads(self, value):
-        units = [
-            (1e-12, 'pФ)'),
-            (1e-9, 'nФ'),
-            (1e-6, 'µФ'),
-            (1e-3, 'mФ'),
-            (1, 'фарад (Ф)')
-        ]
-
-        for factor, unit in units:
-            if value >= factor:
-                converted_value = value / factor
-                return f"{converted_value:.12g} {unit}"
-
-        return f"{value} фарад (Ф)"
-
     def convert_amperes(self, value):
-        units = [
-            (1e-12, 'pА'),
-            (1e-9, 'nА'),
-            (1e-6, 'µА'),
-            (1e-3, 'mА'),
-            (1, 'А')
-        ]
+        data = {
+            'Unit': ['pA', 'nA', 'µA', 'mA', 'A', 'kA', 'MA', 'GA', 'TA'],
+            'Value': [1e-12, 1e-9, 1e-6, 1e-3, 1, 1e3, 1e6, 1e9, 1e12]
+        }
+        Current_Units = pd.DataFrame(data)
 
-        for factor, unit in units:
-            if value >= factor:
-                converted_value = value / factor
-                return f"{converted_value:.12g} {unit}"
+        if value == 0:
+            return "0 A"
 
-        return f"{value} ампер (А)"
+        abs_value = abs(value)
+        log_value = math.log10(abs_value)
+
+        # Находим ближайший префикс
+        index = min(range(len(Current_Units['Value'])),
+                    key=lambda i: abs(math.log10(Current_Units['Value'][i]) - log_value))
+
+        unit = Current_Units.loc[index, 'Unit']
+        scale = Current_Units.loc[index, 'Value']
+
+        scaled_value = value / scale
+
+        # Округляем до 3 значащих цифр
+        rounded_value = round(scaled_value, 2 - int(math.floor(math.log10(abs(scaled_value)))))
+
+        return f"{rounded_value} {unit}"
+
+    def convert_farads(self, value):
+        data = {
+            'Unit': ['pF', 'nF', 'µF', 'mF', 'F', 'kF', 'MF', 'GF', 'TF'],
+            'Value': [1e-12, 1e-9, 1e-6, 1e-3, 1, 1e3, 1e6, 1e9, 1e12]
+        }
+        Capacitance_Units = pd.DataFrame(data)
+
+        if value == 0:
+            return "0 F"
+
+        abs_value = abs(value)
+        log_value = math.log10(abs_value)
+
+        # Находим ближайший префикс
+        index = min(range(len(Capacitance_Units['Value'])),
+                    key=lambda i: abs(math.log10(Capacitance_Units['Value'][i]) - log_value))
+
+        unit = Capacitance_Units.loc[index, 'Unit']
+        scale = Capacitance_Units.loc[index, 'Value']
+
+        scaled_value = value / scale
+
+        # Округляем до 3 значащих цифр
+        rounded_value = round(scaled_value, 2 - int(math.floor(math.log10(abs(scaled_value)))))
+
+        return f"{rounded_value} {unit}"
 
     def showDialog(self):
         self.input_file = easygui.fileopenbox()
@@ -280,9 +302,9 @@ class MainWindow(QtWidgets.QMainWindow):
         book['L1'].value = "PI"
         book['L2'].value = self.PI.toPlainText()
         book['M1'].value = "C"
-        book['M2'].value = int(self.C)
+        book['M2'].value = self.convert_farads(int(self.C))
         book['N1'].value = "I"
-        book['N2'].value = int(self.I)
+        book['N2'].value = self.convert_amperes(int(self.I))
 
         book['O1'].value = "DD"
         book["O2"].value = self.DD.toPlainText()
