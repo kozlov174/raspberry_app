@@ -325,7 +325,7 @@ class MainWindow(QtWidgets.QMainWindow):
         book['E2'].value = datetime.datetime.now().strftime('%H:%M:%S')
 
         default_position = 0
-        default_time_position = 0
+        default_time_position = 10
         # заполнение ячеек со значениями
         for i in range(2, len(R_izm) + 2):
             column = "R" + str(i)
