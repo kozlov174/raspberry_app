@@ -514,12 +514,13 @@ class MainWindow(QtWidgets.QMainWindow):
                 with open("./metadata.txt", "r") as file:
                     lines = file.readlines()
 
-                for i, line in enumerate(lines):
-                    if line.startswith('Номер измерения:'):
+                for line in lines:
+                    first_line = line.split(":")
+                    if first_line == "Номер измерения":
                         # Извлекаем текущее значение, увеличиваем его на 1 и обновляем строку
-                        current_value = int(line.split(': ')[1])
-                        new_value = current_value + 1
-                        lines[i] = f'Номер измерения: {new_value}\n'
+
+                        new_value = int(first_line[2]) + 1
+                        line = f'Номер измерения: {new_value}\n'
                         break
 
                 with open("./metadata.txt", "w") as file:
