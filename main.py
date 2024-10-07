@@ -320,6 +320,9 @@ class MainWindow(QtWidgets.QMainWindow):
             upd_cont = content[3].split(":")
             book['D1'] = upd_cont[0]
             book['D2'] = upd_cont[1]
+            upd_cont = content[4].split(":")
+            book['E1'] = upd_cont[0]
+            book['E2'] = upd_cont[1]
             sheet_name = str(book['A2'].value[:-1]) + " " + str(book['C2'].value[:-1]) + " " + str(book['D2'].value[:-1]) + " " + str(book['E2'].value[:-1])
         sheet.save(sheet_name + ".xlsx")
         sheet.close()
