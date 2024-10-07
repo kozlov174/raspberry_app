@@ -487,7 +487,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 r_itog = float(R[0]) * 10 ** int(R[1])
                 self.R_itog_array.append(r_itog)
                 volt_array.append(int(self.position_V))
-                time_array.append(self.time_izm * 60)
+                time_array.append(int(self.time_izm.currentText()) * 60)
                 C = result_array[12].split("E")
                 C[0] = C[0][1:]
                 C_itog = float(C[0]) * 10 ** int(C[1])
