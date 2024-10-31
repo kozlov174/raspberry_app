@@ -252,7 +252,7 @@ class MainWindow(QtWidgets.QMainWindow):
             DD = 0
         else:
             PI = R_apr[120] / R_apr[12]
-            DD = self.I / (self.U * self.C)
+            DD = 1000 * (R_apr[118] - R_apr[11]) / (Uizm[1] * self.C)
 
         self.PI.setText(str(round(PI, 3)))
         self.DD.setText(str(round(DD, 3)))
@@ -273,7 +273,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.Kabs.setText(str(round(Kabs, 3)))
         DP = 200 * TPI ** 0.251
         self.DP.setText(str(math.trunc(DP)))
-        R15 = R_apr[3] / 10 ** 9
+        R15 = R_apr[2] / 10 ** 9
         self.R15.setText(str(round(R15, 3)))
         R60 = R_apr[12] / 10 ** 9
         self.R60.setText(str(round(R60, 3)))
@@ -589,7 +589,7 @@ class MainWindow(QtWidgets.QMainWindow):
             DD = 0
         else:
             PI = R_apr[117] / R_apr[9]
-            DD = 1000 * (R_apr[117] - R_apr[7]) / (R_apr[9] * R_apr[117] * self.C)
+            DD = 1000 * (R_apr[118] - R_apr[11]) / (Uizm[1] * self.C)
 
         self.PI.setText(str(round(PI, 3)))
         self.DD.setText(str(round(DD, 3)))
@@ -606,13 +606,13 @@ class MainWindow(QtWidgets.QMainWindow):
         self.W.setText(str(round(W, 3)))
         self.Res.setText(str(math.trunc(Res)))
 
-        Kabs = R_apr[9] / R_apr[1]
+        Kabs = R_apr[10] / R_apr[1]
         self.Kabs.setText(str(round(Kabs, 3)))
         DP = 200 * TPI ** 0.251
         self.DP.setText(str(math.trunc(DP)))
-        R15 = R_meas[1] / 10 ** 9
+        R15 = R_apr[1] / 10 ** 9
         self.R15.setText(str(round(R15, 3)))
-        R60 = R_meas[9] / 10 ** 9
+        R60 = R_apr[10] / 10 ** 9
         self.R60.setText(str(round(R60, 3)))
         if time > 100:
             I_ut = min(I_apr)
