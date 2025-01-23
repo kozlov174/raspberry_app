@@ -35,25 +35,38 @@ class MainWindow(QtWidgets.QMainWindow):
         self.status = self.findChild(QtWidgets.QTextBrowser, 'status')
         self.position_V = 500
         self.R_itog_array = []
+        GPIO.wiringPiSetupGpio()  # Использование BCM-нумерации пинов
 
-        GPIO.setwarnings(False)
-        GPIO.setmode(GPIO.BCM)
         try:
-            GPIO.setup(5, GPIO.IN, GPIO.PUD_UP)
-            GPIO.setup(16, GPIO.IN, GPIO.PUD_UP)
-            GPIO.setup(20, GPIO.IN, GPIO.PUD_UP)
-            GPIO.setup(21, GPIO.IN, GPIO.PUD_UP)
+            # Настройка пинов как входов с подтяжкой вверх
+            GPIO.pinMode(5, GPIO.INPUT)
+            GPIO.pullUpDnControl(5, GPIO.PUD_UP)
+
+            GPIO.pinMode(16, GPIO.INPUT)
+            GPIO.pullUpDnControl(16, GPIO.PUD_UP)
+
+            GPIO.pinMode(20, GPIO.INPUT)
+            GPIO.pullUpDnControl(20, GPIO.PUD_UP)
+
+            GPIO.pinMode(21, GPIO.INPUT)
+            GPIO.pullUpDnControl(21, GPIO.PUD_UP)
         except Exception as e:
             print(f"Error setting up GPIO: {e}")
-        if GPIO.input(16) == 0:
-            self.position_V = 500
-            print("500В")
-        if GPIO.input(20) == 0:
-            self.position_V = 1000
-            print("1000В")
-        if GPIO.input(21) == 0:
-            self.position_V = 2500
-            print("2500В")
+
+        # Чтение состояния пинов и выполнение действий
+        try:
+            if GPIO.digitalRead(16) == GPIO.LOW:  # LOW == 0
+                self.position_V = 500
+                print("500В")
+            if GPIO.digitalRead(20) == GPIO.LOW:
+                self.position_V = 1000
+                print("1000В")
+            if GPIO.digitalRead(21) == GPIO.LOW:
+                self.position_V = 2500
+                print("2500В")
+        except Exception as e:
+            print(f"Error reading GPIO: {e}")
+
         self.graphWidget = self.findChild(pg.PlotWidget, 'graphWidget')  # Ensure this is initialized
         self.graphWidget.setBackground('w')
         self.graphWidget.setLabel('left', 'Сопротивление, Ом', **{'font-size': '20pt'})
@@ -112,9 +125,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.loop.run_until_complete(self.touch_button())
 
     async def touch_button(self):
-
-        if GPIO.input(5) == 0:
-            await self.start_com()
+        while True:
+            if GPIO.digitalRead(5) == GPIO.LOW:  # Проверка, если кнопка нажата
+                await self.start_com()  # Асинхронный вызов
+            await asyncio.sleep(0.1)
 
     def convert_amperes(self, value):
         data = {
@@ -252,7 +266,7 @@ class MainWindow(QtWidgets.QMainWindow):
             DD = 0
         else:
             PI = R_apr[120] / R_apr[12]
-            DD = 1000 * (R_apr[118] - R_apr[11]) / (Uizm[1] * self.C)
+            DD = I_test / (Uizm[1] * C_test)
 
         self.PI.setText(str(round(PI, 3)))
         self.DD.setText(str(round(DD, 3)))
