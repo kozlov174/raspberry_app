@@ -6,7 +6,7 @@ import asyncio
 from time import sleep
 
 import serial
-import RPi.GPIO as GPIO
+import RepkaPI.GPIO as GPIO
 from PyQt5.QtCore import QIODevice, QThread, pyqtSignal, QTimer
 import pandas as pd
 import numpy as np
@@ -35,33 +35,26 @@ class MainWindow(QtWidgets.QMainWindow):
         self.status = self.findChild(QtWidgets.QTextBrowser, 'status')
         self.position_V = 500
         self.R_itog_array = []
-        GPIO.wiringPiSetupGpio()  # Использование BCM-нумерации пинов
+        GPIO.setmode(GPIO.BCM)
 
         try:
             # Настройка пинов как входов с подтяжкой вверх
-            GPIO.pinMode(5, GPIO.INPUT)
-            GPIO.pullUpDnControl(5, GPIO.PUD_UP)
-
-            GPIO.pinMode(16, GPIO.INPUT)
-            GPIO.pullUpDnControl(16, GPIO.PUD_UP)
-
-            GPIO.pinMode(20, GPIO.INPUT)
-            GPIO.pullUpDnControl(20, GPIO.PUD_UP)
-
-            GPIO.pinMode(21, GPIO.INPUT)
-            GPIO.pullUpDnControl(21, GPIO.PUD_UP)
+            GPIO.setup(5, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+            GPIO.setup(16, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+            GPIO.setup(20, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+            GPIO.setup(21, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         except Exception as e:
             print(f"Error setting up GPIO: {e}")
 
         # Чтение состояния пинов и выполнение действий
         try:
-            if GPIO.digitalRead(16) == GPIO.LOW:  # LOW == 0
+            if GPIO.input(16) == GPIO.LOW:  # LOW == 0
                 self.position_V = 500
                 print("500В")
-            if GPIO.digitalRead(20) == GPIO.LOW:
+            if GPIO.input(20) == GPIO.LOW:
                 self.position_V = 1000
                 print("1000В")
-            if GPIO.digitalRead(21) == GPIO.LOW:
+            if GPIO.input(21) == GPIO.LOW:
                 self.position_V = 2500
                 print("2500В")
         except Exception as e:
