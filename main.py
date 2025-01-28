@@ -6,7 +6,7 @@ import asyncio
 from time import sleep
 
 import serial
-import RepkaPI.GPIO as GPIO
+import gpiod
 from PyQt5.QtCore import QIODevice, QThread, pyqtSignal, QTimer
 import pandas as pd
 import numpy as np
@@ -35,26 +35,33 @@ class MainWindow(QtWidgets.QMainWindow):
         self.status = self.findChild(QtWidgets.QTextBrowser, 'status')
         self.position_V = 500
         self.R_itog_array = []
-        GPIO.setmode(GPIO.BCM)
 
+        chip = gpiod.Chip('gpiochip0')  # Используем gpiochip0 по умолчанию
+
+        # Настройка пинов как входов с подтяжкой вверх
         try:
+            line_5 = chip.get_line(5)
+            line_16 = chip.get_line(16)
+            line_20 = chip.get_line(20)
+            line_21 = chip.get_line(21)
+
             # Настройка пинов как входов с подтяжкой вверх
-            GPIO.setup(5, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-            GPIO.setup(16, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-            GPIO.setup(20, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-            GPIO.setup(21, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+            line_5.request(consumer="example", type=gpiod.LINE_REQ_DIR_IN, flags=gpiod.LINE_REQ_FLAG_BIAS_PULL_UP)
+            line_16.request(consumer="example", type=gpiod.LINE_REQ_DIR_IN, flags=gpiod.LINE_REQ_FLAG_BIAS_PULL_UP)
+            line_20.request(consumer="example", type=gpiod.LINE_REQ_DIR_IN, flags=gpiod.LINE_REQ_FLAG_BIAS_PULL_UP)
+            line_21.request(consumer="example", type=gpiod.LINE_REQ_DIR_IN, flags=gpiod.LINE_REQ_FLAG_BIAS_PULL_UP)
         except Exception as e:
             print(f"Error setting up GPIO: {e}")
 
         # Чтение состояния пинов и выполнение действий
         try:
-            if GPIO.input(16) == GPIO.LOW:  # LOW == 0
+            if line_16.get_value() == 0:  # LOW == 0
                 self.position_V = 500
                 print("500В")
-            if GPIO.input(20) == GPIO.LOW:
+            if line_20.get_value() == 0:
                 self.position_V = 1000
                 print("1000В")
-            if GPIO.input(21) == GPIO.LOW:
+            if line_21.get_value() == 0:
                 self.position_V = 2500
                 print("2500В")
         except Exception as e:
