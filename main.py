@@ -126,9 +126,9 @@ class MainWindow(QtWidgets.QMainWindow):
 
     async def touch_button(self):
         while True:
-            if self.button_line.get_value() == 0:  # Проверка, если кнопка нажата (LOW == 0)
-                await self.start_com()  # Асинхронный вызов
-            await asyncio.sleep(0.1)  # Ожидание 100 мс
+            if self.line_5.get_value() == 0:  # Проверка, если кнопка нажата (LOW == 0)
+                await self.start_com()
+            await asyncio.sleep(0.1)
 
     def convert_amperes(self, value):
         data = {
