@@ -46,10 +46,10 @@ class MainWindow(QtWidgets.QMainWindow):
             line_21 = chip.get_line(21)
 
             # Настройка пинов как входов с подтяжкой вверх
-            line_5.request(consumer="example", type=gpiod.LINE_REQ_DIR_IN, flags=gpiod.LINE_REQ_FLAG_BIAS_PULL_UP)
-            line_16.request(consumer="example", type=gpiod.LINE_REQ_DIR_IN, flags=gpiod.LINE_REQ_FLAG_BIAS_PULL_UP)
-            line_20.request(consumer="example", type=gpiod.LINE_REQ_DIR_IN, flags=gpiod.LINE_REQ_FLAG_BIAS_PULL_UP)
-            line_21.request(consumer="example", type=gpiod.LINE_REQ_DIR_IN, flags=gpiod.LINE_REQ_FLAG_BIAS_PULL_UP)
+            line_5.request(type=gpiod.LINE_REQ_DIR_IN, flags=gpiod.DIRECTION_OUTPUT)
+            line_16.request(type=gpiod.LINE_REQ_DIR_IN, flags=gpiod.DIRECTION_OUTPUT)
+            line_20.request(type=gpiod.LINE_REQ_DIR_IN, flags=gpiod.DIRECTION_OUTPUT)
+            line_21.request(type=gpiod.LINE_REQ_DIR_IN, flags=gpiod.DIRECTION_OUTPUT)
         except Exception as e:
             print(f"Error setting up GPIO: {e}")
 
