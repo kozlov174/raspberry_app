@@ -126,7 +126,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     async def touch_button(self):
         while True:
-            if self.line_5.get_value() == 0:  # Проверка, если кнопка нажата (LOW == 0)
+            if line_5.get_value() == 0:  # Проверка, если кнопка нажата (LOW == 0)
                 await self.start_com()
             await asyncio.sleep(0.1)
 
