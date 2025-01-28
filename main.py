@@ -126,9 +126,9 @@ class MainWindow(QtWidgets.QMainWindow):
 
     async def touch_button(self):
         while True:
-            if GPIO.digitalRead(5) == GPIO.LOW:  # Проверка, если кнопка нажата
+            if self.button_line.get_value() == 0:  # Проверка, если кнопка нажата (LOW == 0)
                 await self.start_com()  # Асинхронный вызов
-            await asyncio.sleep(0.1)
+            await asyncio.sleep(0.1)  # Ожидание 100 мс
 
     def convert_amperes(self, value):
         data = {
