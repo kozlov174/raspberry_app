@@ -40,7 +40,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Настройка пинов как входов с подтяжкой вверх
         try:
-            GPIO.setup(11, GPIO.IN, pull_up_down=GPIO.PUD_UP) #button
+            GPIO.setup("PA11", GPIO.IN, pull_up_down=GPIO.PUD_UP) #button
             GPIO.setup(354, GPIO.IN, pull_up_down=GPIO.PUD_UP)
             GPIO.setup(2, GPIO.IN, pull_up_down=GPIO.PUD_UP)
             GPIO.setup(67, GPIO.IN, pull_up_down=GPIO.PUD_UP)
@@ -120,7 +120,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     async def touch_button(self):
         while True:
-            if GPIO.input(11) == GPIO.LOW:  # Проверка, если кнопка нажата (LOW == 0)
+            if GPIO.input("PA11") == GPIO.LOW:  # Проверка, если кнопка нажата (LOW == 0)
                 await self.start_com()  # Вызов асинхронного метода
             await asyncio.sleep(0.1)
 
