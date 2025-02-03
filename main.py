@@ -40,22 +40,22 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Настройка пинов как входов с подтяжкой вверх
         try:
-            GPIO.setup(5, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-            GPIO.setup(16, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-            GPIO.setup(20, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-            GPIO.setup(21, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+            GPIO.setup(11, GPIO.IN, pull_up_down=GPIO.PUD_UP) #button
+            GPIO.setup(354, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+            GPIO.setup(2, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+            GPIO.setup(67, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         except Exception as e:
             print(f"Error setting up GPIO: {e}")
 
         # Чтение состояния пинов и выполнение действий
         try:
-            if GPIO.input(16) == GPIO.LOW:  # LOW == 0
+            if GPIO.input(354) == GPIO.LOW:  # LOW == 0
                 self.position_V = 500
                 print("500В")
-            if GPIO.input(20) == GPIO.LOW:
+            if GPIO.input(2) == GPIO.LOW:
                 self.position_V = 1000
                 print("1000В")
-            if GPIO.input(21) == GPIO.LOW:
+            if GPIO.input(67) == GPIO.LOW:
                 self.position_V = 2500
                 print("2500В")
         except Exception as e:
@@ -120,7 +120,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     async def touch_button(self):
         while True:
-            if GPIO.input(5) == GPIO.LOW:  # Проверка, если кнопка нажата (LOW == 0)
+            if GPIO.input(11) == GPIO.LOW:  # Проверка, если кнопка нажата (LOW == 0)
                 await self.start_com()  # Вызов асинхронного метода
             await asyncio.sleep(0.1)
 
