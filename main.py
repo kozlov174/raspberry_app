@@ -4,9 +4,8 @@ import re
 import sys
 import asyncio
 from time import sleep
-
+import RepkaPi.GPIO as GPIO
 import serial
-import gpiod
 from PyQt5.QtCore import QIODevice, QThread, pyqtSignal, QTimer
 import pandas as pd
 import numpy as np
@@ -36,32 +35,27 @@ class MainWindow(QtWidgets.QMainWindow):
         self.position_V = 500
         self.R_itog_array = []
 
-        chip = gpiod.Chip('gpiochip0')  # Используем gpiochip0 по умолчанию
+        # Настройка режима нумерации пинов
+        GPIO.setmode(GPIO.BCM)
 
         # Настройка пинов как входов с подтяжкой вверх
         try:
-            line_5 = chip.get_line(5)
-            line_16 = chip.get_line(16)
-            line_20 = chip.get_line(20)
-            line_21 = chip.get_line(21)
-
-            # Настройка пинов как входов с подтяжкой вверх
-            line_5.request(type=gpiod.LINE_REQ_DIR_IN, flags=gpiod.DIRECTION_OUTPUT)
-            line_16.request(type=gpiod.LINE_REQ_DIR_IN, flags=gpiod.DIRECTION_OUTPUT)
-            line_20.request(type=gpiod.LINE_REQ_DIR_IN, flags=gpiod.DIRECTION_OUTPUT)
-            line_21.request(type=gpiod.LINE_REQ_DIR_IN, flags=gpiod.DIRECTION_OUTPUT)
+            GPIO.setup(5, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+            GPIO.setup(16, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+            GPIO.setup(20, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+            GPIO.setup(21, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         except Exception as e:
             print(f"Error setting up GPIO: {e}")
 
         # Чтение состояния пинов и выполнение действий
         try:
-            if line_16.get_value() == 0:  # LOW == 0
+            if GPIO.input(16) == GPIO.LOW:  # LOW == 0
                 self.position_V = 500
                 print("500В")
-            if line_20.get_value() == 0:
+            if GPIO.input(20) == GPIO.LOW:
                 self.position_V = 1000
                 print("1000В")
-            if line_21.get_value() == 0:
+            if GPIO.input(21) == GPIO.LOW:
                 self.position_V = 2500
                 print("2500В")
         except Exception as e:
@@ -126,8 +120,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
     async def touch_button(self):
         while True:
-            if line_5.get_value() == 0:  # Проверка, если кнопка нажата (LOW == 0)
-                await self.start_com()
+            if GPIO.input(5) == GPIO.LOW:  # Проверка, если кнопка нажата (LOW == 0)
+                await self.start_com()  # Вызов асинхронного метода
             await asyncio.sleep(0.1)
 
     def convert_amperes(self, value):
