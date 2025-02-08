@@ -122,7 +122,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     async def touch_button(self):
         while True:
-            if GPIO.input(3):
+            if GPIO.input(3) == True:
                 await self.start_com()
             await asyncio.sleep(0.2)
 
