@@ -15,6 +15,7 @@ import openpyxl
 import pyqtgraph as pg
 import subprocess
 import time
+from qasync import QEventLoop, asyncSlot
 
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
@@ -97,11 +98,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.C = 0
         self.I = 0
 
-        # Start the touch button coroutine
-        self.loop = asyncio.get_event_loop()
         self.timer = QTimer(self)
-        self.timer.timeout.connect(self.touch_button)
-        self.timer.start(200)
+        self.timer.timeout.connect(self.touch_button)  # Подключаем асинхронный слот
+        self.timer.start(200)  # Проверяем каждые 200 мс
 
         self.show()
 
@@ -118,9 +117,12 @@ class MainWindow(QtWidgets.QMainWindow):
     def run_async_tasks(self):
         self.loop.run_until_complete(self.touch_button())
 
+    @asyncSlot()
     async def touch_button(self):
-        if GPIO.input(12):
-            asyncio.create_task(self.start_com())
+        while True:
+            if GPIO.input(12):
+                await self.start_com()
+            await asyncio.sleep(0.2)
 
     def convert_amperes(self, value):
         data = {
