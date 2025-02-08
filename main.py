@@ -696,6 +696,12 @@ class SettingsWindow(QtWidgets.QMainWindow):
 
 
 if __name__ == "__main__":
-    app = QtWidgets.QApplication(sys.argv)
+    app = QApplication(sys.argv)
+    loop = QEventLoop(app)  # Используем QEventLoop из qasync
+    asyncio.set_event_loop(loop)
+
     window = MainWindow()
-    app.exec_()
+    window.show()
+
+    with loop:  # Запускаем цикл событий
+        loop.run_forever()
