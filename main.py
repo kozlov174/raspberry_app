@@ -98,9 +98,11 @@ class MainWindow(QtWidgets.QMainWindow):
         self.C = 0
         self.I = 0
 
-        # Start the touch button coroutine
-        self.loop = asyncio.get_event_loop()
-        # Используем QTimer для запуска асинхронных задач
+        # Настраиваем asyncio-цикл
+        self.loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(self.loop)
+
+        # Используем QTimer для запуска корутин
         self.timer = QTimer()
         self.timer.timeout.connect(self.run_async_tasks)
         self.timer.start(100)  # Проверяем каждые 100 мс
@@ -118,13 +120,14 @@ class MainWindow(QtWidgets.QMainWindow):
             print(f"Ошибка при открытии окна настроек {e}")
 
     def run_async_tasks(self):
-        self.loop.run_until_complete(self.touch_button())
+        """Запускаем асинхронную задачу без блокировки главного потока"""
+        asyncio.ensure_future(self.touch_button())
 
     async def touch_button(self):
-        while True:
-            if GPIO.input(7) == True:
-                await self.start_com()
-            await asyncio.sleep(0.2)
+        """Фоновый опрос кнопки"""
+        if GPIO.input(7):
+            await self.start_com()
+        await asyncio.sleep(0.2)
 
     def convert_amperes(self, value):
         data = {
