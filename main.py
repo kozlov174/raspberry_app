@@ -37,27 +37,28 @@ class MainWindow(QtWidgets.QMainWindow):
         self.R_itog_array = []
 
         # Настройка режима нумерации пинов
-        GPIO.setmode(GPIO.BCM)
+        GPIO.setboard(GPIO.REPKAPI3)
+        GPIO.setmode(GPIO.BOARD)
 
         # Настройка пинов как входов с подтяжкой вверх
         try:
             GPIO.setwarnings(False)
-            GPIO.setup(12, GPIO.IN) #button
-            GPIO.setup(8, GPIO.IN)
-            GPIO.setup(9, GPIO.IN)
-            GPIO.setup(10, GPIO.IN)
+            GPIO.setup(3, GPIO.IN) #button
+            GPIO.setup(11, GPIO.IN)
+            GPIO.setup(13, GPIO.IN)
+            GPIO.setup(15, GPIO.IN)
         except Exception as e:
             print(f"Error setting up GPIO: {e}")
 
         # Чтение состояния пинов и выполнение действий
         try:
-            if GPIO.input(8):  # LOW == 0
+            if GPIO.input(11):  # LOW == 0
                 self.position_V = 500
                 print("500В")
-            if GPIO.input(9):
+            if GPIO.input(13):
                 self.position_V = 1000
                 print("1000В")
-            if GPIO.input(10):
+            if GPIO.input(15):
                 self.position_V = 2500
                 print("2500В")
         except Exception as e:
@@ -120,7 +121,7 @@ class MainWindow(QtWidgets.QMainWindow):
     @asyncSlot()
     async def touch_button(self):
         while True:
-            if GPIO.input(12):
+            if GPIO.input(3):
                 await self.start_com()
             await asyncio.sleep(0.2)
 
