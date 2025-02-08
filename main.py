@@ -40,6 +40,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Настройка пинов как входов с подтяжкой вверх
         try:
+            GPIO.setwarnings(False)
             GPIO.setup(12, GPIO.IN) #button
             GPIO.setup(64, GPIO.IN)
             GPIO.setup(65, GPIO.IN)
