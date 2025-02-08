@@ -15,8 +15,6 @@ import openpyxl
 import pyqtgraph as pg
 import subprocess
 import time
-
-from PyQt5.uic.Compiler.qtproxies import QtWidgets
 from qasync import QEventLoop, asyncSlot
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -698,12 +696,11 @@ class SettingsWindow(QtWidgets.QMainWindow):
 
 
 if __name__ == "__main__":
-    app = QtWidgets.QApplication(sys.argv)
+    app = QApplication(sys.argv)
     loop = QEventLoop(app)  # Используем QEventLoop из qasync
     asyncio.set_event_loop(loop)
 
-    window = MainWindow()
-    window.show()
+    app.exec_
 
     with loop:  # Запускаем цикл событий
         loop.run_forever()
