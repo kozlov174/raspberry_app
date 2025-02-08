@@ -42,7 +42,7 @@ class MainWindow(QtWidgets.QMainWindow):
         try:
             GPIO.setwarnings(False)
             GPIO.setup(12, GPIO.IN) #button
-            GPIO.setup(64, GPIO.IN)
+            GPIO.setup(19, GPIO.IN)
             GPIO.setup(65, GPIO.IN)
             GPIO.setup(66, GPIO.IN)
         except Exception as e:
@@ -50,7 +50,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Чтение состояния пинов и выполнение действий
         try:
-            if GPIO.input(64):  # LOW == 0
+            if GPIO.input(19):  # LOW == 0
                 self.position_V = 500
                 print("500В")
             if GPIO.input(65):
