@@ -40,10 +40,10 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Настройка пинов как входов с подтяжкой вверх
         try:
-            GPIO.setup("PA11", GPIO.IN, pull_up_down=GPIO.PUD_UP) #button
-            GPIO.setup(354, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-            GPIO.setup(2, GPIO.IN, )
-            GPIO.setup(67, GPIO.IN)
+            GPIO.setup(12, GPIO.IN) #button
+            GPIO.setup(64, GPIO.IN)
+            GPIO.setup(65, GPIO.IN)
+            GPIO.setup(66, GPIO.IN)
         except Exception as e:
             print(f"Error setting up GPIO: {e}")
 
