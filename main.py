@@ -98,14 +98,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.C = 0
         self.I = 0
 
-        # Настраиваем asyncio-цикл
-        self.loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(self.loop)
-
-        # Используем QTimer для запуска корутин
-        self.timer = QTimer()
-        self.timer.timeout.connect(self.run_async_tasks)
-        self.timer.start(100)  # Проверяем каждые 100 мс
+        # Создаём и запускаем поток
+        self.thread = ButtonThread()
+        self.thread.button_pressed.connect(self.start_com)
+        self.thread.start()
 
         self.show()
 
@@ -697,7 +693,14 @@ class SettingsWindow(QtWidgets.QMainWindow):
         print("click button")
         subprocess.run(['onboard'])
 
+class ButtonThread(QThread):
+    button_pressed = pyqtSignal()  # Сигнал для отправки в GUI
 
+    def run(self):
+        while True:
+            if GPIO.input(7):
+                self.button_pressed.emit()  # Вызываем сигнал при нажатии
+                time.sleep(0.2)
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
