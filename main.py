@@ -702,6 +702,7 @@ if __name__ == "__main__":
     loop = QEventLoop(app)  # Используем QEventLoop из qasync
     asyncio.set_event_loop(loop)
 
+    window = MainWindow()
     app.exec_
 
     with loop:  # Запускаем цикл событий
