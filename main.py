@@ -98,12 +98,19 @@ class MainWindow(QtWidgets.QMainWindow):
         self.C = 0
         self.I = 0
 
+        self.is_running = False
         # Создаём и запускаем поток
         self.thread = ButtonThread()
-        self.thread.button_pressed.connect(self.start_com)
+        self.thread.button_pressed.connect(self.on_button_pressed)
         self.thread.start()
 
         self.show()
+
+    def on_button_pressed(self):
+        """Обёртка для вызова асинхронного метода, учитывая флаг"""
+        if not self.is_running:  # Запускаем только если ничего не выполняется
+            self.is_running = True
+            asyncio.create_task(self.start_com())
 
     def update_status(self):
         self.status.setText(self.message)
@@ -115,15 +122,6 @@ class MainWindow(QtWidgets.QMainWindow):
         except Exception as e:
             print(f"Ошибка при открытии окна настроек {e}")
 
-    def run_async_tasks(self):
-        """Запускаем асинхронную задачу без блокировки главного потока"""
-        asyncio.ensure_future(self.touch_button())
-
-    async def touch_button(self):
-        """Фоновый опрос кнопки"""
-        if GPIO.input(7):
-            await self.start_com()
-        await asyncio.sleep(0.2)
 
     def convert_amperes(self, value):
         data = {
@@ -370,7 +368,7 @@ class MainWindow(QtWidgets.QMainWindow):
         sheet.save(sheet_name + ".xlsx")
         sheet.close()
 
-    async def start_com(self):
+    def start_com(self):
         try:
             process = subprocess.Popen(['python3', 'init_commands.py'])
             port_name = "COM4"
