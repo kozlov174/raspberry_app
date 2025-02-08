@@ -42,21 +42,21 @@ class MainWindow(QtWidgets.QMainWindow):
         try:
             GPIO.setwarnings(False)
             GPIO.setup(12, GPIO.IN) #button
-            GPIO.setup(19, GPIO.IN)
-            GPIO.setup(65, GPIO.IN)
-            GPIO.setup(66, GPIO.IN)
+            GPIO.setup(8, GPIO.IN)
+            GPIO.setup(9, GPIO.IN)
+            GPIO.setup(10, GPIO.IN)
         except Exception as e:
             print(f"Error setting up GPIO: {e}")
 
         # Чтение состояния пинов и выполнение действий
         try:
-            if GPIO.input(19):  # LOW == 0
+            if GPIO.input(8):  # LOW == 0
                 self.position_V = 500
                 print("500В")
-            if GPIO.input(65):
+            if GPIO.input(9):
                 self.position_V = 1000
                 print("1000В")
-            if GPIO.input(66):
+            if GPIO.input(10):
                 self.position_V = 2500
                 print("2500В")
         except Exception as e:
