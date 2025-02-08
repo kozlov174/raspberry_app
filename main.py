@@ -16,9 +16,6 @@ import pyqtgraph as pg
 import subprocess
 import time
 
-from PyQt5.uic.Compiler.qtproxies import QtWidgets
-from qasync import QEventLoop, asyncSlot
-
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
 
@@ -101,9 +98,12 @@ class MainWindow(QtWidgets.QMainWindow):
         self.C = 0
         self.I = 0
 
-        self.timer = QTimer(self)
-        self.timer.timeout.connect(self.touch_button)  # Подключаем асинхронный слот
-        self.timer.start(200)  # Проверяем каждые 200 мс
+        # Start the touch button coroutine
+        self.loop = asyncio.get_event_loop()
+        # Используем QTimer для запуска асинхронных задач
+        self.timer = QTimer()
+        self.timer.timeout.connect(self.run_async_tasks)
+        self.timer.start(100)  # Проверяем каждые 100 мс
 
         self.show()
 
@@ -120,7 +120,6 @@ class MainWindow(QtWidgets.QMainWindow):
     def run_async_tasks(self):
         self.loop.run_until_complete(self.touch_button())
 
-    @asyncSlot()
     async def touch_button(self):
         while True:
             if GPIO.input(3):
@@ -699,11 +698,5 @@ class SettingsWindow(QtWidgets.QMainWindow):
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
-    loop = QEventLoop(app)  # Используем QEventLoop из qasync
-    asyncio.set_event_loop(loop)
-
     window = MainWindow()
-    app.exec_
-
-    with loop:  # Запускаем цикл событий
-        loop.run_forever()
+    app.exec_()
