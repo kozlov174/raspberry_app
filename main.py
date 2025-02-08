@@ -99,10 +99,9 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Start the touch button coroutine
         self.loop = asyncio.get_event_loop()
-        # Используем QTimer для запуска асинхронных задач
-        self.timer = QTimer()
-        self.timer.timeout.connect(self.run_async_tasks)
-        self.timer.start(100)# Проверяем каждые 100 мс
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(self.touch_button)
+        self.timer.start(200)
 
         self.show()
 
@@ -120,10 +119,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.loop.run_until_complete(self.touch_button())
 
     async def touch_button(self):
-        while True:
-            if GPIO.input(12):
-                await self.start_com()
-            await asyncio.sleep(0.2)
+        if GPIO.input(12):
+            asyncio.create_task(self.start_com())
 
     def convert_amperes(self, value):
         data = {
