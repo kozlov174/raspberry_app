@@ -104,7 +104,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.thread.button_pressed.connect(self.on_button_pressed)
         self.thread.start()
 
-        self.show()
+        self.showFullScreen()
 
     def on_button_pressed(self):
         """Обёртка для вызова асинхронного метода, учитывая флаг"""
@@ -347,24 +347,27 @@ class MainWindow(QtWidgets.QMainWindow):
             default_time_position = default_time_position + 5
 
         book = sheet.create_sheet('Метаданные')
-        with open("./metadata.txt", "r") as file:
-            content = file.readlines()
-            upd_cont = content[0].split(":")
-            book['A1'] = upd_cont[0]
-            book['A2'] = upd_cont[1]
-            upd_cont = content[1].split(":")
-            book['B1'] = upd_cont[0]
-            book['B2'] = upd_cont[1]
-            upd_cont = content[2].split(":")
-            book['C1'] = upd_cont[0]
-            book['C2'] = upd_cont[1]
-            upd_cont = content[3].split(":")
-            book['D1'] = upd_cont[0]
-            book['D2'] = upd_cont[1]
-            upd_cont = content[4].split(":")
-            book['E1'] = upd_cont[0]
-            book['E2'] = upd_cont[1]
-            sheet_name = str(book['A2'].value[:-1]) + " " + str(book['C2'].value[:-1]) + " " + str(book['D2'].value[:-1]) + " " + str(book['E2'].value[:-1])
+
+        df = pd.read_csv("metadata.csv")
+        book['A1'] = "Объект"
+        book['A2'] = str(df.loc[0, "object"])
+        book['B1'] = "Локация"
+        book['B2'] = str(df.loc[0, "location"])
+        book['C1'] = "Дата"
+        book['C2'] = str(df.loc[0, "date"])
+        book['D1'] = "Оператор"
+        book['D2'] = str(df.loc[0, "operator"])
+        book['E1'] = "Номер измерения"
+        book['E2'] = str(df.loc[0, "number_measurment"])
+
+        sheet_name = (
+                str(df.loc[0, "object"]) + " " +
+                str(df.loc[0, "location"]) + " " +
+                str(df.loc[0, "date"]) + " " +
+                str(df.loc[0, "operator"]) + " " +
+                str(df.loc[0, "number_measurment"])
+        )
+
         sheet.save(sheet_name + ".xlsx")
         sheet.close()
 
@@ -556,24 +559,9 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.graphWidget.plot(time_array, R_apr, pen=pg.mkPen(color='k', width=3), name='R апроксимированное')
                 self.calculate_itog(time_array, volt_array, R_array)
 
-                # Читаем содержимое файла
-                with open('metadata.txt', 'r', encoding='utf-8') as file:
-                    lines = file.readlines()  # Считываем все строки
-
-                # Ищем строку с номером измерения
-                prefix = "Номер измерения: "
-                for i, line in enumerate(lines):
-                    if line.startswith(prefix):
-                        number = int(line[len(prefix):].strip())  # Получаем число и удаляем лишние пробелы
-                        number += 1  # Увеличиваем его на 1
-                        lines[i] = f"{prefix}{number}\n"  # Обновляем строку с новым номером
-                        break
-                else:
-                    print("Строка с номером измерения не найдена.")
-
-                # Записываем обновлённые строки обратно в файл
-                with open('metadata.txt', 'w', encoding='utf-8') as file:
-                    file.writelines(lines)
+                df = pd.read_csv("metadata.csv")
+                df.loc[0,"number_measurment"] = df.loc[0,"number_measurment"] + 1
+                df.to_csv("metadata.csv", index=False)
 
         except serial.SerialException as e:
             print(f"Error: {e}")
@@ -641,51 +629,25 @@ class SettingsWindow(QtWidgets.QMainWindow):
         self.keyboard.clicked.connect(self.showKeyboard)
         self.save_button.clicked.connect(self.saveSettings)
 
-        with open("./metadata.txt", "r") as file:
-            content = file.readlines()
-            upd_cont = content[0].split(":")
-            self.name_obj.setText(upd_cont[1])
-            upd_cont = content[1].split(":")
-            self.location.setText(upd_cont[1])
-            self.date.setText(str(datetime.date.today()))
-            upd_cont = content[3].split(":")
-            self.operator.setText(upd_cont[1])
-            upd_cont = content[4].split(":")
-            self.number_measurment.setText(upd_cont[1])
+        # Чтение CSV-файла при инициализации
+        df = pd.read_csv('metadata.csv')
+
+        # Установка значений в поля интерфейса
+        self.name_obj.setText(str(df.loc[0, "object"]))  
+        self.location.setText(str(df.loc[0, "location"]))  
+        self.date.setText(datetime.date.today().strftime("%d.%m.%Y"))  # Исправлен формат года
+        self.operator.setText(str(df.loc[0, "operator"]))  
+        self.number_measurment.setText(str(df.loc[0, "number_measurment"]))  
 
     def saveSettings(self):
-        with open("./metadata.txt", "r") as file:
-            content = file.readlines()
-
-        updated_content = []
-
-        # Наименование объекта измерения
-        upd_cont = content[0].split(":", 1)
-        upd_cont[1] = " " + self.name_obj.toPlainText()
-        updated_content.append(":".join(upd_cont))
-
-        # Место расположения объекта измерения
-        upd_cont = content[1].split(":", 1)
-        upd_cont[1] = " " + self.location.toPlainText()
-        updated_content.append(":".join(upd_cont))
-
-        # Дата измерения
-        upd_cont = content[2].split(":", 1)
-        upd_cont[1] = " " + datetime.date.today().strftime("%d.%m.%y") + "\n"
-        updated_content.append(":".join(upd_cont))
-
-        # Оператор
-        upd_cont = content[3].split(":", 1)
-        upd_cont[1] = " " + self.operator.toPlainText()
-        updated_content.append(":".join(upd_cont))
-
-        # номер измерения
-        upd_cont = content[4].split(":", 1)
-        upd_cont[1] = " " + self.number_measurment.toPlainText()
-        updated_content.append(":".join(upd_cont))
-
-        with open("./metadata.txt", "w") as file:
-            file.writelines(updated_content)
+        df = pd.read_csv('metadata.csv')
+        # Обновление данных в DataFrame
+        df.loc[0, "object"] = self.name_obj.toPlainText()  
+        df.loc[0, "location"] = self.location.toPlainText()  
+        df.loc[0, "operator"] = self.operator.toPlainText()  
+        df.loc[0, "number_measurment"] = self.number_measurment.toPlainText()  
+        # Сохранение изменений в CSV-файл
+        df.to_csv('metadata.csv', index=False)
 
     def showKeyboard(self):
         print("click button")
