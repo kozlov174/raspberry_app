@@ -187,7 +187,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def showKeyboard(self):
         print("click button")
-        subprocess.run(['florence'])
+        subprocess.run(['onboard'])
 
     def doCalculation(self):
         book = openpyxl.load_workbook(filename=self.input_file)
