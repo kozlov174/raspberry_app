@@ -22,7 +22,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         super(MainWindow, self).__init__()
         self.position_v = None
-        uic.loadUi('main.ui', self)
+        uic.loadUi('/root/raspberry_app/main.ui', self)
         self.date = self.findChild(QtWidgets.QTextBrowser, 'date')
         self.open_button = self.findChild(QtWidgets.QPushButton, 'open_button')
         self.file_name_display = self.findChild(QtWidgets.QTextBrowser, 'file_name')
