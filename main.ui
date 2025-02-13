@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>771</width>
+    <width>783</width>
     <height>1200</height>
    </rect>
   </property>
@@ -23,7 +23,7 @@
    <widget class="QTextBrowser" name="Res">
     <property name="geometry">
      <rect>
-      <x>530</x>
+      <x>500</x>
       <y>1110</y>
       <width>180</width>
       <height>59</height>
@@ -40,7 +40,7 @@
    <widget class="QTextBrowser" name="DP">
     <property name="geometry">
      <rect>
-      <x>290</x>
+      <x>260</x>
       <y>1110</y>
       <width>180</width>
       <height>59</height>
@@ -57,7 +57,7 @@
    <widget class="QTextBrowser" name="W">
     <property name="geometry">
      <rect>
-      <x>50</x>
+      <x>20</x>
       <y>1110</y>
       <width>180</width>
       <height>59</height>
@@ -74,7 +74,7 @@
    <widget class="QTextBrowser" name="R60">
     <property name="geometry">
      <rect>
-      <x>290</x>
+      <x>260</x>
       <y>910</y>
       <width>180</width>
       <height>59</height>
@@ -91,7 +91,7 @@
    <widget class="QTextBrowser" name="Kabs">
     <property name="geometry">
      <rect>
-      <x>530</x>
+      <x>500</x>
       <y>910</y>
       <width>180</width>
       <height>59</height>
@@ -108,7 +108,7 @@
    <widget class="QTextBrowser" name="R15">
     <property name="geometry">
      <rect>
-      <x>50</x>
+      <x>20</x>
       <y>910</y>
       <width>180</width>
       <height>59</height>
@@ -132,7 +132,7 @@ p, li { white-space: pre-wrap; }
    <widget class="QTextBrowser" name="DAR">
     <property name="geometry">
      <rect>
-      <x>290</x>
+      <x>260</x>
       <y>1010</y>
       <width>180</width>
       <height>59</height>
@@ -149,7 +149,7 @@ p, li { white-space: pre-wrap; }
    <widget class="QTextBrowser" name="DD">
     <property name="geometry">
      <rect>
-      <x>530</x>
+      <x>500</x>
       <y>1010</y>
       <width>180</width>
       <height>59</height>
@@ -166,7 +166,7 @@ p, li { white-space: pre-wrap; }
    <widget class="QTextBrowser" name="PI">
     <property name="geometry">
      <rect>
-      <x>50</x>
+      <x>20</x>
       <y>1010</y>
       <width>180</width>
       <height>59</height>
@@ -183,7 +183,7 @@ p, li { white-space: pre-wrap; }
    <widget class="QPushButton" name="open_button">
     <property name="geometry">
      <rect>
-      <x>40</x>
+      <x>10</x>
       <y>120</y>
       <width>180</width>
       <height>60</height>
@@ -202,7 +202,7 @@ p, li { white-space: pre-wrap; }
    <widget class="QPushButton" name="save_button">
     <property name="geometry">
      <rect>
-      <x>230</x>
+      <x>200</x>
       <y>120</y>
       <width>180</width>
       <height>60</height>
@@ -232,7 +232,7 @@ p, li { white-space: pre-wrap; }
    <widget class="QTextBrowser" name="file_name">
     <property name="geometry">
      <rect>
-      <x>310</x>
+      <x>280</x>
       <y>59</y>
       <width>411</width>
       <height>31</height>
@@ -247,7 +247,7 @@ p, li { white-space: pre-wrap; }
    <widget class="QTextBrowser" name="date">
     <property name="geometry">
      <rect>
-      <x>300</x>
+      <x>270</x>
       <y>10</y>
       <width>281</width>
       <height>31</height>
@@ -275,7 +275,7 @@ p, li { white-space: pre-wrap; }
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>220</x>
+      <x>190</x>
       <y>0</y>
       <width>111</width>
       <height>51</height>
@@ -299,7 +299,7 @@ p, li { white-space: pre-wrap; }
    <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
-      <x>110</x>
+      <x>80</x>
       <y>50</y>
       <width>301</width>
       <height>51</height>
@@ -323,7 +323,7 @@ p, li { white-space: pre-wrap; }
    <widget class="QLabel" name="label_3">
     <property name="geometry">
      <rect>
-      <x>580</x>
+      <x>550</x>
       <y>100</y>
       <width>161</width>
       <height>20</height>
@@ -344,7 +344,7 @@ p, li { white-space: pre-wrap; }
    <widget class="QLabel" name="label_4">
     <property name="geometry">
      <rect>
-      <x>50</x>
+      <x>20</x>
       <y>980</y>
       <width>181</width>
       <height>21</height>
@@ -371,7 +371,7 @@ p, li { white-space: pre-wrap; }
    <widget class="QLabel" name="label_5">
     <property name="geometry">
      <rect>
-      <x>290</x>
+      <x>260</x>
       <y>980</y>
       <width>181</width>
       <height>21</height>
@@ -398,7 +398,7 @@ p, li { white-space: pre-wrap; }
    <widget class="QLabel" name="label_6">
     <property name="geometry">
      <rect>
-      <x>530</x>
+      <x>500</x>
       <y>980</y>
       <width>181</width>
       <height>21</height>
@@ -425,7 +425,7 @@ p, li { white-space: pre-wrap; }
    <widget class="QLabel" name="label_7">
     <property name="geometry">
      <rect>
-      <x>50</x>
+      <x>20</x>
       <y>880</y>
       <width>181</width>
       <height>21</height>
@@ -452,7 +452,7 @@ p, li { white-space: pre-wrap; }
    <widget class="QLabel" name="label_8">
     <property name="geometry">
      <rect>
-      <x>290</x>
+      <x>260</x>
       <y>880</y>
       <width>181</width>
       <height>21</height>
@@ -482,7 +482,7 @@ p, li { white-space: pre-wrap; }
    <widget class="QLabel" name="label_9">
     <property name="geometry">
      <rect>
-      <x>530</x>
+      <x>500</x>
       <y>880</y>
       <width>181</width>
       <height>21</height>
@@ -509,7 +509,7 @@ p, li { white-space: pre-wrap; }
    <widget class="QLabel" name="label_10">
     <property name="geometry">
      <rect>
-      <x>50</x>
+      <x>20</x>
       <y>1080</y>
       <width>181</width>
       <height>21</height>
@@ -536,7 +536,7 @@ p, li { white-space: pre-wrap; }
    <widget class="QLabel" name="label_11">
     <property name="geometry">
      <rect>
-      <x>290</x>
+      <x>260</x>
       <y>1080</y>
       <width>181</width>
       <height>21</height>
@@ -563,7 +563,7 @@ p, li { white-space: pre-wrap; }
    <widget class="QLabel" name="label_12">
     <property name="geometry">
      <rect>
-      <x>530</x>
+      <x>500</x>
       <y>1080</y>
       <width>181</width>
       <height>21</height>
@@ -588,16 +588,19 @@ p, li { white-space: pre-wrap; }
     </property>
    </widget>
    <widget class="PlotWidget" name="graphWidget" native="true">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
     <property name="geometry">
      <rect>
-      <x>0</x>
+      <x>10</x>
       <y>250</y>
-      <width>760</width>
-      <height>550</height>
+      <width>700</width>
+      <height>500</height>
      </rect>
     </property>
     <property name="sizePolicy">
-     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+     <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
       <horstretch>0</horstretch>
       <verstretch>0</verstretch>
      </sizepolicy>
@@ -625,7 +628,7 @@ alternate-background-color: rgb(85, 0, 255);</string>
    <widget class="QPushButton" name="save_button_2">
     <property name="geometry">
      <rect>
-      <x>560</x>
+      <x>530</x>
       <y>190</y>
       <width>180</width>
       <height>50</height>
@@ -655,7 +658,7 @@ alternate-background-color: rgb(85, 0, 255);</string>
    <widget class="QComboBox" name="time_izm">
     <property name="geometry">
      <rect>
-      <x>600</x>
+      <x>570</x>
       <y>130</y>
       <width>110</width>
       <height>50</height>
@@ -680,7 +683,7 @@ alternate-background-color: rgb(85, 0, 255);</string>
    <widget class="QTextBrowser" name="position_V">
     <property name="geometry">
      <rect>
-      <x>420</x>
+      <x>390</x>
       <y>130</y>
       <width>151</width>
       <height>51</height>
@@ -702,7 +705,7 @@ p, li { white-space: pre-wrap; }
    <widget class="QLabel" name="label_13">
     <property name="geometry">
      <rect>
-      <x>420</x>
+      <x>390</x>
       <y>100</y>
       <width>191</width>
       <height>20</height>
@@ -723,7 +726,7 @@ p, li { white-space: pre-wrap; }
    <widget class="QPushButton" name="open_settings">
     <property name="geometry">
      <rect>
-      <x>230</x>
+      <x>200</x>
       <y>190</y>
       <width>181</width>
       <height>51</height>
