@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
+    <width>771</width>
     <height>1200</height>
    </rect>
   </property>
@@ -23,7 +23,7 @@
    <widget class="QTextBrowser" name="Res">
     <property name="geometry">
      <rect>
-      <x>550</x>
+      <x>530</x>
       <y>1110</y>
       <width>180</width>
       <height>59</height>
@@ -40,7 +40,7 @@
    <widget class="QTextBrowser" name="DP">
     <property name="geometry">
      <rect>
-      <x>310</x>
+      <x>290</x>
       <y>1110</y>
       <width>180</width>
       <height>59</height>
@@ -57,7 +57,7 @@
    <widget class="QTextBrowser" name="W">
     <property name="geometry">
      <rect>
-      <x>70</x>
+      <x>50</x>
       <y>1110</y>
       <width>180</width>
       <height>59</height>
@@ -74,7 +74,7 @@
    <widget class="QTextBrowser" name="R60">
     <property name="geometry">
      <rect>
-      <x>310</x>
+      <x>290</x>
       <y>910</y>
       <width>180</width>
       <height>59</height>
@@ -91,7 +91,7 @@
    <widget class="QTextBrowser" name="Kabs">
     <property name="geometry">
      <rect>
-      <x>550</x>
+      <x>530</x>
       <y>910</y>
       <width>180</width>
       <height>59</height>
@@ -108,7 +108,7 @@
    <widget class="QTextBrowser" name="R15">
     <property name="geometry">
      <rect>
-      <x>70</x>
+      <x>50</x>
       <y>910</y>
       <width>180</width>
       <height>59</height>
@@ -132,7 +132,7 @@ p, li { white-space: pre-wrap; }
    <widget class="QTextBrowser" name="DAR">
     <property name="geometry">
      <rect>
-      <x>310</x>
+      <x>290</x>
       <y>1010</y>
       <width>180</width>
       <height>59</height>
@@ -149,7 +149,7 @@ p, li { white-space: pre-wrap; }
    <widget class="QTextBrowser" name="DD">
     <property name="geometry">
      <rect>
-      <x>550</x>
+      <x>530</x>
       <y>1010</y>
       <width>180</width>
       <height>59</height>
@@ -166,7 +166,7 @@ p, li { white-space: pre-wrap; }
    <widget class="QTextBrowser" name="PI">
     <property name="geometry">
      <rect>
-      <x>70</x>
+      <x>50</x>
       <y>1010</y>
       <width>180</width>
       <height>59</height>
@@ -183,7 +183,7 @@ p, li { white-space: pre-wrap; }
    <widget class="QPushButton" name="open_button">
     <property name="geometry">
      <rect>
-      <x>60</x>
+      <x>40</x>
       <y>120</y>
       <width>180</width>
       <height>60</height>
@@ -202,7 +202,7 @@ p, li { white-space: pre-wrap; }
    <widget class="QPushButton" name="save_button">
     <property name="geometry">
      <rect>
-      <x>250</x>
+      <x>230</x>
       <y>120</y>
       <width>180</width>
       <height>60</height>
@@ -232,7 +232,7 @@ p, li { white-space: pre-wrap; }
    <widget class="QTextBrowser" name="file_name">
     <property name="geometry">
      <rect>
-      <x>330</x>
+      <x>310</x>
       <y>59</y>
       <width>411</width>
       <height>31</height>
@@ -247,7 +247,7 @@ p, li { white-space: pre-wrap; }
    <widget class="QTextBrowser" name="date">
     <property name="geometry">
      <rect>
-      <x>320</x>
+      <x>300</x>
       <y>10</y>
       <width>281</width>
       <height>31</height>
@@ -275,7 +275,7 @@ p, li { white-space: pre-wrap; }
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>240</x>
+      <x>220</x>
       <y>0</y>
       <width>111</width>
       <height>51</height>
@@ -299,7 +299,7 @@ p, li { white-space: pre-wrap; }
    <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
-      <x>130</x>
+      <x>110</x>
       <y>50</y>
       <width>301</width>
       <height>51</height>
@@ -323,9 +323,9 @@ p, li { white-space: pre-wrap; }
    <widget class="QLabel" name="label_3">
     <property name="geometry">
      <rect>
-      <x>620</x>
+      <x>580</x>
       <y>100</y>
-      <width>191</width>
+      <width>161</width>
       <height>20</height>
      </rect>
     </property>
@@ -344,7 +344,7 @@ p, li { white-space: pre-wrap; }
    <widget class="QLabel" name="label_4">
     <property name="geometry">
      <rect>
-      <x>70</x>
+      <x>50</x>
       <y>980</y>
       <width>181</width>
       <height>21</height>
@@ -371,7 +371,7 @@ p, li { white-space: pre-wrap; }
    <widget class="QLabel" name="label_5">
     <property name="geometry">
      <rect>
-      <x>310</x>
+      <x>290</x>
       <y>980</y>
       <width>181</width>
       <height>21</height>
@@ -398,7 +398,7 @@ p, li { white-space: pre-wrap; }
    <widget class="QLabel" name="label_6">
     <property name="geometry">
      <rect>
-      <x>550</x>
+      <x>530</x>
       <y>980</y>
       <width>181</width>
       <height>21</height>
@@ -425,7 +425,7 @@ p, li { white-space: pre-wrap; }
    <widget class="QLabel" name="label_7">
     <property name="geometry">
      <rect>
-      <x>70</x>
+      <x>50</x>
       <y>880</y>
       <width>181</width>
       <height>21</height>
@@ -452,7 +452,7 @@ p, li { white-space: pre-wrap; }
    <widget class="QLabel" name="label_8">
     <property name="geometry">
      <rect>
-      <x>310</x>
+      <x>290</x>
       <y>880</y>
       <width>181</width>
       <height>21</height>
@@ -482,7 +482,7 @@ p, li { white-space: pre-wrap; }
    <widget class="QLabel" name="label_9">
     <property name="geometry">
      <rect>
-      <x>550</x>
+      <x>530</x>
       <y>880</y>
       <width>181</width>
       <height>21</height>
@@ -509,7 +509,7 @@ p, li { white-space: pre-wrap; }
    <widget class="QLabel" name="label_10">
     <property name="geometry">
      <rect>
-      <x>70</x>
+      <x>50</x>
       <y>1080</y>
       <width>181</width>
       <height>21</height>
@@ -536,7 +536,7 @@ p, li { white-space: pre-wrap; }
    <widget class="QLabel" name="label_11">
     <property name="geometry">
      <rect>
-      <x>310</x>
+      <x>290</x>
       <y>1080</y>
       <width>181</width>
       <height>21</height>
@@ -563,7 +563,7 @@ p, li { white-space: pre-wrap; }
    <widget class="QLabel" name="label_12">
     <property name="geometry">
      <rect>
-      <x>550</x>
+      <x>530</x>
       <y>1080</y>
       <width>181</width>
       <height>21</height>
@@ -590,7 +590,7 @@ p, li { white-space: pre-wrap; }
    <widget class="PlotWidget" name="graphWidget" native="true">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>0</x>
       <y>250</y>
       <width>760</width>
       <height>550</height>
@@ -625,7 +625,7 @@ alternate-background-color: rgb(85, 0, 255);</string>
    <widget class="QPushButton" name="save_button_2">
     <property name="geometry">
      <rect>
-      <x>580</x>
+      <x>560</x>
       <y>190</y>
       <width>180</width>
       <height>50</height>
@@ -655,7 +655,7 @@ alternate-background-color: rgb(85, 0, 255);</string>
    <widget class="QComboBox" name="time_izm">
     <property name="geometry">
      <rect>
-      <x>620</x>
+      <x>600</x>
       <y>130</y>
       <width>110</width>
       <height>50</height>
@@ -680,7 +680,7 @@ alternate-background-color: rgb(85, 0, 255);</string>
    <widget class="QTextBrowser" name="position_V">
     <property name="geometry">
      <rect>
-      <x>440</x>
+      <x>420</x>
       <y>130</y>
       <width>151</width>
       <height>51</height>
@@ -702,7 +702,7 @@ p, li { white-space: pre-wrap; }
    <widget class="QLabel" name="label_13">
     <property name="geometry">
      <rect>
-      <x>450</x>
+      <x>420</x>
       <y>100</y>
       <width>191</width>
       <height>20</height>
@@ -723,7 +723,7 @@ p, li { white-space: pre-wrap; }
    <widget class="QPushButton" name="open_settings">
     <property name="geometry">
      <rect>
-      <x>250</x>
+      <x>230</x>
       <y>190</y>
       <width>181</width>
       <height>51</height>
@@ -742,7 +742,7 @@ p, li { white-space: pre-wrap; }
    <widget class="QLabel" name="label_14">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>0</x>
       <y>810</y>
       <width>181</width>
       <height>41</height>
@@ -769,7 +769,7 @@ p, li { white-space: pre-wrap; }
    <widget class="QTextBrowser" name="status">
     <property name="geometry">
      <rect>
-      <x>170</x>
+      <x>150</x>
       <y>810</y>
       <width>401</width>
       <height>41</height>

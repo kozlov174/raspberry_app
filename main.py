@@ -1,5 +1,6 @@
 import datetime
 import math
+import os
 import re
 import sys
 import asyncio
@@ -367,8 +368,20 @@ class MainWindow(QtWidgets.QMainWindow):
                 str(df.loc[0, "operator"]) + " " +
                 str(df.loc[0, "number_measurment"])
         )
+        # Полное имя файла
+        file_name = sheet_name + ".xlsx"
 
-        sheet.save(sheet_name + ".xlsx")
+        # Проверяем, существует ли файл
+        if os.path.exists(file_name):
+            print(f"Файл {file_name} уже существует. Добавляем суффикс.")
+            counter = 1
+            while os.path.exists(f"{sheet_name}_{counter}.xlsx"):
+                counter += 1
+            file_name = f"{sheet_name}_{counter}.xlsx"
+
+        # Сохраняем файл
+        sheet.save(file_name)
+        print(f"Файл сохранен как {file_name}")
         sheet.close()
 
     def start_com(self):
@@ -643,7 +656,8 @@ class SettingsWindow(QtWidgets.QMainWindow):
         df = pd.read_csv('metadata.csv')
         # Обновление данных в DataFrame
         df.loc[0, "object"] = self.name_obj.toPlainText()  
-        df.loc[0, "location"] = self.location.toPlainText()  
+        df.loc[0, "location"] = self.location.toPlainText()
+        df.loc[0, "date"] = self.date.toPlainText()
         df.loc[0, "operator"] = self.operator.toPlainText()  
         df.loc[0, "number_measurment"] = self.number_measurment.toPlainText()  
         # Сохранение изменений в CSV-файл
