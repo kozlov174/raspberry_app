@@ -88,7 +88,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.open_settings.clicked.connect(self.open_window_settings)
 
         self.R15 = self.findChild(QtWidgets.QTextBrowser, 'R15')
+        self.R30 = self.findChild(QtWidgets.QTextBrowser, 'R30')
         self.R60 = self.findChild(QtWidgets.QTextBrowser, 'R60')
+        self.R600 = self.findChild(QtWidgets.QTextBrowser, 'R600')
         self.Kabs = self.findChild(QtWidgets.QTextBrowser, 'Kabs')
         self.PI = self.findChild(QtWidgets.QTextBrowser, 'PI')
         self.DAR = self.findChild(QtWidgets.QTextBrowser, 'DAR')
@@ -283,8 +285,12 @@ class MainWindow(QtWidgets.QMainWindow):
         self.DP.setText(str(math.trunc(DP)))
         R15 = R_apr[2] / 10 ** 9
         self.R15.setText(str(round(R15, 3)))
+        R30 = R_apr[5] / 10 ** 9
+        self.R30.setText(str(round(R30, 3)))
         R60 = R_apr[12] / 10 ** 9
         self.R60.setText(str(round(R60, 3)))
+        R600 = R_apr[119] / 10 ** 9
+        self.R600.setText(str(round(R600, 3)))
         if time > 100:
             I_ut = min(I_apr)
             I_spectr = (I_apr - I_ut) * time  # особое внимание этой строчке
