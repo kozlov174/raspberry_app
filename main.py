@@ -302,7 +302,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.R30.setText(str(round(R30, 3)))
         R60 = R_apr[12] / 10 ** 9
         self.R60.setText(str(round(R60, 3)))
-        R600 = R_apr[119] / 10 ** 9
+        R600 = R_apr[118] / 10 ** 9
         self.R600.setText(str(round(R600, 3)))
         if time > 100:
             I_ut = min(I_apr)
