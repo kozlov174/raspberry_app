@@ -274,7 +274,7 @@ class MainWindow(QtWidgets.QMainWindow):
             PI = 0
             DD = 0
         else:
-            PI = R_apr[120] / R_apr[12]
+            PI = R_apr[118] / R_apr[10]
             DD = I_test / (Uizm[1] * C_test)
 
         self.PI.setText(str(round(PI, 3)))
