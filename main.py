@@ -200,45 +200,35 @@ class MainWindow(QtWidgets.QMainWindow):
         DD_test = sheet['O2'].value  # считываем параметр DD
 
         Tg = 45  # Время жизни трансформатора - Константа в годах
-        import re
-        import pandas as pd
 
         try:
-            I = sheet['N2'].value
-            Cap = sheet['M2'].value
+            I = str(sheet['N2'].value).replace(',', '.')  # Заменяем запятую на точку
 
             data = {
                 'Unit': ['p', 'n', 'µ', 'm', ' ', 'k', 'M', 'G', 'T'],
-                'Value': [0.000000000001, 0.000000001, 0.000001, 0.001, 1, 1000, 1000000, 1000000000, 1000000000000]
+                'Value': [1e-12, 1e-9, 1e-6, 1e-3, 1, 1e3, 1e6, 1e9, 1e12]
             }
             Razmernost = pd.DataFrame(data)
 
-            def parse_value(value):
-                # Проверяем, является ли значение в научном формате
-                if isinstance(value, str) and 'E' in value:
-                    return float(value.replace(',', '.'))
+            if 'E' in I or 'e' in I:
+                I_test = format(float(I), '.15f')  # Обрабатываем научную нотацию и сохраняем точность
+            else:
+                n = len(I)
+                unit = I[n - 2]  # Предполагаем, что последний символ — пробел, а перед ним — единица измерения
+                unit_index = Razmernost[Razmernost['Unit'] == unit].index
+                value = Razmernost.loc[unit_index[0], 'Value'] if not unit_index.empty else 1
+                I_test = format(float(I[:n - 3]) * value, '.15f')
 
-                # Используем регулярное выражение для разделения числа и единицы измерения
-                match = re.match(r"([-+]?\d*\.?\d+)\s*([a-zA-Zµ]?)", value)
-                if match:
-                    number_str, unit = match.groups()
-                    number = float(number_str.replace(',', '.'))
+            Cap = str(sheet['M2'].value).replace(',', '.')
 
-                    if unit:
-                        unit_index = Razmernost[Razmernost['Unit'] == unit].index
-                        if not unit_index.empty:
-                            value = Razmernost.loc[unit_index[0], 'Value']
-                            return number * value
-
-                    return number
-
-                raise ValueError(f"Неизвестный формат значения: {value}")
-
-            I_test = parse_value(I)
-            C_test = parse_value(Cap)
-
-            print(f"I_test: {I_test}")
-            print(f"C_test: {C_test}")
+            if 'E' in Cap or 'e' in Cap:
+                C_test = format(float(Cap), '.15f')
+            else:
+                n = len(Cap)
+                unit = Cap[n - 2]
+                unit_index = Razmernost[Razmernost['Unit'] == unit].index
+                value = Razmernost.loc[unit_index[0], 'Value'] if not unit_index.empty else 1
+                C_test = format(float(Cap[:n - 3]) * value, '.15f')
 
         except Exception as e:
             print(e)
