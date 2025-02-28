@@ -200,6 +200,9 @@ class MainWindow(QtWidgets.QMainWindow):
         DD_test = sheet['O2'].value  # считываем параметр DD
 
         Tg = 45  # Время жизни трансформатора - Константа в годах
+        import re
+        import pandas as pd
+
         try:
             I = sheet['N2'].value
             Cap = sheet['M2'].value
@@ -216,7 +219,7 @@ class MainWindow(QtWidgets.QMainWindow):
                     return float(value.replace(',', '.'))
 
                 # Используем регулярное выражение для разделения числа и единицы измерения
-                match = re.match(r"([-+]?\d*\.?\d+)\s*([a-zA-Z]?)", value)
+                match = re.match(r"([-+]?\d*\.?\d+)\s*([a-zA-Zµ]?)", value)
                 if match:
                     number_str, unit = match.groups()
                     number = float(number_str.replace(',', '.'))
@@ -233,6 +236,9 @@ class MainWindow(QtWidgets.QMainWindow):
 
             I_test = parse_value(I)
             C_test = parse_value(Cap)
+
+            print(f"I_test: {I_test}")
+            print(f"C_test: {C_test}")
 
         except Exception as e:
             print(e)
