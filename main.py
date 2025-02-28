@@ -211,27 +211,28 @@ class MainWindow(QtWidgets.QMainWindow):
             Razmernost = pd.DataFrame(data)
 
             if 'E' in I or 'e' in I:
-                I_test = format(float(I), '.15f')  # Обрабатываем научную нотацию и сохраняем точность
+                I_test = float(I)  # Обрабатываем научную нотацию
             else:
                 n = len(I)
                 unit = I[n - 2]  # Предполагаем, что последний символ — пробел, а перед ним — единица измерения
                 unit_index = Razmernost[Razmernost['Unit'] == unit].index
                 value = Razmernost.loc[unit_index[0], 'Value'] if not unit_index.empty else 1
-                I_test = format(float(I[:n - 3]) * value, '.15f')
+                I_test = float(I[:n - 3]) * value
 
             Cap = str(sheet['M2'].value).replace(',', '.')
 
             if 'E' in Cap or 'e' in Cap:
-                C_test = format(float(Cap), '.15f')
+                C_test = float(Cap)
             else:
                 n = len(Cap)
                 unit = Cap[n - 2]
                 unit_index = Razmernost[Razmernost['Unit'] == unit].index
                 value = Razmernost.loc[unit_index[0], 'Value'] if not unit_index.empty else 1
-                C_test = format(float(Cap[:n - 3]) * value, '.15f')
+                C_test = float(Cap[:n - 3]) * value
 
         except Exception as e:
             print(e)
+
 
         # self.time = self.findChild(QtWidgets.QSpinBox, 'time')
         Tizm = []
