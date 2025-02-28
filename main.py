@@ -202,25 +202,38 @@ class MainWindow(QtWidgets.QMainWindow):
         Tg = 45  # Время жизни трансформатора - Константа в годах
         try:
             I = sheet['N2'].value
-            n = len(I)
-            I_test = float(I[:n - 3])
+            Cap = sheet['M2'].value
+
             data = {
                 'Unit': ['p', 'n', 'µ', 'm', ' ', 'k', 'M', 'G', 'T'],
                 'Value': [0.000000000001, 0.000000001, 0.000001, 0.001, 1, 1000, 1000000, 1000000000, 1000000000000]
             }
             Razmernost = pd.DataFrame(data)
-            unit = I[n - 2]  # Символ, который нужно найти в таблице
-            unit_index = Razmernost[Razmernost['Unit'] == unit].index
-            value = Razmernost.loc[unit_index[0], 'Value']
-            I_test = float(I[:n - 3]) * value
 
-            Cap = sheet['M2'].value
-            n = len(Cap)
-            C_test = float(Cap[:n - 3])
-            unit = Cap[n - 2]  # Символ, который нужно найти в таблице
-            unit_index = Razmernost[Razmernost['Unit'] == unit].index
-            value = Razmernost.loc[unit_index[0], 'Value']
-            C_test = float(Cap[:n - 3]) * value
+            def parse_value(value):
+                # Проверяем, является ли значение в научном формате
+                if isinstance(value, str) and 'E' in value:
+                    return float(value.replace(',', '.'))
+
+                # Используем регулярное выражение для разделения числа и единицы измерения
+                match = re.match(r"([-+]?\d*\.?\d+)\s*([a-zA-Z]?)", value)
+                if match:
+                    number_str, unit = match.groups()
+                    number = float(number_str.replace(',', '.'))
+
+                    if unit:
+                        unit_index = Razmernost[Razmernost['Unit'] == unit].index
+                        if not unit_index.empty:
+                            value = Razmernost.loc[unit_index[0], 'Value']
+                            return number * value
+
+                    return number
+
+                raise ValueError(f"Неизвестный формат значения: {value}")
+
+            I_test = parse_value(I)
+            C_test = parse_value(Cap)
+
         except Exception as e:
             print(e)
 
@@ -338,6 +351,13 @@ class MainWindow(QtWidgets.QMainWindow):
         book['D2'].value = datetime.datetime.now().strftime('%d-%m-%Y')
         book['E2'].value = datetime.datetime.now().strftime('%H:%M:%S')
 
+        length = len(R_izm) + 2  # Замените на нужную длину
+
+        Tizm = [10 + 5 * i for i in range(length)]
+
+        p = np.polyfit(Tizm, R_izm, 4)
+        R_apr = np.polyval(p, Tizm)
+
         default_position = 0
         default_time_position = 10
         # заполнение ячеек со значениями
@@ -349,7 +369,7 @@ class MainWindow(QtWidgets.QMainWindow):
             column = "T" + str(i)
             book[column].value = R_izm[default_position] // 1000000
             column = "U" + str(i)
-            book[column].value = R_izm[default_position] // 1000000
+            book[column].value = R_apr[default_position] // 1000000
             default_position = default_position + 1
             default_time_position = default_time_position + 5
 
