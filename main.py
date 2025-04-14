@@ -262,8 +262,8 @@ class MainWindow(QtWidgets.QMainWindow):
             I_apr = np.polyval(np.polyfit(Tizm[21:], I_t[21:], 4), Tizm)
 
         self.graphWidget.clear()
-        self.graphWidget.plot(Tizm, R_meas, pen=pg.mkPen(color='b', width=3), name='R измеренное')
-        self.graphWidget.plot(Tizm, R_apr, pen=pg.mkPen(color='k', width=3), name='R апроксимированное')
+        self.graphWidget.plot(Tizm, R_meas, pen=pg.mkPen(color='b', width=5), name='R измеренное')
+        self.graphWidget.plot(Tizm, R_apr, pen=pg.mkPen(color='k', width=5), name='R апроксимированное')
 
         DAR = R_apr[12] / R_apr[6]
         self.DAR.setText(str(round(DAR, 3)))
@@ -591,8 +591,8 @@ class MainWindow(QtWidgets.QMainWindow):
                 R_apr = np.polyval(p, time_array)
                 process.kill()
                 self.graphWidget.clear()
-                self.graphWidget.plot(time_array, R_array, pen=pg.mkPen(color='b', width=3), name='R измеренное')
-                self.graphWidget.plot(time_array, R_apr, pen=pg.mkPen(color='k', width=3), name='R апроксимированное')
+                self.graphWidget.plot(time_array, R_array, pen=pg.mkPen(color='b', width=5), name='R измеренное')
+                self.graphWidget.plot(time_array, R_apr, pen=pg.mkPen(color='k', width=5), name='R апроксимированное')
                 self.calculate_itog(time_array, volt_array, R_array)
 
                 df = pd.read_csv("metadata.csv")
