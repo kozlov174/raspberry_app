@@ -95,15 +95,17 @@ class MainWindow(QtWidgets.QMainWindow):
         self.gpio_thread.position_changed.connect(self.update_position_v)
         self.gpio_thread.start()
 
-        # Новый Lock
-        self._com_lock = asyncio.Lock()
+        self.button_thread = ButtonThread()
+        self.button_thread.button_pressed.connect(self.on_button_pressed)
+        self.button_thread.start()
 
-        # Поток отслеживания кнопки
-        self.thread = ButtonThread()
-        self.thread.button_pressed.connect(self.on_button_pressed)
-        self.thread.start()
+
 
         self.showFullScreen()
+
+    def on_button_pressed(self):
+        print("Кнопка нажата! Запускаем нужную функцию")
+        self.start_com()
 
     def update_position_v(self, new_position_v):
         if self.position_V != new_position_v:
@@ -116,17 +118,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.gpio_thread.wait()
         event.accept()
 
-    def on_button_pressed(self):
-        """Вызывается при нажатии физической кнопки"""
-        asyncio.create_task(self._start_com_wrapper())
 
-    async def _start_com_wrapper(self):
-        if self._com_lock.locked():
-            return  # уже выполняется — выходим
-
-        async with self._com_lock:
-            loop = asyncio.get_running_loop()
-            await loop.run_in_executor(None, self.start_com)
 
     def update_status(self):
         self.status.setText(self.message)
@@ -716,14 +708,30 @@ class SettingsWindow(QtWidgets.QMainWindow):
         print("click button")
         subprocess.Popen(['onboard'])
 
+
 class ButtonThread(QThread):
     button_pressed = pyqtSignal()
 
+    def __init__(self):
+        super().__init__()
+        self.running = True
+        self.processing = False  # флаг для блокировки повторных сигналов
+
     def run(self):
-        while True:
-            if not GPIO.input(35):  # кнопка нажата
-                self.button_pressed.emit()
-                time.sleep(0.2)
+        while self.running:
+            try:
+                if not GPIO.input(35):  # кнопка нажата
+                    if not self.processing:
+                        self.processing = True
+                        self.button_pressed.emit()
+                else:
+                    self.processing = False  # кнопка отпущена, можно снова реагировать
+            except Exception as e:
+                print(f"GPIO read error in ButtonThread: {e}")
+            time.sleep(0.05)  # частая проверка
+
+    def stop(self):
+        self.running = False
 
 class GPIOMonitorThread(QThread):
     position_changed = pyqtSignal(int)
