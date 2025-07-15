@@ -95,8 +95,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.gpio_thread.position_changed.connect(self.update_position_v)
         self.gpio_thread.start()
 
-        self.is_running = False
+        # Новый Lock
+        self._com_lock = asyncio.Lock()
 
+        # Поток отслеживания кнопки
         self.thread = ButtonThread()
         self.thread.button_pressed.connect(self.on_button_pressed)
         self.thread.start()
@@ -115,10 +117,16 @@ class MainWindow(QtWidgets.QMainWindow):
         event.accept()
 
     def on_button_pressed(self):
-        """Обёртка для вызова асинхронного метода, учитывая флаг"""
-        if not self.is_running:  # Запускаем только если ничего не выполняется
-            self.is_running = True
-            asyncio.create_task(self.start_com())
+        """Вызывается при нажатии физической кнопки"""
+        asyncio.create_task(self._start_com_wrapper())
+
+    async def _start_com_wrapper(self):
+        """Запускает start_com только если не запущена"""
+        if self._com_lock.locked():
+            return  # уже выполняется — выходим
+
+        async with self._com_lock:
+            self.start_com()
 
     def update_status(self):
         self.status.setText(self.message)
@@ -619,8 +627,6 @@ class MainWindow(QtWidgets.QMainWindow):
         except serial.SerialException as e:
             print(f"Error: {e}")
 
-        finally:
-            self.is_running = False
 
     def calculate_itog(self, Tizm, Uizm, R_meas):
         I_t = np.array(Uizm) / np.array(R_meas)
@@ -711,12 +717,12 @@ class SettingsWindow(QtWidgets.QMainWindow):
         subprocess.Popen(['onboard'])
 
 class ButtonThread(QThread):
-    button_pressed = pyqtSignal()  # Сигнал для отправки в GUI
+    button_pressed = pyqtSignal()
 
     def run(self):
         while True:
-            if not GPIO.input(35):
-                self.button_pressed.emit()  # Вызываем сигнал при нажатии
+            if not GPIO.input(35):  # кнопка нажата
+                self.button_pressed.emit()
                 time.sleep(0.2)
 
 class GPIOMonitorThread(QThread):
