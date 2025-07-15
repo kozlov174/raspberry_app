@@ -19,10 +19,11 @@ import time
 
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
-
         super(MainWindow, self).__init__()
         self.position_v = None
         uic.loadUi('/root/raspberry_app/main.ui', self)
+
+        # UI элементы
         self.date = self.findChild(QtWidgets.QTextBrowser, 'date')
         self.open_button = self.findChild(QtWidgets.QPushButton, 'open_button')
         self.file_name_display = self.findChild(QtWidgets.QTextBrowser, 'file_name')
@@ -33,38 +34,11 @@ class MainWindow(QtWidgets.QMainWindow):
         self.saveSheetButton = self.findChild(QtWidgets.QPushButton, 'save_button_2')
         self.time_izm = self.findChild(QtWidgets.QComboBox, 'time_izm')
         self.status = self.findChild(QtWidgets.QTextBrowser, 'status')
-        self.position_V = 500
-        self.R_itog_array = []
+        self.position_v = self.findChild(QtWidgets.QTextBrowser, 'position_V')
+        self.date.setText(str(datetime.date.today()))
 
-        # Настройка режима нумерации пинов
-        GPIO.setboard(GPIO.REPKAPI3)
-        GPIO.setmode(GPIO.BOARD)
-
-        # Настройка пинов как входов с подтяжкой вверх
-        try:
-            GPIO.setwarnings(False)
-            GPIO.setup(35, GPIO.IN) #button
-            GPIO.setup(19, GPIO.IN)
-            GPIO.setup(21, GPIO.IN)
-            GPIO.setup(23, GPIO.IN)
-        except Exception as e:
-            print(f"Error setting up GPIO: {e}")
-
-        # Чтение состояния пинов и выполнение действий
-        try:
-            if not (GPIO.input(23)):  # LOW == 0
-                self.position_V = 500
-                print("500В")
-            if not (GPIO.input(21)):
-                self.position_V = 1000
-                print("1000В")
-            if not (GPIO.input(19)):
-                self.position_V = 2500
-                print("2500В")
-        except Exception as e:
-            print(f"Error reading GPIO: {e}")
-
-        self.graphWidget = self.findChild(pg.PlotWidget, 'graphWidget')  # Ensure this is initialized
+        # График
+        self.graphWidget = self.findChild(pg.PlotWidget, 'graphWidget')
         self.graphWidget.setBackground('w')
         self.graphWidget.setLabel('left', 'Сопротивление, Ом', **{'font-size': '20pt'})
         self.graphWidget.setLabel('bottom', 'Время, сек', **{'font-size': '20pt'})
@@ -76,17 +50,31 @@ class MainWindow(QtWidgets.QMainWindow):
         legend = self.graphWidget.addLegend(offset=(400, 300))
         legend.labelTextColor = pg.mkColor('k')
 
-        self.basic_flag = 0
-        self.position_v = self.findChild(QtWidgets.QTextBrowser, 'position_V')
-        self.position_v.setText(str(self.position_V))
-        self.date.setText(str(datetime.date.today()))
+        # GPIO
+        self.position_V = 500
+        GPIO.setwarnings(False)
+        GPIO.setmode(GPIO.BOARD)
+        try:
+            GPIO.setup(35, GPIO.IN)
+            GPIO.setup(19, GPIO.IN)
+            GPIO.setup(21, GPIO.IN)
+            GPIO.setup(23, GPIO.IN)
+        except Exception as e:
+            print(f"Error setting up GPIO: {e}")
 
+        self.position_v.setText(str(self.position_V))
+
+        # Кнопки
         self.open_button.clicked.connect(self.showDialog)
         self.calculate.clicked.connect(self.doCalculation)
-        self.input_file = None  # Инициализация переменной для пути к файлу
         self.saveSheetButton.clicked.connect(self.saveSheet)
         self.open_settings.clicked.connect(self.open_window_settings)
 
+        self.input_file = None
+        self.basic_flag = 0
+        self.R_itog_array = []
+
+        # Выводы
         self.R15 = self.findChild(QtWidgets.QTextBrowser, 'R15')
         self.R30 = self.findChild(QtWidgets.QTextBrowser, 'R30')
         self.R60 = self.findChild(QtWidgets.QTextBrowser, 'R60')
@@ -98,16 +86,27 @@ class MainWindow(QtWidgets.QMainWindow):
         self.W = self.findChild(QtWidgets.QTextBrowser, 'W')
         self.DP = self.findChild(QtWidgets.QTextBrowser, 'DP')
         self.Res = self.findChild(QtWidgets.QTextBrowser, 'Res')
+
         self.C = 0
         self.I = 0
 
-        self.is_running = False
-        # Создаём и запускаем поток
-        self.thread = ButtonThread()
-        self.thread.button_pressed.connect(self.on_button_pressed)
-        self.thread.start()
+        # Поток мониторинга GPIO
+        self.gpio_thread = GPIOMonitorThread()
+        self.gpio_thread.position_changed.connect(self.update_position_v)
+        self.gpio_thread.start()
 
         self.showFullScreen()
+
+    def update_position_v(self, new_position_v):
+        if self.position_V != new_position_v:
+            self.position_V = new_position_v
+            self.position_v.setText(str(self.position_V))
+            print(f"Режим изменён на {new_position_v}В")
+
+    def closeEvent(self, event):
+        self.gpio_thread.stop()
+        self.gpio_thread.wait()
+        event.accept()
 
     def on_button_pressed(self):
         """Обёртка для вызова асинхронного метода, учитывая флаг"""
@@ -710,6 +709,29 @@ class ButtonThread(QThread):
             if not GPIO.input(35):
                 self.button_pressed.emit()  # Вызываем сигнал при нажатии
                 time.sleep(0.2)
+
+class GPIOMonitorThread(QThread):
+    position_changed = pyqtSignal(int)
+
+    def __init__(self):
+        super().__init__()
+        self.running = True
+
+    def run(self):
+        while self.running:
+            try:
+                if not GPIO.input(23):
+                    self.position_changed.emit(500)
+                elif not GPIO.input(21):
+                    self.position_changed.emit(1000)
+                elif not GPIO.input(19):
+                    self.position_changed.emit(2500)
+            except Exception as e:
+                print(f"GPIO read error in thread: {e}")
+            time.sleep(0.5)
+
+    def stop(self):
+        self.running = False
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
