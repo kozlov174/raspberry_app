@@ -43,22 +43,22 @@ class MainWindow(QtWidgets.QMainWindow):
         # Настройка пинов как входов с подтяжкой вверх
         try:
             GPIO.setwarnings(False)
-            GPIO.setup(7, GPIO.IN) #button
-            GPIO.setup(11, GPIO.IN)
-            GPIO.setup(13, GPIO.IN)
-            GPIO.setup(15, GPIO.IN)
+            GPIO.setup(35, GPIO.IN) #button
+            GPIO.setup(19, GPIO.IN)
+            GPIO.setup(21, GPIO.IN)
+            GPIO.setup(23, GPIO.IN)
         except Exception as e:
             print(f"Error setting up GPIO: {e}")
 
         # Чтение состояния пинов и выполнение действий
         try:
-            if GPIO.input(11):  # LOW == 0
+            if not (GPIO.input(23)):  # LOW == 0
                 self.position_V = 500
                 print("500В")
-            if GPIO.input(13):
+            if not (GPIO.input(21)):
                 self.position_V = 1000
                 print("1000В")
-            if GPIO.input(15):
+            if not (GPIO.input(19)):
                 self.position_V = 2500
                 print("2500В")
         except Exception as e:
@@ -265,7 +265,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.graphWidget.plot(Tizm, R_meas, pen=pg.mkPen(color='b', width=5), name='R измеренное')
         self.graphWidget.plot(Tizm, R_apr, pen=pg.mkPen(color='k', width=5), name='R апроксимированное')
 
-        DAR = R_apr[12] / R_apr[6]
+        DAR = R_apr[10] / R_apr[1]
         self.DAR.setText(str(round(DAR, 3)))
         if (time // 5 + 1 < 121):
             PI = 0
@@ -289,18 +289,28 @@ class MainWindow(QtWidgets.QMainWindow):
         self.W.setText(str(round(W, 3)))
         self.Res.setText(str(math.trunc(Res)))
 
-        Kabs = R_apr[12] / R_apr[3]
+        Kabs = R_apr[10] / R_apr[3]
         self.Kabs.setText(str(round(Kabs, 3)))
         DP = 200 * TPI ** 0.251
         self.DP.setText(str(math.trunc(DP)))
         R15 = R_apr[2] / 10 ** 9
         self.R15.setText(str(round(R15, 3)))
-        R30 = R_apr[5] / 10 ** 9
-        self.R30.setText(str(round(R30, 3)))
-        R60 = R_apr[12] / 10 ** 9
-        self.R60.setText(str(round(R60, 3)))
-        R600 = R_apr[118] / 10 ** 9
-        self.R600.setText(str(round(R600, 3)))
+
+        if len(R_apr) > 15:
+            R30 = R_apr[5] / 10 ** 9
+            self.R30.setText(str(round(R30, 3)))
+            R60 = R_apr[12] / 10 ** 9
+            self.R60.setText(str(round(R60, 3)))
+            R600 = R_apr[118] / 10 ** 9
+            self.R600.setText(str(round(R600, 3)))
+        else:
+            R30 = R_apr[4] / 10 ** 9
+            self.R30.setText(str(round(R30, 3)))
+            R60 = R_apr[10] / 10 ** 9
+            self.R60.setText(str(round(R60, 3)))
+            R600 = 0
+            self.R600.setText(str(round(R600, 3)))
+
         if time > 100:
             I_ut = min(I_apr)
             I_spectr = (I_apr - I_ut) * time  # особое внимание этой строчке
@@ -309,7 +319,7 @@ class MainWindow(QtWidgets.QMainWindow):
         sheet = openpyxl.Workbook()
         sheet.create_sheet("Лист1")
         book = sheet['Лист1']
-
+        process = subprocess.Popen(['python3', 'save_window.py'])
         # присваивание статических значений первой строки
         book['A1'].value = "Obj:Tst"
         book['B1'].value = "Description"
@@ -348,9 +358,9 @@ class MainWindow(QtWidgets.QMainWindow):
         book['D2'].value = datetime.datetime.now().strftime('%d-%m-%Y')
         book['E2'].value = datetime.datetime.now().strftime('%H:%M:%S')
 
-        length = len(R_izm) + 2  # Замените на нужную длину
+        length = len(R_izm)  # Замените на нужную длину
 
-        Tizm = [10 + 5 * i for i in range(length)]
+        Tizm = [5 * i for i in range(length)]
 
         p = np.polyfit(Tizm, R_izm, 4)
         R_apr = np.polyval(p, Tizm)
@@ -406,6 +416,8 @@ class MainWindow(QtWidgets.QMainWindow):
         sheet.save(file_name)
         print(f"Файл сохранен как {file_name}")
         sheet.close()
+        time.sleep(2)
+        process.kill()
 
     def start_com(self):
         try:
@@ -688,14 +700,14 @@ class SettingsWindow(QtWidgets.QMainWindow):
 
     def showKeyboard(self):
         print("click button")
-        subprocess.run(['onboard'])
+        subprocess.Popen(['onboard'])
 
 class ButtonThread(QThread):
     button_pressed = pyqtSignal()  # Сигнал для отправки в GUI
 
     def run(self):
         while True:
-            if GPIO.input(7):
+            if not GPIO.input(35):
                 self.button_pressed.emit()  # Вызываем сигнал при нажатии
                 time.sleep(0.2)
 
