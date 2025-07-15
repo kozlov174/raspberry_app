@@ -619,6 +619,9 @@ class MainWindow(QtWidgets.QMainWindow):
         except serial.SerialException as e:
             print(f"Error: {e}")
 
+        finally:
+            self.is_running = False
+
     def calculate_itog(self, Tizm, Uizm, R_meas):
         I_t = np.array(Uizm) / np.array(R_meas)
 
