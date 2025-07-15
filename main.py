@@ -95,6 +95,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.gpio_thread.position_changed.connect(self.update_position_v)
         self.gpio_thread.start()
 
+        self.thread = ButtonThread()
+        self.thread.button_pressed.connect(self.on_button_pressed)
+        self.thread.start()
+
         self.showFullScreen()
 
     def update_position_v(self, new_position_v):
