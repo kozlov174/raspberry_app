@@ -95,6 +95,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.gpio_thread.position_changed.connect(self.update_position_v)
         self.gpio_thread.start()
 
+        self.is_running = False
+
         self.thread = ButtonThread()
         self.thread.button_pressed.connect(self.on_button_pressed)
         self.thread.start()
@@ -391,7 +393,7 @@ class MainWindow(QtWidgets.QMainWindow):
         book['B1'] = "Локация"
         book['B2'] = str(df.loc[0, "location"])
         book['C1'] = "Дата"
-        book['C2'] = str(df.loc[0, "date"])
+        book['C2'] = datetime.datetime.now().strftime('%d-%m-%Y')
         book['D1'] = "Оператор"
         book['D2'] = str(df.loc[0, "operator"])
         book['E1'] = "Номер измерения"
@@ -400,7 +402,7 @@ class MainWindow(QtWidgets.QMainWindow):
         sheet_name = (
                 str(df.loc[0, "object"]) + " " +
                 str(df.loc[0, "location"]) + " " +
-                str(df.loc[0, "date"]) + " " +
+                str(datetime.datetime.now().strftime('%d-%m-%Y')) + " " +
                 str(df.loc[0, "operator"]) + " " +
                 str(df.loc[0, "number_measurment"])
         )
