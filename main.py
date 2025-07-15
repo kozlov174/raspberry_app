@@ -121,12 +121,12 @@ class MainWindow(QtWidgets.QMainWindow):
         asyncio.create_task(self._start_com_wrapper())
 
     async def _start_com_wrapper(self):
-        """Запускает start_com только если не запущена"""
         if self._com_lock.locked():
             return  # уже выполняется — выходим
 
         async with self._com_lock:
-            self.start_com()
+            loop = asyncio.get_running_loop()
+            await loop.run_in_executor(None, self.start_com)
 
     def update_status(self):
         self.status.setText(self.message)
