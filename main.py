@@ -658,14 +658,18 @@ class MainWindow(QtWidgets.QMainWindow):
         Kabs = R_apr[10] / R_apr[1]
         self.Kabs.setText(str(round(Kabs, 3)))
         DP = 200 * TPI ** 0.251
-        self.DP.setText(str(math.trunc(DP)))
+        self.DP.setText(str(round(DP, 3)))
         R15 = R_apr[1] / 10 ** 9
         self.R15.setText(str(round(R15, 3)))
         R60 = R_apr[10] / 10 ** 9
         self.R60.setText(str(round(R60, 3)))
-        if time > 100:
-            I_ut = min(I_apr)
-            I_spectr = (I_apr - I_ut) * time  # особое внимание этой строчке
+        R30= R_apr[4] / 10 ** 9
+        self.R30.setText(str(round(R30, 3)))
+        R600 = R_apr[118] / 10 ** 9
+        self.R600.setText(str(round(R600, 3)))
+        # if time > 100:
+        #     I_ut = min(I_apr)
+        #     I_spectr = (I_apr - I_ut) * time  # особое внимание этой строчке
 
 class SettingsWindow(QtWidgets.QMainWindow):
     def __init__(self):
