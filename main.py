@@ -252,7 +252,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
             if t_cell.value is None:
                 break
-            time = int(t_cell.value)
+            time_izm = int(t_cell.value)
             Tizm.append(int(t_cell.value))
             Uizm.append(int(u_cell.value))
             R_meas.append(int(r_cell.value) * 10 ** 6)
@@ -263,7 +263,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         p = np.polyfit(Tizm, R_meas, 4)
         R_apr = np.polyval(p, Tizm)
-        if time > 100:
+        if time_izm > 100:
             I_apr = np.polyval(np.polyfit(Tizm[21:], I_t[21:], 4), Tizm)
 
         self.graphWidget.clear()
@@ -272,7 +272,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         DAR = R_apr[10] / R_apr[1]
         self.DAR.setText(str(round(DAR, 3)))
-        if (time // 5 + 1 < 121):
+        if (time_izm // 5 + 1 < 121):
             PI = 0
             DD = 0
         else:
@@ -302,9 +302,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.R15.setText(str(round(R15, 3)))
 
         if len(R_apr) > 15:
-            R30 = R_apr[5] / 10 ** 9
+            R30 = R_apr[4] / 10 ** 9
             self.R30.setText(str(round(R30, 3)))
-            R60 = R_apr[12] / 10 ** 9
+            R60 = R_apr[10] / 10 ** 9
             self.R60.setText(str(round(R60, 3)))
             R600 = R_apr[118] / 10 ** 9
             self.R600.setText(str(round(R600, 3)))
@@ -316,7 +316,7 @@ class MainWindow(QtWidgets.QMainWindow):
             R600 = 0
             self.R600.setText(str(round(R600, 3)))
 
-        if time > 100:
+        if time_izm > 100:
             I_ut = min(I_apr)
             I_spectr = (I_apr - I_ut) * time  # особое внимание этой строчке
 
