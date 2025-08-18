@@ -24,7 +24,7 @@ class MainWindow(QtWidgets.QMainWindow):
         uic.loadUi('/root/raspberry_app/main.ui', self)
 
         # UI элементы
-        self.date = self.findChild(QtWidgets.QTextBrowser, 'date')
+        self.date = self.findChild(QtWidgets.QDateEdit, 'date')
         self.open_button = self.findChild(QtWidgets.QPushButton, 'open_button')
         self.file_name_display = self.findChild(QtWidgets.QTextBrowser, 'file_name')
         self.open_settings = self.findChild(QtWidgets.QPushButton, 'open_settings')
@@ -35,7 +35,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.time_izm = self.findChild(QtWidgets.QComboBox, 'time_izm')
         self.status = self.findChild(QtWidgets.QTextBrowser, 'status')
         self.position_v = self.findChild(QtWidgets.QTextBrowser, 'position_V')
-        self.date.setText(str(datetime.date.today()))
 
         # График
         self.graphWidget = self.findChild(pg.PlotWidget, 'graphWidget')
@@ -360,7 +359,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # присваивание динамических значений второй и последующих строк
         time = int(self.time_izm.currentText()) * 60
-        book['D2'].value = datetime.datetime.now().strftime('%d-%m-%Y')
+        book['D2'].value = self.date.date().isoformat()
         book['E2'].value = datetime.datetime.now().strftime('%H:%M:%S')
 
         length = len(R_izm)  # Замените на нужную длину
@@ -393,7 +392,7 @@ class MainWindow(QtWidgets.QMainWindow):
         book['B1'] = "Локация"
         book['B2'] = str(df.loc[0, "location"])
         book['C1'] = "Дата"
-        book['C2'] = datetime.datetime.now().strftime('%d-%m-%Y')
+        book['C2'] = self.date.date().isoformat()
         book['D1'] = "Оператор"
         book['D2'] = str(df.loc[0, "operator"])
         book['E1'] = "Номер измерения"
@@ -679,13 +678,15 @@ class SettingsWindow(QtWidgets.QMainWindow):
         self.keyboard = self.findChild(QtWidgets.QPushButton, 'keyboard_button')
         self.name_obj = self.findChild(QtWidgets.QTextEdit, 'name_obj')
         self.location = self.findChild(QtWidgets.QTextEdit, 'location_obj')
-        self.date = self.findChild(QtWidgets.QTextEdit, 'date')
+        self.date = self.findChild(QtWidgets.QDateEdit, 'date')
         self.operator = self.findChild(QtWidgets.QTextEdit, 'operator_2')
         self.save_button = self.findChild(QtWidgets.QPushButton, 'save_button')
         self.number_measurment = self.findChild(QtWidgets.QTextEdit, 'number_measurment')
+        self.close_button = self.findChild(QtWidgets.QPushButton, 'close_button')
 
         self.keyboard.clicked.connect(self.showKeyboard)
         self.save_button.clicked.connect(self.saveSettings)
+        self.close_button.clicked.connect(self.closeWindow)
 
         # Чтение CSV-файла при инициализации
         df = pd.read_csv('metadata.csv')
@@ -693,20 +694,25 @@ class SettingsWindow(QtWidgets.QMainWindow):
         # Установка значений в поля интерфейса
         self.name_obj.setText(str(df.loc[0, "object"]))  
         self.location.setText(str(df.loc[0, "location"]))  
-        self.date.setText(datetime.date.today().strftime("%d.%m.%Y"))  # Исправлен формат года
-        self.operator.setText(str(df.loc[0, "operator"]))  
+        self.operator.setText(str(df.loc[0, "operator"]))
         self.number_measurment.setText(str(df.loc[0, "number_measurment"]))  
 
+    def closeWindow(self):
+        self.close()
     def saveSettings(self):
         df = pd.read_csv('metadata.csv')
         # Обновление данных в DataFrame
         df.loc[0, "object"] = self.name_obj.toPlainText()  
         df.loc[0, "location"] = self.location.toPlainText()
-        df.loc[0, "date"] = self.date.toPlainText()
+        df.loc[0, "date"] = self.date.date().isoformat()
         df.loc[0, "operator"] = self.operator.toPlainText()  
         df.loc[0, "number_measurment"] = self.number_measurment.toPlainText()  
         # Сохранение изменений в CSV-файл
         df.to_csv('metadata.csv', index=False)
+
+        subprocess.Popen(['python3', 'saved_window.py'])
+        subprocess.Popen(['onboard --quit'])
+
 
     def showKeyboard(self):
         print("click button")

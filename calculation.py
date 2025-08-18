@@ -8,7 +8,7 @@ class CalculationsWindow(QWidget):
         super().__init__()
 
         self.setWindowTitle("Вычисления")
-        self.setGeometry(100, 100, 300, 300)  # Устанавливаем размер окна 300x300
+        self.setGeometry(100, 100, 600, 600)  # Устанавливаем размер окна 300x300
 
         layout = QVBoxLayout()
 
@@ -18,7 +18,7 @@ class CalculationsWindow(QWidget):
 
         # Установка шрифта
         font = QFont()
-        font.setPointSize(16)  # Увеличиваем размер шрифта
+        font.setPointSize(36)  # Увеличиваем размер шрифта
         font.setBold(True)      # Устанавливаем жирный шрифт
         self.label.setFont(font)
 
