@@ -16,7 +16,8 @@ class MyWindow(QWidget):
 
         label = QLabel("Выполняются настройки прибора", self)
         label.setAlignment(Qt.AlignCenter)
-
+        label2 = QLabel("прибора", self)
+        label2.setAlignment(Qt.AlignCenter)
         # Установка большего шрифта
         font = QFont()
         font.setPointSize(34)  # Увеличьте размер шрифта по вашему усмотрению
