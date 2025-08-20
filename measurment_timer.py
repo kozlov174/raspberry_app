@@ -9,8 +9,8 @@ class TimerWindow(QWidget):
         super().__init__()
         self.countdown_time = countdown_time
 
-        self.setWindowTitle("Таймер")
-        self.setGeometry(100, 100, 600, 600)  # Устанавливаем размер окна
+        self.setWindowTitle("Измерение")
+        self.setGeometry(0, 0, 500, 500)  # Устанавливаем размер окна
 
         layout = QVBoxLayout()
 
@@ -20,7 +20,7 @@ class TimerWindow(QWidget):
 
         # Установка шрифта
         title_font = QFont()
-        title_font.setPointSize(36)
+        title_font.setPointSize(34)
         title_font.setBold(True)
         self.title_label.setFont(title_font)
 

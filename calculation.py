@@ -8,17 +8,17 @@ class CalculationsWindow(QWidget):
         super().__init__()
 
         self.setWindowTitle("Вычисления")
-        self.setGeometry(100, 100, 600, 600)  # Устанавливаем размер окна 300x300
+        self.setGeometry(0, 0, 500, 500)  # Устанавливаем размер окна 300x300
 
         layout = QVBoxLayout()
 
         # Добавляем надпись "Выполняются вычисления"
-        self.label = QLabel("Выполняются вычисления", self)
+        self.label = QLabel("Вычисления", self)
         self.label.setAlignment(Qt.AlignCenter)
 
         # Установка шрифта
         font = QFont()
-        font.setPointSize(36)  # Увеличиваем размер шрифта
+        font.setPointSize(34)  # Увеличиваем размер шрифта
         font.setBold(True)      # Устанавливаем жирный шрифт
         self.label.setFont(font)
 

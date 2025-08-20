@@ -10,7 +10,7 @@ class MyWindow(QWidget):
         super().__init__()
 
         self.setWindowTitle("Настройки прибора")
-        self.setGeometry(100, 100, 600, 600)
+        self.setGeometry(0, 0, 500, 500)
 
         layout = QVBoxLayout()
 
@@ -19,7 +19,7 @@ class MyWindow(QWidget):
 
         # Установка большего шрифта
         font = QFont()
-        font.setPointSize(36)  # Увеличьте размер шрифта по вашему усмотрению
+        font.setPointSize(34)  # Увеличьте размер шрифта по вашему усмотрению
         label.setFont(font)
 
         layout.addWidget(label)
