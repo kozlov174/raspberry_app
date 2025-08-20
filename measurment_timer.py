@@ -1,7 +1,7 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QVBoxLayout
 from PyQt5.QtCore import QTimer, Qt
-from PyQt5.QtGui import QFont
+from PyQt5.QtGui import QFont, QPixmap
 
 
 class TimerWindow(QWidget):
@@ -10,7 +10,7 @@ class TimerWindow(QWidget):
         self.countdown_time = countdown_time
 
         self.setWindowTitle("Таймер")
-        self.setGeometry(100, 100, 600, 600)  # Устанавливаем размер окна 300x300
+        self.setGeometry(100, 100, 600, 600)  # Устанавливаем размер окна
 
         layout = QVBoxLayout()
 
@@ -20,20 +20,31 @@ class TimerWindow(QWidget):
 
         # Установка шрифта
         title_font = QFont()
-        title_font.setPointSize(36)  # Увеличиваем размер шрифта
-        title_font.setBold(True)  # Устанавливаем жирный шрифт
+        title_font.setPointSize(36)
+        title_font.setBold(True)
         self.title_label.setFont(title_font)
 
         layout.addWidget(self.title_label)
+
+        # === Добавляем изображение ===
+        self.image_label = QLabel(self)
+        pixmap = QPixmap("high_voltage.png")
+
+        # Масштабируем картинку по ширине окна (можно убрать если не нужно)
+        pixmap = pixmap.scaledToWidth(300, Qt.SmoothTransformation)
+
+        self.image_label.setPixmap(pixmap)
+        self.image_label.setAlignment(Qt.AlignCenter)
+        layout.addWidget(self.image_label)
+        # =============================
 
         # Добавляем метку для оставшегося времени
         self.timer_label = QLabel(f"Осталось: {self.countdown_time} секунд", self)
         self.timer_label.setAlignment(Qt.AlignCenter)
 
-        # Установка шрифта
         timer_font = QFont()
-        timer_font.setPointSize(30)  # Увеличиваем размер шрифта
-        timer_font.setBold(True)  # Устанавливаем жирный шрифт
+        timer_font.setPointSize(30)
+        timer_font.setBold(True)
         self.timer_label.setFont(timer_font)
 
         layout.addWidget(self.timer_label)
@@ -42,7 +53,7 @@ class TimerWindow(QWidget):
 
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.update_timer)
-        self.timer.start(1000)  # 1 секунда
+        self.timer.start(1000)
 
     def update_timer(self):
         if self.countdown_time > 0:

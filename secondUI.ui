@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>569</width>
-    <height>411</height>
+    <width>588</width>
+    <height>399</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -236,14 +236,53 @@ background-repeat: no-repeat; /* Отключает повторение изо�
     </property>
     <property name="font">
      <font>
-      <pointsize>24</pointsize>
+      <pointsize>20</pointsize>
      </font>
     </property>
     <property name="styleSheet">
-     <string notr="true">QDateEdit::up-button, 
+     <string notr="true">/* Делаем место справа под две кнопки */
+QDateEdit {
+    padding-right: 120px;  /* = ширина двух кнопок + зазор */
+}
+
+/* Общие параметры кнопок */
+QDateEdit::up-button,
 QDateEdit::down-button {
-    width: 25px;
-    height: 25px;
+    subcontrol-origin: padding;   /* позиционируем относительно области с padding */
+    width: 50px;
+    height: 50px;
+    border: 1px solid #bbb;
+    border-radius: 3px;
+    margin: 0;
+}
+
+/* Правая (увеличение) — у самого края справа */
+QDateEdit::up-button {
+    subcontrol-position: center right;
+    right: 0px;                   /* вплотную к правому краю */
+}
+
+/* Левая (уменьшение) — сдвигаем на ширину первой кнопки */
+QDateEdit::down-button {
+    subcontrol-position: center right;
+    right: 55px;                  /* = width up-button */
+}
+
+/* (необязательно) Состояния */
+QDateEdit::up-button:hover,
+QDateEdit::down-button:hover {
+    border-color: #888;
+}
+QDateEdit::up-button:pressed,
+QDateEdit::down-button:pressed {
+    background: #eaeaea;
+}
+/* Подставляем свои иконки */
+QDateEdit::up-arrow {
+    image: url(&quot;plus.png&quot;);   /* путь к твоему файлу */
+}
+QDateEdit::down-arrow {
+    image: url(&quot;minus.png&quot;);  /* путь к твоему файлу */
 }
 </string>
     </property>
