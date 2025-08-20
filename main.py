@@ -6,7 +6,7 @@ import sys
 import asyncio
 from time import sleep
 import RepkaPi.GPIO as GPIO
-import serial
+#import serial
 from PyQt5.QtCore import QIODevice, QThread, pyqtSignal, QTimer
 import pandas as pd
 import numpy as np
@@ -51,7 +51,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # GPIO
         self.position_V = 500
-        GPIO.setwarnings(False)
+        #GPIO.setwarnings(False)
         GPIO.setmode(GPIO.BOARD)
         try:
             GPIO.setup(35, GPIO.IN)
