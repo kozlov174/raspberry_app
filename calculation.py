@@ -13,7 +13,7 @@ class CalculationsWindow(QWidget):
         layout = QVBoxLayout()
 
         # Добавляем надпись "Выполняются вычисления"
-        self.label = QLabel("Вычисления", self)
+        self.label = QLabel("Выполняются вычисления", self)
         self.label.setAlignment(Qt.AlignCenter)
 
         # Установка шрифта
