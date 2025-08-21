@@ -1,16 +1,14 @@
 import datetime
 import math
 import os
-import re
 import sys
-import asyncio
 from time import sleep
 import RepkaPi.GPIO as GPIO
 #import serial
-from PyQt5.QtCore import QIODevice, QThread, pyqtSignal, QTimer
+from PyQt5.QtCore import QThread, pyqtSignal
 import pandas as pd
 import numpy as np
-from PyQt5 import QtCore, QtWidgets, uic, QtSerialPort
+from PyQt5 import QtWidgets, uic
 import easygui
 import openpyxl
 import pyqtgraph as pg

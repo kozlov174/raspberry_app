@@ -671,12 +671,12 @@ alternate-background-color: rgb(85, 0, 255);</string>
     </property>
     <item>
      <property name="text">
-      <string>1 </string>
+      <string>60</string>
      </property>
     </item>
     <item>
      <property name="text">
-      <string>10</string>
+      <string>600</string>
      </property>
     </item>
    </widget>
