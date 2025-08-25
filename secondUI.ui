@@ -13,6 +13,9 @@
   <property name="windowTitle">
    <string>Метаданные</string>
   </property>
+  <property name="autoFillBackground">
+   <bool>false</bool>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QLabel" name="label_2">
     <property name="geometry">
@@ -116,8 +119,8 @@
    <widget class="QPushButton" name="keyboard_button">
     <property name="geometry">
      <rect>
-      <x>560</x>
-      <y>180</y>
+      <x>550</x>
+      <y>130</y>
       <width>100</width>
       <height>100</height>
      </rect>
@@ -180,8 +183,8 @@ background-repeat: no-repeat; /* Отключает повторение изо�
    <widget class="QPushButton" name="save_button">
     <property name="geometry">
      <rect>
-      <x>560</x>
-      <y>70</y>
+      <x>550</x>
+      <y>20</y>
       <width>100</width>
       <height>100</height>
      </rect>
@@ -238,11 +241,23 @@ background-repeat: no-repeat; /* Отключает повторение изо�
    <widget class="QPushButton" name="close_button">
     <property name="geometry">
      <rect>
-      <x>560</x>
-      <y>290</y>
+      <x>550</x>
+      <y>380</y>
       <width>100</width>
       <height>100</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>13</pointsize>
+     </font>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(255, 255, 255);
+background-color: rgb(255, 0, 0);</string>
     </property>
     <property name="text">
      <string>ЗАКРЫТЬ</string>
