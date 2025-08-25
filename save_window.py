@@ -1,5 +1,5 @@
 import sys
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QVBoxLayout
 from PyQt5.QtGui import QFont
 
@@ -17,6 +17,8 @@ class MyWindow(QWidget):
         label.setFont(font)
         layout.addWidget(label)
         self.setLayout(layout)
+        QTimer.singleShot(3000, self.close)
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

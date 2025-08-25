@@ -693,7 +693,7 @@ class SettingsWindow(QtWidgets.QMainWindow):
         # Установка значений в поля интерфейса
         self.name_obj.setText(str(df.loc[0, "object"]))  
         self.location.setText(str(df.loc[0, "location"]))
-        self.date_field.setText(str(df.loc[0, "date"]))
+        self.date_field.setDate(str(df.loc[0, "date"]))
         self.operator.setText(str(df.loc[0, "operator"]))
         self.number_measurment.setText(str(df.loc[0, "number_measurment"]))  
 
@@ -710,8 +710,8 @@ class SettingsWindow(QtWidgets.QMainWindow):
         # Сохранение изменений в CSV-файл
         df.to_csv('metadata.csv', index=False)
 
-        subprocess.Popen(['python3', 'saved_window.py'])
-        subprocess.Popen(['onboard --quit'])
+        subprocess.Popen(['python3', 'save_window.py'])
+        #subprocess.Popen(['onboard --quit'])
 
 
     def showKeyboard(self):
