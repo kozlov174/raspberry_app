@@ -669,6 +669,12 @@ class MainWindow(QtWidgets.QMainWindow):
         #     I_ut = min(I_apr)
         #     I_spectr = (I_apr - I_ut) * time  # особое внимание этой строчке
 
+import datetime
+import subprocess
+import pandas as pd
+from PyQt5 import QtWidgets, uic
+from PyQt5.QtCore import QDate
+
 class SettingsWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super(SettingsWindow, self).__init__()
@@ -691,32 +697,43 @@ class SettingsWindow(QtWidgets.QMainWindow):
         df = pd.read_csv('metadata.csv')
 
         # Установка значений в поля интерфейса
-        self.name_obj.setText(str(df.loc[0, "object"]))  
+        self.name_obj.setText(str(df.loc[0, "object"]))
         self.location.setText(str(df.loc[0, "location"]))
-        self.date_field.setDate(datetime.date(df.loc[0, "date"]))
+
+        # Преобразование даты "10.09.2024" -> QDate
+        date_str = str(df.loc[0, "date"])
+        date_obj = datetime.datetime.strptime(date_str, "%d.%m.%Y").date()
+        self.date_field.setDate(QDate(date_obj.year, date_obj.month, date_obj.day))
+
         self.operator.setText(str(df.loc[0, "operator"]))
-        self.number_measurment.setText(str(df.loc[0, "number_measurment"]))  
+        self.number_measurment.setText(str(df.loc[0, "number_measurment"]))
 
     def closeWindow(self):
         self.close()
+
     def saveSettings(self):
         df = pd.read_csv('metadata.csv')
+
         # Обновление данных в DataFrame
-        df.loc[0, "object"] = self.name_obj.toPlainText()  
+        df.loc[0, "object"] = self.name_obj.toPlainText()
         df.loc[0, "location"] = self.location.toPlainText()
-        df.loc[0, "date"] = self.date_field.date().toString()
-        df.loc[0, "operator"] = self.operator.toPlainText()  
-        df.loc[0, "number_measurment"] = self.number_measurment.toPlainText()  
+
+        # Конвертация QDate -> строка "dd.MM.yyyy"
+        date_qt = self.date_field.date()
+        df.loc[0, "date"] = date_qt.toString("dd.MM.yyyy")
+
+        df.loc[0, "operator"] = self.operator.toPlainText()
+        df.loc[0, "number_measurment"] = self.number_measurment.toPlainText()
+
         # Сохранение изменений в CSV-файл
         df.to_csv('metadata.csv', index=False)
 
         subprocess.Popen(['python3', 'save_window.py'])
-        #subprocess.Popen(['onboard --quit'])
-
 
     def showKeyboard(self):
         print("click button")
         subprocess.Popen(['onboard'])
+
 
 
 class ButtonThread(QThread):
