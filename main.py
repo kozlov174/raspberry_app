@@ -34,6 +34,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.status = self.findChild(QtWidgets.QTextBrowser, 'status')
         self.position_v = self.findChild(QtWidgets.QTextBrowser, 'position_V')
 
+        df = pd.read_csv('metadata.csv')
+        date_str = str(df.loc[0, "date"])
+        self.date.setText(date_str)
+
         # График
         self.graphWidget = self.findChild(pg.PlotWidget, 'graphWidget')
         self.graphWidget.setBackground('w')
@@ -358,7 +362,9 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # присваивание динамических значений второй и последующих строк
         time = int(self.time_izm.currentText()) * 60
-        book['D2'].value = self.date.date().isoformat()
+        df = pd.read_csv('metadata.csv')
+        date_str = str(df.loc[0, "date"])
+        book['D2'].value = date_str
         book['E2'].value = datetime.datetime.now().strftime('%H:%M:%S')
 
         length = len(R_izm)  # Замените на нужную длину
@@ -391,7 +397,7 @@ class MainWindow(QtWidgets.QMainWindow):
         book['B1'] = "Локация"
         book['B2'] = str(df.loc[0, "location"])
         book['C1'] = "Дата"
-        book['C2'] = self.date.date().isoformat()
+        book['C2'] = str(df.loc[0, "date"])
         book['D1'] = "Оператор"
         book['D2'] = str(df.loc[0, "operator"])
         book['E1'] = "Номер измерения"
