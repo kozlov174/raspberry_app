@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>679</width>
-    <height>479</height>
+    <height>527</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,8 +19,8 @@
      <rect>
       <x>20</x>
       <y>110</y>
-      <width>491</width>
-      <height>51</height>
+      <width>351</width>
+      <height>81</height>
      </rect>
     </property>
     <property name="font">
@@ -37,12 +37,15 @@
     <property name="textFormat">
      <enum>Qt::RichText</enum>
     </property>
+    <property name="wordWrap">
+     <bool>true</bool>
+    </property>
    </widget>
    <widget class="QLabel" name="label_3">
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>190</y>
+      <y>230</y>
       <width>211</width>
       <height>51</height>
      </rect>
@@ -90,7 +93,7 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>270</y>
+      <y>310</y>
       <width>211</width>
       <height>51</height>
      </rect>
@@ -148,7 +151,7 @@ background-repeat: no-repeat; /* Отключает повторение изо�
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>150</y>
+      <y>190</y>
       <width>401</width>
       <height>52</height>
      </rect>
@@ -163,7 +166,7 @@ background-repeat: no-repeat; /* Отключает повторение изо�
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>310</y>
+      <y>350</y>
       <width>401</width>
       <height>52</height>
      </rect>
@@ -197,7 +200,7 @@ background-repeat: no-repeat; /* Отключает повторение изо�
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>350</y>
+      <y>390</y>
       <width>221</width>
       <height>51</height>
      </rect>
@@ -221,7 +224,7 @@ background-repeat: no-repeat; /* Отключает повторение изо�
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>390</y>
+      <y>430</y>
       <width>401</width>
       <height>52</height>
      </rect>
@@ -249,7 +252,7 @@ background-repeat: no-repeat; /* Отключает повторение изо�
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>230</y>
+      <y>270</y>
       <width>401</width>
       <height>52</height>
      </rect>
