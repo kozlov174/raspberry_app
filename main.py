@@ -677,7 +677,7 @@ class SettingsWindow(QtWidgets.QMainWindow):
         self.keyboard = self.findChild(QtWidgets.QPushButton, 'keyboard_button')
         self.name_obj = self.findChild(QtWidgets.QTextEdit, 'name_obj')
         self.location = self.findChild(QtWidgets.QTextEdit, 'location_obj')
-        self.date = self.findChild(QtWidgets.QDateEdit, 'date')
+        self.date_field = self.findChild(QtWidgets.QDateEdit, 'date')
         self.operator = self.findChild(QtWidgets.QTextEdit, 'operator_2')
         self.save_button = self.findChild(QtWidgets.QPushButton, 'save_button')
         self.number_measurment = self.findChild(QtWidgets.QTextEdit, 'number_measurment')
@@ -703,7 +703,7 @@ class SettingsWindow(QtWidgets.QMainWindow):
         # Обновление данных в DataFrame
         df.loc[0, "object"] = self.name_obj.toPlainText()  
         df.loc[0, "location"] = self.location.toPlainText()
-        df.loc[0, "date"] = self.date.date().isoformat()
+        df.loc[0, "date"] = self.date_field.date()
         df.loc[0, "operator"] = self.operator.toPlainText()  
         df.loc[0, "number_measurment"] = self.number_measurment.toPlainText()  
         # Сохранение изменений в CSV-файл
