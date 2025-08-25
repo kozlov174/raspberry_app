@@ -22,7 +22,7 @@ class MainWindow(QtWidgets.QMainWindow):
         uic.loadUi('/root/raspberry_app/main.ui', self)
 
         # UI элементы
-        self.date = self.findChild(QtWidgets.QDateEdit, 'date')
+        self.date = self.findChild(QtWidgets.QTextBrowser, 'date')
         self.open_button = self.findChild(QtWidgets.QPushButton, 'open_button')
         self.file_name_display = self.findChild(QtWidgets.QTextBrowser, 'file_name')
         self.open_settings = self.findChild(QtWidgets.QPushButton, 'open_settings')

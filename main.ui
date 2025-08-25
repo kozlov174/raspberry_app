@@ -184,7 +184,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>110</y>
+      <y>120</y>
       <width>220</width>
       <height>80</height>
      </rect>
@@ -203,7 +203,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>240</x>
-      <y>110</y>
+      <y>120</y>
       <width>220</width>
       <height>80</height>
      </rect>
@@ -323,8 +323,8 @@ p, li { white-space: pre-wrap; }
    <widget class="QLabel" name="label_3">
     <property name="geometry">
      <rect>
-      <x>490</x>
-      <y>100</y>
+      <x>500</x>
+      <y>120</y>
       <width>191</width>
       <height>20</height>
      </rect>
@@ -629,7 +629,7 @@ alternate-background-color: rgb(85, 0, 255);</string>
     <property name="geometry">
      <rect>
       <x>240</x>
-      <y>200</y>
+      <y>210</y>
       <width>220</width>
       <height>80</height>
      </rect>
@@ -658,8 +658,8 @@ alternate-background-color: rgb(85, 0, 255);</string>
    <widget class="QComboBox" name="time_izm">
     <property name="geometry">
      <rect>
-      <x>490</x>
-      <y>130</y>
+      <x>500</x>
+      <y>150</y>
       <width>110</width>
       <height>50</height>
      </rect>
@@ -683,8 +683,8 @@ alternate-background-color: rgb(85, 0, 255);</string>
    <widget class="QTextBrowser" name="position_V">
     <property name="geometry">
      <rect>
-      <x>490</x>
-      <y>220</y>
+      <x>500</x>
+      <y>240</y>
       <width>151</width>
       <height>51</height>
      </rect>
@@ -705,8 +705,8 @@ p, li { white-space: pre-wrap; }
    <widget class="QLabel" name="label_13">
     <property name="geometry">
      <rect>
-      <x>490</x>
-      <y>190</y>
+      <x>500</x>
+      <y>210</y>
       <width>191</width>
       <height>20</height>
      </rect>
@@ -727,7 +727,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>200</y>
+      <y>210</y>
       <width>220</width>
       <height>80</height>
      </rect>
