@@ -693,7 +693,7 @@ class SettingsWindow(QtWidgets.QMainWindow):
         # Установка значений в поля интерфейса
         self.name_obj.setText(str(df.loc[0, "object"]))  
         self.location.setText(str(df.loc[0, "location"]))
-        self.date_field.setDate(df.loc[0, "date"])
+        self.date_field.setDate(datetime.date(df.loc[0, "date"]))
         self.operator.setText(str(df.loc[0, "operator"]))
         self.number_measurment.setText(str(df.loc[0, "number_measurment"]))  
 
