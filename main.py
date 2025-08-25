@@ -703,7 +703,7 @@ class SettingsWindow(QtWidgets.QMainWindow):
         # Обновление данных в DataFrame
         df.loc[0, "object"] = self.name_obj.toPlainText()  
         df.loc[0, "location"] = self.location.toPlainText()
-        df.loc[0, "date"] = self.date_field.date()
+        df.loc[0, "date"] = self.date_field.date().isoformat()
         df.loc[0, "operator"] = self.operator.toPlainText()  
         df.loc[0, "number_measurment"] = self.number_measurment.toPlainText()  
         # Сохранение изменений в CSV-файл
