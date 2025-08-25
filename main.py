@@ -677,7 +677,7 @@ class SettingsWindow(QtWidgets.QMainWindow):
         self.keyboard = self.findChild(QtWidgets.QPushButton, 'keyboard_button')
         self.name_obj = self.findChild(QtWidgets.QTextEdit, 'name_obj')
         self.location = self.findChild(QtWidgets.QTextEdit, 'location_obj')
-        self.date_field = self.findChild(QtWidgets.QDateEdit, 'date')
+        self.date_field = self.findChild(QtWidgets.QDateEdit, 'dateEdit')
         self.operator = self.findChild(QtWidgets.QTextEdit, 'operator_2')
         self.save_button = self.findChild(QtWidgets.QPushButton, 'save_button')
         self.number_measurment = self.findChild(QtWidgets.QTextEdit, 'number_measurment')
