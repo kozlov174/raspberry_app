@@ -541,13 +541,13 @@ class MainWindow(QtWidgets.QMainWindow):
                     print(f"Received output: {output}")
                     time.sleep(3)  # Пауза между командами (если необходимо)
                 process.kill()
-                process = subprocess.Popen(['python3', 'measurment_timer.py', str(int(self.time_izm.currentText()) * 61)])
+                process = subprocess.Popen(['python3', 'measurment_timer.py', str(int(self.time_izm.currentText()) + 1)])
                 # Чтение данных после отправки команд
                 print("Reading data from serial port...")
                 time.sleep(2)  # Дайте время устройству для отправки данных
                 time_array = []
                 R_array = []
-                for i in range(time_izm * 60 + 5):
+                for i in range(time_izm  + 5):
                     time.sleep(1)
                 end_output = ""
                 process.kill()
@@ -565,11 +565,11 @@ class MainWindow(QtWidgets.QMainWindow):
                 decoded_output = end_output.decode("utf-8")
                 end_array = decoded_output.split(";")
                 print('Array length' + " " + str(len(end_array)))
-                for i in range(0, time_izm * 60, 5):
+                for i in range(0, time_izm, 5):
                     volt_array.append(int(self.position_V))
                     time_array.append(i)
                     R = end_array[base_index].split("E")
-                    if i == time_izm * 60:
+                    if i == time_izm:
                         R[0] = R[0][1:]
                         itogR = float(R[0]) * 10 ** int(R[1][:-4])
                     else:
@@ -629,7 +629,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         p = np.polyfit(Tizm, R_meas, 4)
         R_apr = np.polyval(p, Tizm)
-        if int(self.time_izm.currentText()) * 60 > 100:
+        if int(self.time_izm.currentText()) > 100:
             I_apr = np.polyval(np.polyfit(Tizm[21:], I_t[21:], 4), Tizm)
 
         if len(R_apr) > 12:
@@ -637,7 +637,7 @@ class MainWindow(QtWidgets.QMainWindow):
         else:
             DAR = 0
         self.DAR.setText(str(round(DAR, 3)))
-        if (int(self.time_izm.currentText()) * 60 // 5 + 1 < 121):
+        if (int(self.time_izm.currentText()) // 5 + 1 < 121):
             PI = 0
             DD = 0
         else:
