@@ -100,9 +100,16 @@ class MainWindow(QtWidgets.QMainWindow):
         self.button_thread.button_pressed.connect(self.on_button_pressed)
         self.button_thread.start()
 
-
+        self.date_thread = DateThread(interval=5)
+        self.date_thread.update_date.connect(self.update_data)
+        self.date_thread.start()
 
         self.showFullScreen()
+
+    def update_data(self):
+        df = pd.read_csv('metadata.csv')
+        date_str = str(df.loc[0, "date"])
+        self.date.setText(date_str)
 
     def on_button_pressed(self):
         print("Кнопка нажата! Запускаем нужную функцию")
@@ -788,6 +795,23 @@ class GPIOMonitorThread(QThread):
 
     def stop(self):
         self.running = False
+
+class DateThread(QThread):
+    update_date = pyqtSignal()
+
+    def __init__(self, interval=5):
+        super().__init__()
+        self.interval = interval  # интервал обновления в секундах
+        self.running = True
+
+    def run(self):
+        while self.running:
+            self.update_date.emit()
+            time.sleep(self.interval)
+
+    def stop(self):
+        self.running = False
+
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
