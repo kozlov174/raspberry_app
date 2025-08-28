@@ -554,7 +554,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 time.sleep(2)  # Дайте время устройству для отправки данных
                 time_array = []
                 R_array = []
-                for i in range(5):
+                for i in range(int(self.time_izm.currentText)):
                     time.sleep(1)
                 end_output = ""
                 process.kill()
@@ -761,14 +761,12 @@ class ButtonThread(QThread):
         while self.running:
             try:
                 if not GPIO.input(35):  # кнопка нажата
-                    if not self.processing:
+                    if not self.processing:  # запуск только если не в процессе
                         self.processing = True
                         self.button_pressed.emit()
-                else:
-                    self.processing = False  # кнопка отпущена, можно снова реагировать
             except Exception as e:
                 print(f"GPIO read error in ButtonThread: {e}")
-            time.sleep(0.05)  # частая проверка
+            time.sleep(0.05)
 
     def stop(self):
         self.running = False
