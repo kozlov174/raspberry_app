@@ -368,7 +368,7 @@ class MainWindow(QtWidgets.QMainWindow):
         R_izm = self.R_itog_array
 
         # присваивание динамических значений второй и последующих строк
-        time = int(self.time_izm.currentText()) * 60
+        time = int(self.time_izm.currentText())
         df = pd.read_csv('metadata.csv')
         date_str = str(df.loc[0, "date"])
         book['D2'].value = date_str
@@ -598,7 +598,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 r_itog = float(R[0]) * 10 ** int(R[1])
                 self.R_itog_array.append(r_itog)
                 volt_array.append(int(self.position_V))
-                time_array.append(int(self.time_izm.currentText()) * 60)
+                time_array.append(int(self.time_izm.currentText()))
                 C = result_array[12].split("E")
                 C[0] = C[0][1:]
                 C_itog = float(C[0]) * 10 ** int(C[1])
