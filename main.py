@@ -21,8 +21,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.position_v = None
         uic.loadUi('/root/raspberry_app/main.ui', self)
 
-        self.is_running = False
-
         # UI элементы
         self.date = self.findChild(QtWidgets.QTextBrowser, 'date')
         self.open_button = self.findChild(QtWidgets.QPushButton, 'open_button')
@@ -114,15 +112,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.date.setText(date_str)
 
     def on_button_pressed(self):
-        if self.is_running:
-            print("Игнор: уже выполняется")
-            return
-        print("Кнопка → старт")
-        self.is_running = True
-        try:
-            self.start_com()  # да, это заблокирует GUI, раз без воркеров
-        finally:
-            self.is_running = False
+        print("Кнопка нажата! Запускаем нужную функцию")
+        self.start_com()
 
     def update_position_v(self, new_position_v):
         if self.position_V != new_position_v:
@@ -685,11 +676,11 @@ class MainWindow(QtWidgets.QMainWindow):
         self.R60.setText(str(round(R60, 3)))
         R30= R_apr[4] / 10 ** 9
         self.R30.setText(str(round(R30, 3)))
-        R600 = R_apr[118] / 10 ** 9
+        if len(R_apr) > 12:
+            R600 = R_apr[118] / 10 ** 9
+        else:
+            R600 = 0
         self.R600.setText(str(round(R600, 3)))
-        # if time > 100:
-        #     I_ut = min(I_apr)
-        #     I_spectr = (I_apr - I_ut) * time  # особое внимание этой строчке
 
 import datetime
 import subprocess
@@ -773,6 +764,8 @@ class ButtonThread(QThread):
                     if not self.processing:  # запуск только если не в процессе
                         self.processing = True
                         self.button_pressed.emit()
+                else:
+                    self.processing = False
             except Exception as e:
                 print(f"GPIO read error in ButtonThread: {e}")
             time.sleep(0.05)
