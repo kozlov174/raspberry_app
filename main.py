@@ -467,7 +467,7 @@ class MainWindow(QtWidgets.QMainWindow):
                         time.sleep(1)  # Пауза между командами (если необходимо)
                     self.basic_flag = 1
                 commands = []
-                if self.position_V == 500 and time_izm == 1:
+                if self.position_V == 500 and time_izm == 60:
                     commands = [
                         "404045723030300D0A",
                         "457730303030453033334233433033314530303343303235383032353830303041303030410D0A",
@@ -479,7 +479,7 @@ class MainWindow(QtWidgets.QMainWindow):
                         "467332310D0A",
                         "42640D0A"
                     ]
-                elif self.position_V == 1000 and time_izm == 1:
+                elif self.position_V == 1000 and time_izm == 60:
                     commands = [
                         "404045723030300D0A",
                         "457730303030453033334233433033314530303343303235383032353830303041303030410D0A",
@@ -491,7 +491,7 @@ class MainWindow(QtWidgets.QMainWindow):
                         "467332320D0A",
                         "42640D0A"
                     ]
-                elif self.position_V == 2500 and time_izm == 1:
+                elif self.position_V == 2500 and time_izm == 60:
                     commands = [
                         "404045723030300D0A",
                         "457730303030453033334233433033314530303343303235383032353830303041303030410D0A",
@@ -503,7 +503,7 @@ class MainWindow(QtWidgets.QMainWindow):
                         "467332330D0A",
                         "42640D0A"
                     ]
-                elif self.position_V == 500 and time_izm == 10:
+                elif self.position_V == 500 and time_izm == 600:
                     commands = [
                         "404045723030300D0A",
                         "457730303030453033334233433033314530303343303235383032363230303035303030410D0A",
@@ -513,7 +513,7 @@ class MainWindow(QtWidgets.QMainWindow):
                         "467332310D0A",
                         "42640D0A"
                     ]
-                elif self.position_V == 1000 and time_izm == 10:
+                elif self.position_V == 1000 and time_izm == 600:
                     commands = [
                         "404045723030300D0A",
                         "457730303030453033334233433033314530303343303235383032363230303035303030410D0A",
@@ -523,7 +523,7 @@ class MainWindow(QtWidgets.QMainWindow):
                         "467332320D0A",
                         "42640D0A"
                     ]
-                elif self.position_V == 2500 and time_izm == 10:
+                elif self.position_V == 2500 and time_izm == 600:
                     commands = [
                         "404045723030300D0A",
                         "457730303030453033334233433033314530303343303235383032363230303035303030410D0A",
