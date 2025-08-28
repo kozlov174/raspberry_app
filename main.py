@@ -21,6 +21,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.position_v = None
         uic.loadUi('/root/raspberry_app/main.ui', self)
 
+        self.is_running = False
+
         # UI элементы
         self.date = self.findChild(QtWidgets.QTextBrowser, 'date')
         self.open_button = self.findChild(QtWidgets.QPushButton, 'open_button')
@@ -112,8 +114,15 @@ class MainWindow(QtWidgets.QMainWindow):
         self.date.setText(date_str)
 
     def on_button_pressed(self):
-        print("Кнопка нажата! Запускаем нужную функцию")
-        self.start_com()
+        if self.is_running:
+            print("Игнор: уже выполняется")
+            return
+        print("Кнопка → старт")
+        self.is_running = True
+        try:
+            self.start_com()  # да, это заблокирует GUI, раз без воркеров
+        finally:
+            self.is_running = False
 
     def update_position_v(self, new_position_v):
         if self.position_V != new_position_v:
