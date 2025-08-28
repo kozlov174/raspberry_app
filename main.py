@@ -4,7 +4,7 @@ import os
 import sys
 from time import sleep
 import RepkaPi.GPIO as GPIO
-#import serial
+import serial
 from PyQt5.QtCore import QThread, pyqtSignal
 import pandas as pd
 import numpy as np
@@ -277,7 +277,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.graphWidget.clear()
         self.graphWidget.plot(Tizm, R_meas, pen=pg.mkPen(color='b', width=5), name='R измеренное')
-        self.graphWidget.plot(Tizm, R_apr, pen=pg.mkPen(color='k', width=5), name='R апроксимированное')
+        self.graphWidget.plot(Tizm, R_apr, pen=pg.mkPen(color='k', width=5), name='R аппроксимированное')
 
         DAR = R_apr[10] / R_apr[1]
         self.DAR.setText(str(round(DAR, 3)))
@@ -554,7 +554,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 time.sleep(2)  # Дайте время устройству для отправки данных
                 time_array = []
                 R_array = []
-                for i in range(time_izm  + 5):
+                for i in range(5):
                     time.sleep(1)
                 end_output = ""
                 process.kill()
@@ -620,7 +620,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 process.kill()
                 self.graphWidget.clear()
                 self.graphWidget.plot(time_array, R_array, pen=pg.mkPen(color='b', width=5), name='R измеренное')
-                self.graphWidget.plot(time_array, R_apr, pen=pg.mkPen(color='k', width=5), name='R апроксимированное')
+                self.graphWidget.plot(time_array, R_apr, pen=pg.mkPen(color='k', width=5), name='R аппроксимированное')
                 self.calculate_itog(time_array, volt_array, R_array)
 
                 df = pd.read_csv("metadata.csv")
