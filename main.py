@@ -562,7 +562,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 ser.write(bytes.fromhex("4044700D0A"))
                 sleep(2)
                 end_output = ser.readline()
-                while len(end_output) < 50 and ("EC" in end_output):
+                while len(end_output) < 50 or (b'EC' in end_output):
                     ser.write(bytes.fromhex("4044700D0A"))
                     sleep(2)
                     end_output = ser.readline()
