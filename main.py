@@ -307,7 +307,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.Kabs.setText(str(round(Kabs, 3)))
         DP = 200 * TPI ** 0.251
         self.DP.setText(str(math.trunc(DP)))
-        R15 = R_apr[2] / 10 ** 9
+        R15 = R_apr[1] / 10 ** 9
         self.R15.setText(str(round(R15, 3)))
 
         if len(R_apr) > 15:
@@ -559,7 +559,10 @@ class MainWindow(QtWidgets.QMainWindow):
                 end_output = ""
                 process.kill()
                 process = subprocess.Popen(['python3', 'calculation.py'])
-                while len(end_output) < 50:
+                ser.write(bytes.fromhex("4044700D0A"))
+                sleep(2)
+                end_output = ser.readline()
+                while len(end_output) < 50 and ("EC" in end_output):
                     ser.write(bytes.fromhex("4044700D0A"))
                     sleep(2)
                     end_output = ser.readline()
