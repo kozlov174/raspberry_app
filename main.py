@@ -303,7 +303,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.W.setText(str(round(W, 3)))
         self.Res.setText(str(math.trunc(Res)))
 
-        Kabs = R_apr[10] / R_apr[3]
+        Kabs = R_apr[10] / R_apr[1]
         self.Kabs.setText(str(round(Kabs, 3)))
         DP = 200 * TPI ** 0.251
         self.DP.setText(str(math.trunc(DP)))
@@ -643,7 +643,7 @@ class MainWindow(QtWidgets.QMainWindow):
             I_apr = np.polyval(np.polyfit(Tizm[21:], I_t[21:], 4), Tizm)
 
         if len(R_apr) > 12:
-            DAR = R_apr[11] / R_apr[5]
+            DAR = R_apr[10] / R_apr[1]
         else:
             DAR = 0
         self.DAR.setText(str(round(DAR, 3)))
@@ -651,7 +651,7 @@ class MainWindow(QtWidgets.QMainWindow):
             PI = 0
             DD = 0
         else:
-            PI = R_apr[117] / R_apr[9]
+            PI = R_apr[118] / R_apr[10]
             DD = 1000 * (R_apr[118] - R_apr[11]) / (Uizm[1] * self.C)
 
         self.PI.setText(str(round(PI, 3)))
