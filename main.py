@@ -2,6 +2,7 @@ import datetime
 import math
 import os
 import sys
+from operator import contains
 from time import sleep
 import RepkaPi.GPIO as GPIO
 import serial
@@ -437,194 +438,100 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def start_com(self):
         try:
-            process = subprocess.Popen(['python3', 'init_commands.py'])
-            port_name = "COM4"
-            # Открытие последовательного порта
-            with serial.Serial("/dev/ttyUSB0", baudrate=9600, timeout=1) as ser:
-                time.sleep(1)  # Подождите, пока порт откроется
-                print(f"Serial port {port_name} open")
+            with serial.Serial('COM3', 115200, timeout=1) as ser:
+                process = subprocess.Popen(["python", "init_commands.py"])
+                ser_out = ""
                 time_izm = int(self.time_izm.currentText())
-                self.message = "Выполняется отправка команд"
-                start_commands = [
-                    "40526E0D0A",
-                    "4055660D0A",
-                    "49640D0A",
-                    "4054720D0A",
-                    "45723030300D0A",
-                    "45723030310D0A",
-                    "45723030320D0A",
-                    "40547332342E30382E31342031323A35330D0A",
-                    "54720D0A"
-                ]
-                if self.basic_flag == 0:
-                    for cmd in start_commands:
-                        hex_cmd = bytes.fromhex(cmd)
-                        print(f"Sending command: {cmd}")
-                        ser.write(hex_cmd)
-                        ser.flush()  # Убедитесь, что данные записаны в порт
-                        output = ser.readline()
-                        print(f"Received output: {output}")
-                        time.sleep(1)  # Пауза между командами (если необходимо)
-                    self.basic_flag = 1
-                commands = []
-                if self.position_V == 500 and time_izm == 60:
-                    commands = [
-                        "404045723030300D0A",
-                        "457730303030453033334233433033314530303343303235383032353830303041303030410D0A",
-                        "404045723030300D0A",
-                        "457730303030453033334233433033314530303343303235383032353830303035303030410D0A",
-                        "404045723030300D0A",
-                        "457730303030453033334233433033314530303343303235383030336330303035303030410D0A",
-                        "4466666666660D0A",
-                        "467332310D0A",
-                        "42640D0A"
-                    ]
-                elif self.position_V == 1000 and time_izm == 60:
-                    commands = [
-                        "404045723030300D0A",
-                        "457730303030453033334233433033314530303343303235383032353830303041303030410D0A",
-                        "404045723030300D0A",
-                        "457730303030453033334233433033314530303343303235383032353830303035303030410D0A",
-                        "404045723030300D0A",
-                        "457730303030453033334233433033314530303343303235383030336330303035303030410D0A",
-                        "4466666666660D0A",
-                        "467332320D0A",
-                        "42640D0A"
-                    ]
-                elif self.position_V == 2500 and time_izm == 60:
-                    commands = [
-                        "404045723030300D0A",
-                        "457730303030453033334233433033314530303343303235383032353830303041303030410D0A",
-                        "404045723030300D0A",
-                        "457730303030453033334233433033314530303343303235383032353830303035303030410D0A",
-                        "404045723030300D0A",
-                        "457730303030453033334233433033314530303343303235383030336330303035303030410D0A",
-                        "4466666666660D0A",
-                        "467332330D0A",
-                        "42640D0A"
-                    ]
-                elif self.position_V == 500 and time_izm == 600:
-                    commands = [
-                        "404045723030300D0A",
-                        "457730303030453033334233433033314530303343303235383032363230303035303030410D0A",
-                        "404045723030300D0A",
-                        "457730303030453033334233433033314530303343303235383032353830303035303030410D0A",
-                        "4466666666660D0A",
-                        "467332310D0A",
-                        "42640D0A"
-                    ]
-                elif self.position_V == 1000 and time_izm == 600:
-                    commands = [
-                        "404045723030300D0A",
-                        "457730303030453033334233433033314530303343303235383032363230303035303030410D0A",
-                        "404045723030300D0A",
-                        "457730303030453033334233433033314530303343303235383032353830303035303030410D0A",
-                        "4466666666660D0A",
-                        "467332320D0A",
-                        "42640D0A"
-                    ]
-                elif self.position_V == 2500 and time_izm == 600:
-                    commands = [
-                        "404045723030300D0A",
-                        "457730303030453033334233433033314530303343303235383032363230303035303030410D0A",
-                        "404045723030300D0A",
-                        "457730303030453033334233433033314530303343303235383032353830303035303030410D0A",
-                        "4466666666660D0A",
-                        "467332330D0A",
-                        "42640D0A"
-                    ]
-                # Отправка команд
-                for cmd in commands:
-                    hex_cmd = bytes.fromhex(cmd)
-                    print(f"Sending command: {cmd}")
-                    ser.write(hex_cmd)
-                    ser.flush()  # Убедитесь, что данные записаны в порт
-                    output = ser.readline().decode("utf-8")
-                    while "EC" in output:
-                        time.sleep(1)
-                        ser.write(hex_cmd)
-                        time.sleep(1)
-                        output = ser.readline().decode("utf-8")
-                    print(f"Received output: {output}")
-                    time.sleep(3)  # Пауза между командами (если необходимо)
+                while ser_out != "ok;":
+                    ser.write("100,0;")
+                    ser_out = ser.readline()
+                ser_out = ""
+                while ser_out != "ok;":
+                    ser.write("100,0;")
+                    ser_out = ser.readline()
+                time.sleep(2)
                 process.kill()
-                process = subprocess.Popen(['python3', 'measurment_timer.py', str(int(self.time_izm.currentText()) + 1)])
-                # Чтение данных после отправки команд
-                print("Reading data from serial port...")
-                time.sleep(2)  # Дайте время устройству для отправки данных
-                time_array = []
-                R_array = []
-                for i in range(int(self.time_izm.currentText())):
-                    time.sleep(1)
-                end_output = ""
-                process.kill()
-                process = subprocess.Popen(['python3', 'calculation.py'])
-                ser.write(bytes.fromhex("4044700D0A"))
-                sleep(2)
-                end_output = ser.readline()
-                while len(end_output) < 50 or (b'EC' in end_output):
-                    ser.write(bytes.fromhex("4044700D0A"))
-                    sleep(2)
-                    end_output = ser.readline()
-                    print(end_output)
-                sleep(1)
-                time_array = []
-                volt_array = []
-                R_array = []
-                base_index = 2
-                decoded_output = end_output.decode("utf-8")
-                end_array = decoded_output.split(";")
-                print('Array length' + " " + str(len(end_array)))
-                for i in range(0, time_izm, 5):
-                    volt_array.append(int(self.position_V))
-                    time_array.append(i)
-                    R = end_array[base_index].split("E")
-                    if i == time_izm:
-                        R[0] = R[0][1:]
-                        itogR = float(R[0]) * 10 ** int(R[1][:-4])
+                if self.position_V == 500:
+                    commands = [
+                        "1, 500;",
+                        "4;"
+                    ]
+                elif self.position_V == 1000:
+                    commands = [
+                        "1, 1000;",
+                        "4;"
+                    ]
+                elif self.position_V == 2500:
+                    commands = [
+                        "1, 2500;",
+                        "4;"
+                    ]
+                for command in commands:
+                    ser.write(command)
+                T_itog = []
+                R_itog = []
+                k=0
+                T = 0
+                while T_itog[len(T_itog)] < time_izm + 20:
+                    ser_out = ser.readline()
+                    content = ser_out.split(':', 1)[1].rstrip(';')
+                    pairs = content.split(',')
+                    res = {}
+                    for pair in pairs:
+                        if '=' in pair:
+                            key, value = pair.split('=', 1)
+                            try:
+                                res[key] = int(value)
+                            except ValueError:
+                                try:
+                                    res[key] = float(value)
+                                except ValueError:
+                                    res[key] = value
+                    if self.position_V == 500:
+                        k = 444.6421
+                    elif self.position_V == 1000:
+                        k = 434.6421 #изменить
                     else:
-                        R[0] = R[0][1:]
-                        itogR = float(R[0]) * 10 ** int(R[1])
-                    R_array.append(itogR)
-                    base_index += 2
-                self.R_itog_array = R_array
+                        k = 434.6421 #изменить
+                    dU_c = (res[du_c]*3.3)/4096
+                    U_hv = ((res[u_hv]*4.096)/(65535*res[gain]))*k
+                    R = (res[dt_c]*U_hv)/(dU_c*10**-8)
+                    t = 100 + 15 # константа на выполнения переключений при измерениях
+                    T = T + (res[dt_c] + t / 10**-6)
+                    T_itog.append(T)
+                    R_itog.append(R)
+                    lastR = R
+                ser_out = ""
+                while ser_out != "ok;":
+                    ser.write("3;")
+                    ser_out = ser.readline()
+                ser_out = ""
+                while "res:" not in ser_out:
+                    ser.write("2;")
+                    ser_out = ser.readline()
+                prefix, params_str = ser_out.split(':', 1)
 
-                print("считывание финального измерения")
-                ser.write(bytes.fromhex("44670D0A"))
-                sleep(2)
-                output = ser.readline()
-                print(f"Received output: {output}")
-                output = output.decode("utf-8")
-                result_array = output.split(";")
-                R = result_array[9].split("E")
-                R[0] = R[0][1:]
-                r_itog = float(R[0]) * 10 ** int(R[1])
-                self.R_itog_array.append(r_itog)
-                volt_array.append(int(self.position_V))
-                time_array.append(int(self.time_izm.currentText()))
-                C = result_array[12].split("E")
-                C[0] = C[0][1:]
-                C_itog = float(C[0]) * 10 ** int(C[1])
-                self.C = C_itog
-                I = result_array[8].split("E")
-                I[0] = I[0][1:]
-                I_itog = float(I[0]) * 10 ** int(I[1])
-                self.I = I_itog
-                # ток в степени -8(элемент 8)
-                ser.close()
-                time_array.pop(1)
-                time_array.pop(0)
-                volt_array.pop(0)
-                volt_array.pop(1)
-                R_array.pop(1)
-                R_array.pop(0)
-                p = np.polyfit(time_array, R_array, 4)
-                R_apr = np.polyval(p, time_array)
-                process.kill()
-                self.graphWidget.clear()
-                self.graphWidget.plot(time_array, R_array, pen=pg.mkPen(color='b', width=5), name='R измеренное')
-                self.graphWidget.plot(time_array, R_apr, pen=pg.mkPen(color='k', width=5), name='R аппроксимированное')
-                self.calculate_itog(time_array, volt_array, R_array)
+                # Разделяем параметры по запятым
+                params = params_str.split(',')
+
+                result = {}
+                for param in params:
+                    key, value = param.split('=', 1)
+                    # Формируем имя вида cap[key]
+                    result[f"{prefix}[{key}]"] = int(value)  # предполагаем, что значения — целые числа
+
+                HV = (result["u_o"]*4.096)*k/65535 * result["gain"]
+
+                self.C = (-1 * result["dt"]*10**-6)/((lastR * 3 * 10 **(-6)/(lastR + 3 * 10 **(-6)))*math.log(result["u_1"]/result["u_o"], math.e))
+
+                U_itog = [self.position_v] * len(T_itog)
+                end_array_time, end_array_values = self.moving_avg_resample_fixed(T_itog, R_itog) #способ 1
+                #end_array_time, end_array_values = self.poly4_resample_trimmed(T_itog, R_itog) #Способ 2
+                #end_array_time, end_array_values = self.modify_array(T_itog, R_itog) #Способ 3
+
+                self.calculate_itog(end_array_time,U_itog,end_array_values)
+
+
 
                 df = pd.read_csv("metadata.csv")
                 df.loc[0,"number_measurment"] = df.loc[0,"number_measurment"] + 1
@@ -633,6 +540,88 @@ class MainWindow(QtWidgets.QMainWindow):
         except serial.SerialException as e:
             print(f"Error: {e}")
 
+    def moving_avg_resample_fixed(self, times, values, step=5):
+        times = np.array(times, dtype=float)
+        values = np.array(values, dtype=float)
+
+        max_time = times[-1]
+        new_times = np.arange(0, max_time + 1, step)
+
+        averaged_values = []
+        n = len(values)
+
+        for t in new_times:
+            idx = np.argmin(np.abs(times - t))
+            left = max(0, idx - 3)
+            right = min(n, idx + 4)
+            window = values[left:right]
+            averaged_values.append(np.mean(window))
+
+        averaged_values = np.array(averaged_values)
+
+        if len(averaged_values) > 2:
+            new_times = new_times[1:-1]
+            averaged_values = averaged_values[1:-1]
+        else:
+            return np.array([]), np.array([])
+
+        rescaled_times = np.arange(0, len(new_times) * step, step)
+
+        return rescaled_times, averaged_values
+
+    def poly4_resample_trimmed(self, times, values):
+
+        times = np.array(times, dtype=float)
+        values = np.array(values, dtype=float)
+
+        # Полином 4-й степени
+        coeffs = np.polyfit(times, values, 4)
+        poly = np.poly1d(coeffs)
+
+        # Сетка кратных 5
+        start = int(np.ceil(times.min() / 5)) * 5
+        end = int(np.floor(times.max() / 5)) * 5
+        new_times = np.arange(start, end + 1, 5)
+
+        # Значения полинома
+        new_values = poly(new_times)
+
+        # Убираем первые 2 и последние 2
+        if len(new_values) > 4:
+            new_times = new_times[2:-2]
+            new_values = new_values[2:-2]
+        else:
+            return np.array([]), np.array([])
+
+        # Пересобираем время от 0 с шагом 5
+        rescaled_times = np.arange(0, len(new_times) * 5, 5)
+
+        return rescaled_times, new_values
+
+    def modify_array(self, times, values):
+
+        times = np.array(times, dtype=float)
+        values = np.array(values, dtype=float)
+
+        start = int(np.ceil(times.min() / 5)) * 5
+        end = int(np.floor(times.max() / 5)) * 5
+        new_times = np.arange(start, end + 1, 5)
+
+        snapped_values = []
+        for t in new_times:
+            idx = np.argmin(np.abs(times - t))
+            snapped_values.append(values[idx])
+        snapped_values = np.array(snapped_values)
+
+        if len(snapped_values) > 4:
+            new_times = new_times[2:-2]
+            snapped_values = snapped_values[2:-2]
+        else:
+            return np.array([]), np.array([])
+
+        rescaled_times = np.arange(0, len(new_times) * 5, 5)
+
+        return rescaled_times, snapped_values
 
     def calculate_itog(self, Tizm, Uizm, R_meas):
         I_t = np.array(Uizm) / np.array(R_meas)
